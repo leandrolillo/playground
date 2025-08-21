@@ -1,0 +1,77 @@
+#!/bin/bash
+
+set -e
+
+help() {
+  echo "| Usage: $(basename $0) [OPTIONS] Path-to-CMakeLists" >&2
+  echo "| Options: " >&2
+  echo "|   -c clean" >&2
+  echo "|   -t test" >&2
+  echo "|   -w working folder - defaults to 'build'" >&2
+  echo "|" >&2
+  echo "|  Note: Path-to-CmakeLists HAS to be the last parameter! It is the only required parameter as well." >&2
+}
+
+parseInputs() {
+  # default values
+  inputs_parameters_path="."
+  inputs_parameters_working_folder="build"
+  inputs_parameters_clean="false"
+  inputs_parameters_test="false"
+
+  while getopts 'ctw:' opt; do
+    case "$opt" in
+      c) inputs_parameters_clean="true";;
+   	  t) inputs_parameters_test="true";;
+  	  w) inputs_parameters_working_folder="${OPTARG}";;
+      :)
+        echo -e "option requires an argument.\n$(help)"
+        exit 1
+        ;;
+      ?)
+        echo -e "Invalid command option.\n$(help)"
+        exit 1
+        ;;
+    esac
+  done
+
+  shift $(($OPTIND-1))
+  inputs_parameters_path="$1"
+
+  if [[ "${inputs_parameters_path}" == "" ]] || \
+    [[ "${inputs_parameters_clean}" == "" ]]  ; then
+
+    echo "| ERROR: Missing required parameters - Note that workflow-name HAS to be the last parameter!"
+    echo "| "
+    help
+    exit 1
+  fi
+
+  echo "| Running with: " >&2
+  echo "| target CMakeFile.txt path [${inputs_parameters_path}]" >&2
+  echo "| working folder [${inputs_parameters_working_folder}]" >&2
+  echo "| clean [${inputs_parameters_clean}]" >&2
+  echo "| test [${inputs_parameters_test}]" >&2
+
+}
+
+parseInputs "$@"
+
+#set +e
+
+pushd ${inputs_parameters_path} > /dev/null
+if [[ "${inputs_parameters_clean}" == "true" ]]; then
+	rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
+fi
+
+mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
+cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
+cmake ..
+make 
+
+#todo: maybe add a target as parameter
+if [[ "${inputs_parameters_test}" == "true" ]]; then
+	make test
+fi
+
+popd > /dev/null

@@ -1,0 +1,74 @@
+---------------
+c++
+---------------
+Move semantics: https://stackoverflow.com/questions/3106110/what-is-move-semantics
+Copy & Swap idiom: https://stackoverflow.com/questions/3279543/what-is-the-copy-and-swap-idiom
+Rule of Three: https://en.m.wikipedia.org/wiki/Rule_of_three_(C++_programming)
+RAII: https://en.m.wikipedia.org/wiki/Resource_acquisition_is_initialization
+C++ core guidelines: https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md
+
+
+Move semantics, l-values and r-values and copy and swap idiom go hand to hand like this:
+    /* Rule of five and copy-and-swap*/
+    friend void swap(MyClass& first, MyClass& second)
+	{
+		// enable ADL (not necessary in our case, but good practice)
+		using std::swap;
+
+		// by swapping the members of two objects, the two objects are effectively swapped
+		swap(first.propertyA, second.propertyA);
+		swap(first.wrappedResource, second.wrappedResource);
+		...
+	}
+
+	/**
+	 * Regular copy constructor
+	 **/
+    MyClass(const MyClass &other) {
+    	this->propertyA = other.propertyA;
+    	this->wrappedResource = new ... && copy from other.wrappedResource;
+    }
+
+	/** 
+	 * move constructor - the core idea here is that no one else has access to "other" since it was instanciated anonymous (is an l-value?) for this call and will go out of scope 
+	 * as soon as it ends. Thus  we can steal its contests without the risk leaving it in an inconsistent state for others.
+	 **/
+    MyClass(MyClass && other) { 
+    	swap(*this, other);
+    }
+
+	/**
+	 * Operator= If other is an anonymous/temporal/l-value then the move constructor will be used. Otherwise the regular copy constructor will be called. 
+	 * Either case we can just swap and discard other.
+	 * If this object had previous data, it should be disposed by the destructor of other (since we swapped the contents)
+	 */
+    MyClass &operator =(MyClass other) {
+    	swap(*this, other);
+    	return *this;
+    }
+
+
+smart pointers: 
+	- owner references are handled with unique_ptr. Non-owner references with naked pointers. The idea is that objects get deleted as the unique_ptr goes out of scope.
+	- owner references can be collected in vectors (std::vector<unique_ptr<something>>), sets or maps.
+		- beware that in maps, if you replace a key the old value goes out of scope thus deletes the wrapped pointer - this might cause illegal access if somebody had that raw pointer.
+		- beware that in sets, if you have a custom less function and call set.insert(std_unique<myclass>(obj)) for a duplicated object, the lvalue std_unique<class>(obj) will be removed from scope thus delete the obj.
+			We should check the raw pointer is in the set before attempting to insert (even build) a std_unique(obj). We can do this by iterating the set and checking iterator->get() but that would be O(n). 
+			Instead, it is possible to use heterogeneous lookups, which allow you to do find(another type) which is O(1): https://www.fluentcpp.com/2017/06/09/search-set-another-type-key/
+			An example of this can be found in ResourceManager.h, which holds resources and resourceAdapters in std::set<unique_ptr<resourceXX>>
+		
+stl
+	- vectors are insertion ordered
+	- sets are ordered according to natural <, or some provided lambda/functor
+	- deletion + iteration can only be done with iterators
+		while (iterator != resources.end()) {
+			if(shouldDelete) {
+				iterator = resources.erase(iterator);
+			} else {
+		       ++iterator;
+		    }
+	    }
+		
+C++:
+	- objects are constructed in the order that are declared and destructed in the opposite order. This is important for knowing what goes out of scope before.
+	- polymorphism is no good in destructors: base class destructor is called after children class destructor. This means child data has already been destroyed when running base destructor and any attempts to trigger polymorfism with cause errors. 

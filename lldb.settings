@@ -1,0 +1,21 @@
+type summary add -s "<${var.x}, ${var.y}, ${var.z}>" vector
+type summary add -s "<${var.x}, ${var.y}, ${var.z}>" vector3
+
+type summary add -s "origin:${var.origin}, halfSizes:${var.halfSizes}" AABB
+type summary add -s "origin:${var.origin}, radius:${var.radius}" Sphere
+type summary add -s "origin:${var.origin}, normal:${var.normal}" Plane
+
+type summary add -s "${var.filename} ${var.line}:${var.column}" FileParser
+type summary add -s "${var.fileParser.filename} ${var.fileParser.line}:${var.fileParser.column}" JsonParser
+
+type summary add -s "${var.uri}|${var.outputMimeType} <- ${var.inputMimeType}" ResourceLoadRequest
+type summary add -s "${var.outputMimeTypes}<-${var.inputMimeType}" ResourceAdapter
+
+type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.labels}]" Resource
+type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.labels}]" TextureResource
+type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.labels}]" CubeMapResource
+type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.labels}]" VertexArrayResource
+type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.vertexArray}] [${var.texture}] [${var.labels}]" MeshResource
+
+type summary add -s "${var.shader}" Renderer
+type summary add -s "${var.shader} - ${var.cubeMap} - ${var.box}" SkyboxRenderer

@@ -1,0 +1,80 @@
+Tech debts
+- split the project into at least three separate repos: math, physics and playground
+- use cmake uri dependencies and git submodules
+- move all apps to the same branch and generate multiple binaries instead of one per branch
+
+- Add toString to playground that will return the current playground information:
+	- name?
+	- all runners toString
+		- each runner would add its relevant information
+			- e.g.: collision tester pairs
+
+- review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
+	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.
+
+- load of a collection with only one object: currently we have to provide an mandatory object name, even if there' only one object in the collection (and even if that object gets a default name)
+	so this is a thing: resourcemanager.load("meshes/singleUnnamedObject.obj/singleUnnamedObject.obj") - you have to duplicate the filename.
+	- review if there's a way of returning the first one only.
+	- also auto generated names should be object_1, object_2, etc.
+
+- troubleshoot grid renderer - while it does not crash, it renders nothing
+
+- unit tests - keep adding. Each issue fixed should have an unit test
+
+- replace printf by streams and toString() by << operator
+
+- review RAII and 5 of 5 principle (move semantics) in resources/playground classes.
+	specially in file parser / text parser and resources.
+	- resources that contain graphics handles (such as vertex shaders) shoudl be move only
+
+- review design of particle manager/collision detector / geometry vs particles / etc. Too much vector passing and copying. Review polymorfism / std::vector<unique_ptr> usage.
+
+- Review collision action design: use lambdas instead of template pattern for collision response actions. Review design of BulletParticle used for playing sounds on balls bouncing.
+
+- Review collision detection / response: there is no way to configure restitution factor - should be based on the two objects colliding and/or configurable.
+
+- improve box rendering (normals)
+
+
+----------------
+
+New stuff:
+- blockout: following udemy learn advanced modern c++ 
+
+- Road fighter:
+	- Add support for loading single resources from a file containing multiple objects (obj files)
+	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 
+	- Add labels to resources, so that we can unload a level resources and load next levels.
+
+
+- add option to stop background music
+
+- TerrainDemo: 
+	- Add class to compose several terrain patches and make calculations to determine which patch. 
+	- mod infinite terrain? render those inside camera frustrum
+	- Add some class to generate bounding geometry from this.
+	- Some other tree model
+	- Add grass / ferns with transparency
+	- use own particle class or review design (lambdas maybe?) - currently it is using class from a different demo
+
+	- evolve this demo to be a planet and then a solar system.
+
+Games: 
+- Battle city
+- road fighter 
+- tanques vs naves
+- defend the tower
+- scenery (with train or racing cars - lightning mcqueen and cruz, wind/rain, vegetation and animals, water, day/night transition, sun and moon, etc.)
+
+robotica - brazo (curso)
+scalectric - o vehículos (autos, trenes, naves) que sigan una ruta predefinida con escenarios de fondo
+
+nave de futurama
+
+Kboom
+Destruir la tierra (o algún planeta) mediante asteroides que se lanzan desde fuera del sistema solar.
+efemeride planetaria (https://ssd.jpl.nasa.gov/?ephemerides#planets)
+regiones del sistema solar
+Roles de los planetas (como saturno que actúa de escudo - era saturno?)
+visualizaciones de gases del meteoro de acuerdo a composición
+potencial educativo.

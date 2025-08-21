@@ -1,0 +1,16 @@
+.DS_Store
+.cmake
+.idea
+.ninja_deps
+.ninja_log
+build.ninja
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+target/
+/build/
+.cproject 
+.project 
+.settings
+playground.log*
