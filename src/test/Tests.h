@@ -9,10 +9,9 @@
 #define TESTRUNNER_H_
 
 #include<Math3d.h>
-#include<Logger.h>
-#include<Playground.h>
-
 #include<map>
+#include "Playground.h"
+#include "Logger.h"
 
 #define defaultAssertMessage StringFormatter::format("Assertion Failed in [%s], at line [%d]", __FILE__, __LINE__)
 #define assertMessage(message) StringFormatter::format("Assertion Failed in [%s], at line [%d] ", __FILE__, __LINE__).append(message)
