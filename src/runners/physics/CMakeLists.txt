@@ -1,6 +1,13 @@
-add_library(physics INTERFACE)
+set(LIBRARY_NAME physicsRunner)
+add_library(${LIBRARY_NAME} INTERFACE)
 
-target_include_directories(physics INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/collisionDetection/geometry ${CMAKE_CURRENT_SOURCE_DIR}/geometry)
+#Does this include math and geometry as well?
+FetchContent_Declare(
+    physics
+    GIT_REPOSITORY https://github.com/leandrolillo/physics.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(physics)
 
-# library link dependencies
-target_link_libraries(physics INTERFACE math geometry)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE playground physics)

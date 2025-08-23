@@ -1,17 +1,26 @@
-set(LIBRARY_NAME audio_runner)
+set(LIBRARY_NAME audioRunner)
 add_library(${LIBRARY_NAME} INTERFACE)
-
-#dependencies
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-find_package(OpenAL REQUIRED)
-find_package(Vorbis REQUIRED)
-find_package(Ogg REQUIRED)
 
 add_subdirectory(adapters)
 add_subdirectory(resources)
 
-# make sure this library headers are included
-target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${OPENAL_INCLUDE_DIR} ${VORBIS_INCLUDE_DIRS} ${OGG_INCLUDE_DIRS})
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE playground )
 
-# library link dependencies
-target_link_libraries(${LIBRARY_NAME} INTERFACE playground ${OPENAL_LIBRARY} ${VORBIS_LIBRARIES} ${OGG_LIBRARIES})
+#dependencies
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
+#OpenAL
+find_package(OpenAL REQUIRED)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${OPENAL_INCLUDE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${OPENAL_LIBRARY})
+
+#Ogg
+find_package(Ogg REQUIRED)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${OGG_INCLUDE_DIRS})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${OGG_LIBRARIES})
+
+#Vorbis
+find_package(Vorbis REQUIRED)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${VORBIS_INCLUDE_DIRS})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${VORBIS_LIBRARIES})
