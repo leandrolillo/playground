@@ -9,7 +9,7 @@
 #define SHADERRESOURCE_H_
 
 
-#include "../../Resource.h"
+#include "Resource.h"
 
 class ShaderResource : public Resource
 {

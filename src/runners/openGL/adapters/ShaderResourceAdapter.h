@@ -7,8 +7,8 @@
 
 #ifndef SHADERRESOURCEADAPTER_H_
 #define SHADERRESOURCEADAPTER_H_
-#include "../../runners/openGL/adapters/OpenGLResourceAdapter.h"
-#include "../../runners/video/resources/ShaderResource.h"
+#include "OpenGLResourceAdapter.h"
+#include "ShaderResource.h"
 
 class ShaderResourceAdapter: public OpenGLResourceAdapter {
 	public:

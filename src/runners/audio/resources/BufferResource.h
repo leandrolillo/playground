@@ -8,7 +8,7 @@
 #ifndef BUFFERRESOURCE_H_
 #define BUFFERRESOURCE_H_
 
-#include "../../Resource.h"
+#include "Resource.h"
 
 class BufferResource : public Resource
 {

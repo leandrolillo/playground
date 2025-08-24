@@ -8,10 +8,10 @@
 #ifndef SRC_VIDEO_ADAPTERS_TERRAINRESOURCEADAPTER_H_
 #define SRC_VIDEO_ADAPTERS_TERRAINRESOURCEADAPTER_H_
 
-#include "../../../playground/parser/JsonParser.h"
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/openGL/OpenGLUtilities.h"
-#include "../../runners/video/resources/TerrainResource.h"
+#include "JsonParser.h"
+#include "ResourceAdapter.h"
+#include "OpenGLUtilities.h"
+#include "TerrainResource.h"
 
 class TerrainResourceAdapter: public ResourceAdapter {
 public:

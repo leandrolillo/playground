@@ -10,8 +10,8 @@
 
 #include <unordered_map>
 
-#include "../../Resource.h"
-#include "../../runners/video/resources/MaterialResource.h"
+#include "Resource.h"
+#include "MaterialResource.h"
 
 class MaterialCollection : public Resource {
 private:

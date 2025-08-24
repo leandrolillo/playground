@@ -8,9 +8,9 @@
 #ifndef SRC_RUNNERS_VIDEO_RENDERERS_GRIDRENDERER_H_
 #define SRC_RUNNERS_VIDEO_RENDERERS_GRIDRENDERER_H_
 
-#include "../../runners/video/resources/ShaderProgramResource.h"
-#include "../../runners/video/Renderer.h"
-#include "../../runners/video/VideoRunner.h"
+#include "ShaderProgramResource.h"
+#include "Renderer.h"
+#include "VideoRunner.h"
 
 class GridRenderer : public Renderer {
 private:

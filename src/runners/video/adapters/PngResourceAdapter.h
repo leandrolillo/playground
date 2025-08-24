@@ -11,8 +11,8 @@
 #include <png.h>
 #include <stdio.h>
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/resources/ImageResource.h"
+#include "ResourceAdapter.h"
+#include "ImageResource.h"
 
 class PngResourceAdapter : public ResourceAdapter {
 		public:

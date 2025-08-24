@@ -8,9 +8,9 @@
 #ifndef SRC_RUNNERS_OPENGL_ADAPTERS_CUBEMAPRESOURCEADAPTER_H_
 #define SRC_RUNNERS_OPENGL_ADAPTERS_CUBEMAPRESOURCEADAPTER_H_
 
-#include "../../../playground/parser/JsonParser.h"
-#include "../../runners/openGL/adapters/TextureResourceAdapter.h"
-#include "../../runners/video/resources/CubeMapResource.h"
+#include "JsonParser.h"
+#include "TextureResourceAdapter.h"
+#include "CubeMapResource.h"
 
 
 class CubeMapResourceAdapter : public TextureResourceAdapter {

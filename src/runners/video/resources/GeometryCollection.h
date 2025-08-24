@@ -9,8 +9,8 @@
 #define SRC_RUNNERS_VIDEO_RESOURCES_GEOMETRYCOLLECTION_H_
 
 #include <map>
-#include "../../runners/video/resources/GeometryResource.h"
-#include "../../runners/video/resources/MaterialResource.h"
+#include "GeometryResource.h"
+#include "MaterialResource.h"
 
 class GeometryCollection : public Resource {
 private:

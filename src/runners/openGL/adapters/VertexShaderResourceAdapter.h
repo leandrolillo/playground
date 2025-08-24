@@ -8,7 +8,7 @@
 #ifndef SRC_RUNNERS_OPENGL_ADAPTERS_VERTEXSHADERRESOURCEADAPTER_H_
 #define SRC_RUNNERS_OPENGL_ADAPTERS_VERTEXSHADERRESOURCEADAPTER_H_
 
-#include "../../runners/openGL/adapters/ShaderResourceAdapter.h"
+#include "ShaderResourceAdapter.h"
 
 class VertexShaderResourceAdapter : public ShaderResourceAdapter {
 public:

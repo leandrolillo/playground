@@ -9,7 +9,6 @@
 #define SRC_PLAYGROUND_PARSER_TEXTPARSER_H_
 
 #include <Math3d.h>
-#include "../playground/parser/ParsingException.h"
 #include "FileParser.h"
 
 class TextParser {
@@ -38,7 +37,7 @@ public:
         String value;
         String token = fileParser.takeToken();
         if(token != "\"")
-            throw ParsingException("Expected %s, got [%s] at %s", "\"", token.c_str(), fileParser.toString().c_str());
+            throw std::domain_error("Expected string, got [" + token + "] at [" + fileParser.toString() + "]");
 
         char character;
         while((character = fileParser.takeByte()) != '\"' && character != FileParser::charEof) {
@@ -58,7 +57,7 @@ public:
             return false;
         }
 
-        throw ParsingException("Expected [true|false], got [%s] at %s", token.c_str(), fileParser.toString().c_str());
+        throw std::domain_error("Expected [true|false], got [" + token + "] at [" + fileParser.toString() + "]");
     }
 
     unsigned int readUnsignedInteger() {
@@ -76,7 +75,7 @@ public:
         }
 
         if(!readValue)
-            throw ParsingException("Unexpected %s at %s", fileParser.takeToken().c_str(), fileParser.toString().c_str());
+            throw std::domain_error("Unexpected [" + fileParser.takeToken() + "] at [" + fileParser.toString() + "]");
 
         return value;
     }
@@ -133,7 +132,7 @@ protected:
         }
 
         if(!readValue)
-            throw ParsingException("Unexpected %s at %s", fileParser.takeToken().c_str(), fileParser.toString().c_str());
+            throw std::domain_error("Unexpected [" + token + "] at [" + fileParser.toString() + "]");
 
         return value;
     }

@@ -8,9 +8,9 @@
 #ifndef SRC_RUNNERS_VIDEO_RENDERERS_SKYBOXRENDERER_H_
 #define SRC_RUNNERS_VIDEO_RENDERERS_SKYBOXRENDERER_H_
 
-#include "../../runners/video/resources/CubeMapResource.h"
-#include "../../runners/video/resources/ShaderProgramResource.h"
-#include "../../runners/video/VideoRunner.h"
+#include "CubeMapResource.h"
+#include "ShaderProgramResource.h"
+#include "VideoRunner.h"
 
 class SkyboxRenderer: public Renderer {
 private:

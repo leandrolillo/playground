@@ -8,9 +8,9 @@
 #ifndef SRC_RUNNERS_VIDEO_ADAPTERS_OBJRESOURCEADAPTER_H_
 #define SRC_RUNNERS_VIDEO_ADAPTERS_OBJRESOURCEADAPTER_H_
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/resources/GeometryCollection.h"
-#include "../../runners/video/resources/MaterialCollection.h"
+#include "ResourceAdapter.h"
+#include "GeometryCollection.h"
+#include "MaterialCollection.h"
 
 class ObjResourceAdapter: public ResourceAdapter {
 public:

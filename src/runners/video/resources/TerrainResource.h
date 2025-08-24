@@ -8,10 +8,10 @@
 #ifndef SRC_RUNNERS_VIDEO_RESOURCES_TERRAINRESOURCE_H_
 #define SRC_RUNNERS_VIDEO_RESOURCES_TERRAINRESOURCE_H_
 
-#include "../../Resource.h"
-#include "../../runners/video/resources/HeightMapResource.h"
-#include "../../runners/video/resources/TextureResource.h"
-#include "../../runners/video/resources/VertexArrayResource.h"
+#include "Resource.h"
+#include "HeightMapResource.h"
+#include "TextureResource.h"
+#include "VertexArrayResource.h"
 
 class TerrainResource: public Resource {
     Logger *logger = LoggerFactory::getLogger("video/TerrainResource");

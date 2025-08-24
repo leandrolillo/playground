@@ -2,7 +2,7 @@
 #define MATERIALRESOURCE_H_
 
 #include <Math3d.h>
-#include "../../Resource.h"
+#include "Resource.h"
 
 /**
  * Should this be a resource?

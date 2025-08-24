@@ -10,17 +10,17 @@
 
 #include <resources/LightResource.h>
 #include <Math3d.h>
-#include "../Playground.h"
-#include "../openGL/adapters/TerrainResourceAdapter.h"
-#include "../runners/video/adapters/GeometryResourceAdapter.h"
-#include "../runners/video/adapters/JpegResourceAdapter.h"
-#include "../runners/video/adapters/MtlResourceAdapter.h"
-#include "../runners/video/adapters/ObjResourceAdapter.h"
-#include "../runners/video/adapters/PngResourceAdapter.h"
-#include "../runners/video/adapters/TgaResourceAdapter.h"
-#include "../runners/video/resources/LightResource.h"
-#include "../runners/video/resources/ShaderProgramResource.h"
-#include "../runners/video/resources/VertexArrayResource.h"
+#include "Playground.h"
+#include "TerrainResourceAdapter.h"
+#include "GeometryResourceAdapter.h"
+#include "JpegResourceAdapter.h"
+#include "MtlResourceAdapter.h"
+#include "ObjResourceAdapter.h"
+#include "PngResourceAdapter.h"
+#include "TgaResourceAdapter.h"
+#include "LightResource.h"
+#include "ShaderProgramResource.h"
+#include "VertexArrayResource.h"
 
 
 class VideoRunner : public PlaygroundRunner, public Chronometer {

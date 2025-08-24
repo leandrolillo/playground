@@ -8,7 +8,7 @@
 #ifndef VERTEXBUFFERRESOURCE_H_
 #define VERTEXBUFFERRESOURCE_H_
 
-#include "../../Resource.h"
+#include "Resource.h"
 
 enum ShaderAttributeLocation
 {

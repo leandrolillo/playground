@@ -2,7 +2,7 @@
 #define LIGHTRESOURCE_H_
 
 #include <Math3d.h>
-#include "../../runners/video/resources/MaterialResource.h"
+#include "MaterialResource.h"
 
 class LightResource: public MaterialResource {
 private:

@@ -5,12 +5,10 @@
  *      Author: Lean
  */
 
-#ifndef PLAYGROUND_H_
-#define PLAYGROUND_H_
+#pragma once
 
 #include <vector>
 #include <unordered_map>
-#include <math3d.h>
 #include "Chronometer.h"
 #include "JavaLike.h"
 #include "Logger.h"
@@ -441,4 +439,3 @@ public:
 	virtual ~Playground() {
 	}
 };
-#endif /* PLAYGROUND_H_ */

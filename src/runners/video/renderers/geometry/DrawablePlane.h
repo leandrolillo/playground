@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_DRAWABLEPLANE_H_
 
 #include<Geometry.h>
-#include "../../../runners/video/renderers/DefaultRenderer.h"
+#include "DefaultRenderer.h"
 
 class DrawablePlane: public Plane, public Drawable {
 public:

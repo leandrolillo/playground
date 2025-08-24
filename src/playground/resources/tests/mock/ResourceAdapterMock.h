@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../playground/resources/ResourceAdapter.h"
+#include "ResourceAdapter.h"
 
 class ResourceAdapterMock : public ResourceAdapter {
 	Resource *mockedLoadResult = null;

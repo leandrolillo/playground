@@ -9,8 +9,8 @@
 #define JPEGRESOURCEADAPTER_H_
 #include <jpeglib.h>
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/resources/ImageResource.h"
+#include "ResourceAdapter.h"
+#include "ImageResource.h"
 
 class JpegResourceAdapter: public ResourceAdapter {
 public:

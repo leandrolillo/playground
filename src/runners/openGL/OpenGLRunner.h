@@ -10,21 +10,21 @@
 
 #include <unistd.h>
 
-#include <SDL2/SDL.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/glext.h>
+#include "SDL3/SDL.h"
 
-#include "../Playground.h"
-#include "../runners/openGL/adapters/CubeMapResourceAdapter.h"
-#include "../runners/openGL/adapters/FragmentShaderResourceAdapter.h"
-#include "../runners/openGL/adapters/MeshResourceAdapter.h"
-#include "../runners/openGL/adapters/ShaderProgramResourceAdapter.h"
-#include "../runners/openGL/adapters/TextureResourceAdapter.h"
-#include "../runners/openGL/adapters/VertexArrayAdapter.h"
-#include "../runners/openGL/adapters/VertexShaderResourceAdapter.h"
-#include "../runners/video/adapters/HeightMapResourceAdapter.h"
-#include "../runners/video/VideoRunner.h"
+#include "Playground.h"
+#include "CubeMapResourceAdapter.h"
+#include "FragmentShaderResourceAdapter.h"
+#include "MeshResourceAdapter.h"
+#include "ShaderProgramResourceAdapter.h"
+#include "TextureResourceAdapter.h"
+#include "VertexArrayAdapter.h"
+#include "VertexShaderResourceAdapter.h"
+#include "HeightMapResourceAdapter.h"
+#include "VideoRunner.h"
 
 constexpr unsigned int DEPTH_TEST=GL_DEPTH_TEST;
 constexpr unsigned int CULL_FACE=GL_CULL_FACE;
@@ -43,7 +43,7 @@ constexpr unsigned int LINE_WIDTH=GL_LINE_WIDTH;
 	#define GL_MINOR_VERSION 0x821C
 #endif
 
-int playgroundEventFilter(void *context, SDL_Event *event);
+bool playgroundEventFilter(void *context, SDL_Event *event);
 
 class OpenGLRunner: public VideoRunner {
 private:
@@ -66,7 +66,7 @@ public:
     virtual ~OpenGLRunner() {
         SDL_HideWindow(window);
         logger->debug("HIding sdl window");
-        SDL_GL_DeleteContext(glcontext);
+        SDL_GL_DestroyContext(glcontext);
         logger->debug("Deleted opengl context");
         this->useProgramResource(null);
         logger->debug("Remove active shaders");
@@ -95,13 +95,13 @@ public:
 
         logger->debug("SDL initialized");
 
-        SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO);
+        SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 
-        this->window = SDL_CreateWindow("SDL2/OpenGL Demo", 0, 0, 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        this->window = SDL_CreateWindow("SDL2/OpenGL Demo", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
         logger->debug("SDL Window created");
 
 //        SDL_PumpEvents();
-//        SDL_SetRelativeMouseMode(SDL_TRUE);
+//        SDL_SetRelativeMouseMode(true);
         SDL_AddEventWatch(playgroundEventFilter, this);
 
         logger->debug("SDL event watch registered");
@@ -134,7 +134,7 @@ public:
         this->getContainer()->getResourceManager()->addResource(defaultTexture);
 
 
-        if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0) {
+        if (!SDL_Init(SDL_INIT_GAMEPAD)) {
             logger->error("SDL_Init Error: %s", SDL_GetError());
             return false;
         }
@@ -166,7 +166,7 @@ public:
 
         while (SDL_PollEvent(&windowEvent)) {
             switch (windowEvent.type) {
-                case SDL_QUIT:
+                case SDL_EVENT_QUIT:
                     return LoopResult::STOP;
             }
         }
@@ -178,52 +178,48 @@ public:
         SDL_GL_SwapWindow(window);
     }
 
-    virtual int processEvent(SDL_Event *event) {
+    virtual bool processEvent(SDL_Event *event) {
         switch (event->type) {
-            case SDL_WINDOWEVENT:
-                switch (event->window.event) {
-                    case SDL_WINDOWEVENT_RESIZED:
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    	SDL_SetWindowGrab(this->window, SDL_FALSE);
-                        logger->debug("WINDOW RESIZED to [%d, %d]", event->window.data2, event->window.data1);
-                        this->getContainer()->onResize(event->window.data2, event->window.data1);
-                        SDL_SetWindowGrab(this->window, SDL_TRUE);
-                        return 0;
-                }
-                break;
-            case SDL_KEYDOWN:
+            case SDL_EVENT_WINDOW_RESIZED:
+            case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+                SDL_SetWindowMouseGrab(this->window, false);
+                logger->debug("WINDOW RESIZED to [%d, %d]", event->window.data2, event->window.data1);
+                this->getContainer()->onResize(event->window.data2, event->window.data1);
+                SDL_SetWindowMouseGrab(this->window, true);
+                return true;
+            case SDL_EVENT_KEY_DOWN:
                 //SDL_Log("SDL_KEYDOWN %d", event->key.keysym.sym);
-                logger->verbose("KEYDOWN: %d, %d", event->key.keysym.sym, event->key.keysym.mod);
-                this->getContainer()->onKeyDown(event->key.keysym.sym, event->key.keysym.mod);
-                return 0;
-            case SDL_KEYUP:
+                logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.key);
+                this->getContainer()->onKeyDown(event->key.key, event->key.key);
+                return true;
+            case SDL_EVENT_KEY_UP:
                 //SDL_Log("SDL_KEYUP %d", event->key.keysym.sym);
-                logger->verbose("KEYUP: %d, %d", event->key.keysym.sym, event->key.keysym.mod);
-                this->getContainer()->onKeyUp(event->key.keysym.sym, event->key.keysym.mod);
-                return 0;
-            case SDL_MOUSEMOTION:
+                logger->verbose("KEYUP: %d, %d", event->key.key, event->key.mod);
+                this->getContainer()->onKeyUp(event->key.key, event->key.mod);
+                return true;
+            case SDL_EVENT_MOUSE_MOTION:
                 //SDL_Log("SDL_MOUSEMOTION (%d,%d) delta=(%d,%d)", event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel);
                 this->getContainer()->onMouseMove(event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel, event->motion.state);
                 logger->verbose("MOUSEMOVE: (%d, %d)", event->motion.xrel, event->motion.yrel);
-                return 0;
-            case SDL_MOUSEBUTTONDOWN:
+                return true;
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 //SDL_Log("SDL_MOUSEBUTTONDOWN %d", event->button.button);
                 logger->verbose("MOUSEBUTTONDOWN: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
                 this->getContainer()->onMouseButtonDown(event->button.button, event->button.x, event->button.y);
-                return 0;
-            case SDL_MOUSEBUTTONUP:
+                return true;
+            case SDL_EVENT_MOUSE_BUTTON_UP:
                 //SDL_Log("SDL_MOUSEBUTTONUP %d", event->button.button);
                 logger->verbose("MOUSEBUTTONUP: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
                 this->getContainer()->onMouseButtonUp(event->button.button, event->button.x, event->button.y);
-                return 0;
-            case SDL_MOUSEWHEEL:
+                return true;
+            case SDL_EVENT_MOUSE_WHEEL:
                 //SDL_Log("SDL_MOUSEWHEEL %d %d", event->wheel.direction, event->wheel.y);
                 logger->verbose("MOUSEWHEEL: %d", event->wheel.y);
                 this->getContainer()->onMouseWheel(event->wheel.y);
-                return 0;
+                return true;
         }
 
-        return 1;
+        return false;
     }
 
     unsigned long getPerformanceCounter() const override {
@@ -251,20 +247,20 @@ public:
                 this->getContainer()->stop();
                 break;
             case SDLK_F4:
-                if (keyModifier & KMOD_GUI) {
+                if (keyModifier & SDL_KMOD_GUI) {
                     this->getContainer()->stop();
                 }
                 break;
             case 'Q':
             case 'q':
 
-                if (keyModifier & KMOD_ALT) {
+                if (keyModifier & SDL_KMOD_ALT) {
                     this->getContainer()->stop();
                 }
                 break;
 
             case SDLK_RETURN:
-                if (keyModifier & KMOD_GUI) {
+                if (keyModifier & SDL_KMOD_GUI) {
                     this->setFullscreen(!this->getFullscreen());
                 }
                 break;
@@ -272,19 +268,15 @@ public:
     }
 
     bool setFullscreen(bool fullScreen) override {
-        if (VideoRunner::setFullscreen(fullScreen)) {
-            SDL_SetWindowFullscreen(this->window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        } else {
-            SDL_SetWindowFullscreen(this->window, 0);
-        }
+      SDL_SetWindowFullscreen(this->window, VideoRunner::setFullscreen(fullScreen));
 
-        int height = 0;
-        int width = 0;
-        SDL_GetWindowSize(window, &width, &height);
+      int height = 0;
+      int width = 0;
+      SDL_GetWindowSize(window, &width, &height);
 
-        this->getContainer()->onResize(height, width);
+      this->getContainer()->onResize(height, width);
 
-        return this->getFullscreen();
+      return this->getFullscreen();
     }
 
     virtual void resize(unsigned int height, unsigned int width) override {
@@ -467,7 +459,7 @@ public:
                 glEnable(GL_BLEND);
                 break;
             case(RELATIVE_MOUSE_MODE):
-                SDL_SetRelativeMouseMode(SDL_TRUE);
+                SDL_SetWindowRelativeMouseMode(this->window, true);
                 break;
         }
     }
@@ -484,7 +476,7 @@ public:
                 glDisable(GL_BLEND);
                 break;
             case(RELATIVE_MOUSE_MODE):
-                SDL_SetRelativeMouseMode(SDL_TRUE);
+                SDL_SetWindowRelativeMouseMode(this->window, true);
                 break;
         }
     }
@@ -617,7 +609,7 @@ protected:
         else if (typeString == "triangleFan")
             return GL_TRIANGLE_FAN;
         else
-            throw InvalidArgumentException("Invalid primitive type: [%s]", typeString.c_str());
+            throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
     }
 
   	virtual String toString() const override {
@@ -626,7 +618,7 @@ protected:
 
 };
 
-int playgroundEventFilter(void *context, SDL_Event *event) {
+bool playgroundEventFilter(void *context, SDL_Event *event) {
     OpenGLRunner *runner = (OpenGLRunner*) context;
     return runner->processEvent(event);
 }

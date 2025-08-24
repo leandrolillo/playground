@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_DRAWABLEAABB_H_
 
 #include<Geometry.h>
-#include "../../../runners/video/renderers/DefaultRenderer.h"
+#include "DefaultRenderer.h"
 
 class DrawableAABB: public AABB, public Drawable {
 public:

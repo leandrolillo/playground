@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_OPENGL_ADAPTERS_OPENGLRESOURCEADAPTER_H_
 
 #include <OpenGL/gl3.h>
-#include "../../../playground/resources/ResourceAdapter.h"
+#include "ResourceAdapter.h"
 
 class OpenGLResourceAdapter : public ResourceAdapter {
 protected:
@@ -67,8 +67,7 @@ protected:
         else if (typeString == "triangleFan")
             return GL_TRIANGLE_FAN;
         else
-            throw InvalidArgumentException("Invalid primitive type: [%s]",
-                    typeString.c_str());
+            throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
     }
 
     GLenum asShaderType(const String &mimeType) const {
@@ -81,7 +80,7 @@ protected:
     	} else if(mimeType == MimeTypes::GEOMETRYSHADER) {
     		return GL_FRAGMENT_SHADER;
     	} else {
-            throw InvalidArgumentException("Invalid primitive type: [%s]", mimeType.c_str());
+            throw std::invalid_argument("Invalid primitive type: [" + mimeType + "]");
     	}
     }
 
@@ -99,7 +98,7 @@ protected:
         } else if(faceName == "back") {
             return GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
         } else {
-            throw InvalidArgumentException("Invalid face name[%s]", faceName.c_str());
+            throw std::invalid_argument("Invalid face name[" + faceName + "]");
         }
     }
 

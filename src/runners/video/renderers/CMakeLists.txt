@@ -1,0 +1,2 @@
+add_subdirectory(geometry)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

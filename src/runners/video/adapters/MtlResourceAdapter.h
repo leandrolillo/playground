@@ -8,9 +8,10 @@
 #ifndef SRC_RUNNERS_VIDEO_ADAPTERS_MTLRESOURCEADAPTER_H_
 #define SRC_RUNNERS_VIDEO_ADAPTERS_MTLRESOURCEADAPTER_H_
 
-#include "../../../playground/parser/TextParser.h"
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/resources/MaterialResource.h"
+#include "TextParser.h"
+#include "ResourceAdapter.h"
+#include "MaterialResource.h"
+#include "MaterialCollection.h"
 
 class MtlResourceAdapter: public ResourceAdapter {
 public:

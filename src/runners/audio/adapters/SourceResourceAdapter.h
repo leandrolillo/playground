@@ -11,9 +11,9 @@
 #include "al.h"
 #include <set>
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/audio/resources/BufferResource.h"
-#include "../../runners/audio/resources/SourceResource.h"
+#include "ResourceAdapter.h"
+#include "BufferResource.h"
+#include "SourceResource.h"
 
 class SourceResourceAdapter: public ResourceAdapter {
 	public:

@@ -1,7 +1,7 @@
 #ifndef AUDIORESOURCE_H_
 #define AUDIORESOURCE_H_
 
-#include "../../Resource.h"
+#include "Resource.h"
 
 enum class AudioFormat {
 	MONO8 = 8,

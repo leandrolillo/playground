@@ -9,12 +9,12 @@
 #define SRC_RUNNERS_VIDEO_RENDERERS_DEFAULTRENDERER_H_
 
 #include<vector>
-#include "../../runners/video/camera/Camera.h"
-#include "../../runners/video/resources/LightResource.h"
-#include "../../runners/video/resources/MaterialResource.h"
-#include "../../runners/video/Renderer.h"
-#include "../../runners/video/SceneNode.h"
-#include "../../runners/video/VideoRunner.h"
+#include "Camera.h"
+#include "LightResource.h"
+#include "MaterialResource.h"
+#include "Renderer.h"
+#include "SceneNode.h"
+#include "VideoRunner.h"
 
 class WorldObject {
 protected:

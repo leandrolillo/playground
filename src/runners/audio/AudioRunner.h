@@ -9,11 +9,11 @@
 #define AUDIORUNNER_H_
 
 #include <Math3d.h>
-#include "../Playground.h"
-#include "../runners/audio/adapters/BufferResourceAdapter.h"
-#include "../runners/audio/adapters/OggResourceAdapter.h"
-#include "../runners/audio/adapters/SourceResourceAdapter.h"
-#include "../runners/audio/adapters/WavResourceAdapter.h"
+#include "Playground.h"
+#include "BufferResourceAdapter.h"
+#include "OggResourceAdapter.h"
+#include "SourceResourceAdapter.h"
+#include "WavResourceAdapter.h"
 
 #include "al.h"
 #include "alc.h"

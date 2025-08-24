@@ -11,8 +11,7 @@
 #include <Math3d.h>
 #include <vector>
 #include "JavaLike.h"
-#include "../playground/parser/ParsingException.h"
-#include "../playground/parser/TextParser.h"
+#include "TextParser.h"
 
 #define START_OBJECT "{"
 #define END_OBJECT "}"
@@ -49,7 +48,7 @@ class JsonParser : public TextParser
 		{
 			String token = fileParser.takeToken();
 			if(token != expectedValue) {
-				throw ParsingException("Expected %s, got [%s] at %s", name.c_str(), token.c_str(), fileParser.toString().c_str());
+				throw std::domain_error("Expected [" + name + "], got [" + token + "] at [" + fileParser.toString() + "]");
 			}
 
 			return token;

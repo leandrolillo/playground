@@ -9,7 +9,7 @@
 #define SRC_VIDEO_RENDERERS_RENDERABLE_H_
 
 #include<Geometry.h>
-#include "../../../runners/video/renderers/DefaultRenderer.h"
+#include "DefaultRenderer.h"
 
 class DrawableSphere : public Sphere, public Drawable {
 public:

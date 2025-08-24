@@ -11,8 +11,8 @@
 
 #include <unordered_map>
 
-#include "../../Resource.h"
-#include "../../runners/video/resources/MeshResource.h"
+#include "Resource.h"
+#include "MeshResource.h"
 
 class MeshCollection : public Resource {
 private:

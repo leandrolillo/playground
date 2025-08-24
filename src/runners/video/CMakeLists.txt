@@ -1,23 +1,17 @@
-FetchContent_Declare(
-    physics
-    GIT_REPOSITORY https://github.com/leandrolillo/physics.git
-    GIT_TAG master
-    GIT_SHALLOW TRUE)
-FetchContent_MakeAvailable(physics)
+#library (videoRunner contains video abstract base class to be inherited by opengl/direct3d in combination with platform implementations)
+set(LIBRARY_NAME videoRunner)
+add_library(${LIBRARY_NAME} INTERFACE)
 
-
+#sources
 add_subdirectory(adapters)
 add_subdirectory(camera)
 add_subdirectory(renderers)
 add_subdirectory(resources)
 
-target_include_directories(video INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/resources ${CMAKE_CURRENT_SOURCE_DIR}/adapters ${CMAKE_CURRENT_SOURCE_DIR}/renderers ${CMAKE_CURRENT_SOURCE_DIR}/camera ${CMAKE_CURRENT_SOURCE_DIR}/geometry)
-target_link_libraries(${LIBRARY_NAME} INTERFACE playground geometry)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 
 #Dependencies: 
-#this needs to be present in every CmakeList that requires files from playground/cmake
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
-
 # LibJpeg
 find_package(JPEG REQUIRED)
 target_link_libraries(${LIBRARY_NAME} INTERFACE ${JPEG_LIBRARY})

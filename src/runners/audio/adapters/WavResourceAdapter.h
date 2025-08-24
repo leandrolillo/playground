@@ -8,7 +8,7 @@
 #ifndef WAVRESOURCEADAPTER_H_
 #define WAVRESOURCEADAPTER_H_
 
-#include "../../../playground/resources/ResourceAdapter.h"
+#include "ResourceAdapter.h"
 
 constexpr unsigned int WAV_BUFFER_SIZE = 4096 * 4;
 

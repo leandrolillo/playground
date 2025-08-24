@@ -1,26 +1,34 @@
+#Library
 set(LIBRARY_NAME audioRunner)
 add_library(${LIBRARY_NAME} INTERFACE)
 
-add_subdirectory(adapters)
+#sources
 add_subdirectory(resources)
+add_subdirectory(adapters)
 
 target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${LIBRARY_NAME} INTERFACE playground )
+target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 
 #dependencies
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+#ogg
+FetchContent_Declare(
+    ogg
+    GIT_REPOSITORY https://gitlab.xiph.org/xiph/ogg.git
+    GIT_TAG main
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(ogg)
+target_link_libraries(${LIBRARY_NAME} INTERFACE ogg)
 
-#OpenAL
+#vorbis
+FetchContent_Declare(
+    vorbis
+    GIT_REPOSITORY https://gitlab.xiph.org/xiph/vorbis.git
+    GIT_TAG main
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(vorbis)
+target_link_libraries(${LIBRARY_NAME} INTERFACE vorbis)
+
+#openAL
 find_package(OpenAL REQUIRED)
-target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${OPENAL_INCLUDE_DIR})
+target_include_directories(${LIBRARY_NAME} INTERFACE ${OPENAL_INCLUDE_DIR})
 target_link_libraries(${LIBRARY_NAME} INTERFACE ${OPENAL_LIBRARY})
-
-#Ogg
-find_package(Ogg REQUIRED)
-target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${OGG_INCLUDE_DIRS})
-target_link_libraries(${LIBRARY_NAME} INTERFACE ${OGG_LIBRARIES})
-
-#Vorbis
-find_package(Vorbis REQUIRED)
-target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR} ${VORBIS_INCLUDE_DIRS})
-target_link_libraries(${LIBRARY_NAME} INTERFACE ${VORBIS_LIBRARIES})

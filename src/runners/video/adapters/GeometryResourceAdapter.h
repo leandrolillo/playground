@@ -7,12 +7,11 @@
 
 #ifndef GEOMETRYRESOURCEADAPTER_H_
 #define GEOMETRYRESOURCEADAPTER_H_
-#include "../../../playground/exceptions/InvalidArgumentException.h"
-#include "../../../playground/parser/JsonParser.h"
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/adapters/normalGenerators/NormalGenerator.h"
-#include "../../runners/video/resources/GeometryCollection.h"
-#include "../../runners/video/resources/GeometryResource.h"
+#include "JsonParser.h"
+#include "ResourceAdapter.h"
+#include "NormalGenerator.h"
+#include "GeometryCollection.h"
+#include "GeometryResource.h"
 
 
 class GeometryResourceAdapter: public ResourceAdapter {

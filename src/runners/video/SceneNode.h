@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../runners/video/resources/MeshResource.h"
+#include "MeshResource.h"
 
 class SceneNode {
 private:

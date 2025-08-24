@@ -9,7 +9,7 @@
 #define SHADERPROGRAMRESOURCE_H_
 
 
-#include "../../runners/video/resources/ShaderResource.h"
+#include "ShaderResource.h"
 
 class ShaderProgramResource : public Resource
 {

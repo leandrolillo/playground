@@ -9,11 +9,11 @@
 #define BUFFERRESOURCEADAPTER_H_
 
 #include "al.h"
-#include "../resources/BufferResource.h"
+#include "BufferResource.h"
 #include <set>
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/audio/resources/AudioResource.h"
+#include "ResourceAdapter.h"
+#include "AudioResource.h"
 
 class BufferResourceAdapter: public ResourceAdapter {
 public:

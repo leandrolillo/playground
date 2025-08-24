@@ -10,9 +10,9 @@
 
 #include <set>
 
-#include "../../runners/openGL/adapters/OpenGLResourceAdapter.h"
-#include "../../runners/video/resources/ImageResource.h"
-#include "../../runners/video/resources/TextureResource.h"
+#include "OpenGLResourceAdapter.h"
+#include "ImageResource.h"
+#include "TextureResource.h"
 
 class TextureResourceAdapter: public OpenGLResourceAdapter {
 	public:

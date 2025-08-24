@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_OPENGL_ADAPTERS_FRAGMENTSHADERRESOURCEADAPTER_H_
 
 
-#include "../../runners/openGL/adapters/ShaderResourceAdapter.h"
+#include "ShaderResourceAdapter.h"
 
 class FragmentShaderResourceAdapter : public ShaderResourceAdapter {
 public:

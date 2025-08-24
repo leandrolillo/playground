@@ -8,10 +8,10 @@
 #ifndef SRC_RUNNERS_VIDEO_RENDERERS_TERRAINRENDERER_H_
 #define SRC_RUNNERS_VIDEO_RENDERERS_TERRAINRENDERER_H_
 
-#include "../../runners/video/resources/LightResource.h"
-#include "../../runners/video/resources/ShaderProgramResource.h"
-#include "../../runners/video/resources/TerrainResource.h"
-#include "../../runners/video/VideoRunner.h"
+#include "LightResource.h"
+#include "ShaderProgramResource.h"
+#include "TerrainResource.h"
+#include "VideoRunner.h"
 
 class TerrainTile {
 protected:

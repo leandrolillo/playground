@@ -9,8 +9,8 @@
 #define NORMALGENERATOR_H_
 
 #include <MathUtilities.h>
-#include "../../../Logger.h"
-#include "../../../runners/video/resources/GeometryResource.h"
+#include "Logger.h"
+#include "GeometryResource.h"
 
 
 class NormalGenerator

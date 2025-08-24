@@ -9,7 +9,7 @@
 #define IMAGERESOURCE_H_
 
 #include <Math3d.h>
-#include "../../Resource.h"
+#include "Resource.h"
 
 class ImageResource : public Resource
 {

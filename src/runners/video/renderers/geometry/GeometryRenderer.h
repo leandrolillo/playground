@@ -10,7 +10,7 @@
 
 #include <ParticleManager.h>
 #include <Geometry.h>
-#include "../../../runners/video/renderers/DefaultRenderer.h"
+#include "DefaultRenderer.h"
 
 class GeometryRenderer {
 public:

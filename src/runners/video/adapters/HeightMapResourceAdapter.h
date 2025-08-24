@@ -9,9 +9,9 @@
 #define SRC_OPENGL_ADAPTERS_HEIGHTMAPRESOURCEADAPTER_H_
 
 #include<Math3d.h>
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/video/resources/ImageResource.h"
-#include "../resources/HeightMapResource.h"
+#include "ResourceAdapter.h"
+#include "ImageResource.h"
+#include "HeightMapResource.h"
 
 class HeightMapResourceAdapter : public ResourceAdapter {
 public:

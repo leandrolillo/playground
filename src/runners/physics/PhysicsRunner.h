@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_
 
 #include<ParticleManager.h>
-#include "../Playground.h"
+#include "Playground.h"
 
 class PhysicsRunner: public PlaygroundRunner {
 	Logger *logger = LoggerFactory::getLogger("physics/PhysicsRunner");

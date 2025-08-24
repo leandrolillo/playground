@@ -8,10 +8,10 @@
 #ifndef SRC_RUNNERS_VIDEO_RESOURCES_MESHRESOURCE_H_
 #define SRC_RUNNERS_VIDEO_RESOURCES_MESHRESOURCE_H_
 
-#include "../../Resource.h"
-#include "../../runners/video/resources/MaterialResource.h"
-#include "../../runners/video/resources/TextureResource.h"
-#include "../../runners/video/resources/VertexArrayResource.h"
+#include "Resource.h"
+#include "MaterialResource.h"
+#include "TextureResource.h"
+#include "VertexArrayResource.h"
 
 class MeshResource : public Resource
 {

@@ -8,9 +8,9 @@
 #ifndef SRC_RUNNERS_VIDEO_RENDERER_H_
 #define SRC_RUNNERS_VIDEO_RENDERER_H_
 
-#include "../runners/video/camera/Camera.h"
-#include "../runners/video/resources/ShaderProgramResource.h"
-#include "../runners/video/VideoRunner.h"
+#include "Camera.h"
+#include "ShaderProgramResource.h"
+#include "VideoRunner.h"
 
 class Renderer {
 protected:

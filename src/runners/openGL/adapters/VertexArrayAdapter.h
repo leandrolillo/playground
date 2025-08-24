@@ -9,9 +9,9 @@
 #define VERTEXBUFFERADAPTER_H_
 #include <set>
 
-#include "../../runners/openGL/adapters/OpenGLResourceAdapter.h"
-#include "../../runners/openGL/OpenGLUtilities.h"
-#include "../../runners/video/resources/GeometryCollection.h"
+#include "OpenGLResourceAdapter.h"
+#include "OpenGLUtilities.h"
+#include "GeometryCollection.h"
 
 
 class VertexArrayResourceAdapter: public OpenGLResourceAdapter {

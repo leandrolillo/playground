@@ -9,8 +9,8 @@
 #define SRC_RUNNERS_OPENGL_OPENGLUTILITIES_H_
 
 #include <OpenGL/gl3.h>
-#include "../runners/video/resources/GeometryResource.h"
-#include "../runners/video/resources/VertexArrayResource.h"
+#include "GeometryResource.h"
+#include "VertexArrayResource.h"
 
 class OpenGLUtilites {
 protected:
@@ -146,8 +146,7 @@ protected:
         } else if (typeString == "triangleFan") {
             return GL_TRIANGLE_FAN;
         } else {
-            throw InvalidArgumentException("Invalid primitive type: [%s]",
-                    typeString.c_str());
+            throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
         }
     }
 

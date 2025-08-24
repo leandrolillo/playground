@@ -9,7 +9,7 @@
 #define SOURCE_H_
 
 #include <Math3d.h>
-#include "../../Resource.h"
+#include "Resource.h"
 
 class Source: public Resource {
 	private:

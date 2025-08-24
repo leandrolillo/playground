@@ -11,8 +11,8 @@
 #include <Math3d.h>
 #include <vector>
 
-#include "../../Resource.h"
-#include "../../runners/video/resources/MaterialResource.h"
+#include "Resource.h"
+#include "MaterialResource.h"
 
 /**
  * Holds "Geometric" (not true, it also has colors and texture coordinates) data. It does not send anything to the gcp.

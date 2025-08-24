@@ -8,8 +8,11 @@
 #ifndef SRC_RUNNERS_OPENGL_ADAPTERS_MESHRESOURCEADAPTER_H_
 #define SRC_RUNNERS_OPENGL_ADAPTERS_MESHRESOURCEADAPTER_H_
 
-#include "../../runners/openGL/adapters/OpenGLResourceAdapter.h"
-#include "../../runners/video/resources/MeshResource.h"
+#include "OpenGLResourceAdapter.h"
+#include "GeometryResource.h"
+#include "GeometryCollection.h"
+#include "MeshResource.h"
+#include "OpenGLUtilities.h"
 
 class MeshResourceAdapter: public OpenGLResourceAdapter {
 public:

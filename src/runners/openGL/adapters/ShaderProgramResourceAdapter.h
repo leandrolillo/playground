@@ -19,9 +19,9 @@
 #include <map>
 #include <string>
 
-#include "../../../playground/parser/JsonParser.h"
-#include "../../runners/openGL/adapters/OpenGLResourceAdapter.h"
-#include "../../runners/video/resources/ShaderProgramResource.h"
+#include "JsonParser.h"
+#include "OpenGLResourceAdapter.h"
+#include "ShaderProgramResource.h"
 
 
 class ShaderProgramResourceAdapter: public OpenGLResourceAdapter {

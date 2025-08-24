@@ -8,7 +8,7 @@
 #ifndef TEXTURERESOURCE_H_
 #define TEXTURERESOURCE_H_
 
-#include "../../Resource.h"
+#include "Resource.h"
 
 class TextureResource : public Resource
 {

@@ -8,7 +8,7 @@
 #ifndef SRC_RUNNERS_VIDEO_RESOURCES_CUBEMAPRESOURCE_H_
 #define SRC_RUNNERS_VIDEO_RESOURCES_CUBEMAPRESOURCE_H_
 
-#include "../../runners/video/resources/TextureResource.h"
+#include "TextureResource.h"
 
 
 class CubeMapResource : public TextureResource {

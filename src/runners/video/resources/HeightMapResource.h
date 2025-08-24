@@ -9,10 +9,9 @@
 #define SRC_RUNNERS_VIDEO_RESOURCES_HEIGHTMAPRESOURCE_H_
 
 #include <Math3d.h>
-#include "../../../playground/exceptions/InvalidArgumentException.h"
-#include "../../Logger.h"
-#include "../../Resource.h"
-#include "../../runners/video/resources/ImageResource.h"
+#include "Logger.h"
+#include "Resource.h"
+#include "ImageResource.h"
 
 constexpr real one_over_max_color = 0.000000059604645; // 1.0 / (256.0 * 256.0 * 256.0)
 
@@ -29,7 +28,7 @@ public:
      */
     HeightMapResource(ImageResource *heightMap, vector voxelSize) : Resource(0, MimeTypes::HEIGHTMAP) {
     	if(heightMap == null) {
-    		throw InvalidArgumentException("Heightmap can not be null");
+    		throw std::invalid_argument("Heightmap can not be null");
     	}
         this->heightMap = heightMap;
         this->voxelSize = voxelSize;

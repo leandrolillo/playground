@@ -9,7 +9,7 @@
 #define SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_DRAWABLEHIERARCHY_H_
 
 #include<Geometry.h>
-#include "../../../runners/video/renderers/DefaultRenderer.h"
+#include "DefaultRenderer.h"
 
 class DrawableHierarchy: public HierarchicalGeometry, public Drawable {
     MaterialResource defaultMaterial = {vector(0.3, 0.3, 0.3), vector(0.3, 0.3, 0.3), vector(0.3, 0.3, 0.3), 1.0, 0.3};

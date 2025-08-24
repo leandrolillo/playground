@@ -8,13 +8,13 @@
 #ifndef OGGRESOURCEADAPTER_H_ //disabled momentarily. Please try again later.
 #define OGGRESOURCEADAPTER_H_
 
-#include <ogg.h>
-#include <codec.h>
-#include <vorbisfile.h>
+#include <ogg/ogg.h>
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
 #include <stdlib.h>
 
-#include "../../../playground/resources/ResourceAdapter.h"
-#include "../../runners/audio/resources/AudioResource.h"
+#include "ResourceAdapter.h"
+#include "AudioResource.h"
 
 class OggResourceAdapter : public ResourceAdapter {
 	private:

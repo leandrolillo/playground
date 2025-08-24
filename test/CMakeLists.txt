@@ -8,10 +8,10 @@ list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras) #Enable catch2 / ctes
 
 include(Catch)
 
-set(TEST_MAIN "${LIBRARY_NAME}_unit_tests")
+set(TESTS "playground_unit_tests")
 
-add_executable(${TEST_MAIN} tests.cpp)
-target_include_directories(${TEST_MAIN} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${TEST_MAIN} PUBLIC ${LIBRARY_NAME} Catch2::Catch2WithMain)
+add_executable(${TESTS} playgroundTests.cpp audioRunnerTests.cpp) #openGLRunnerTests.cpp physicsRunnerTests.cpp)
+target_include_directories(${TESTS} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${TESTS} PUBLIC Catch2::Catch2WithMain playground audioRunner openGLRunner physicsRunner)
 
-catch_discover_tests(${TEST_MAIN})
+catch_discover_tests(${TESTS})
