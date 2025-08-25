@@ -281,10 +281,10 @@ public:
         va_end(args);
 
         //This does not seem to be very reliable
-        if (errno != 0 && strlen(strerror(errno)) > 0) {
-            printMessage(LogLevel::ERROR, StringFormatter::format("errno [%d]: [%s]", errno, strerror(errno)).c_str(), &args);
-            errno = 0;
-        }
+//        if (errno != 0 && strlen(strerror(errno)) > 0) {
+//            printMessage(LogLevel::ERROR, StringFormatter::format("errno [%d]: [%s]", errno, strerror(errno)).c_str(), &args);
+//            errno = 0;
+//        }
     }
 
     void warn(const char *formato, ...) {

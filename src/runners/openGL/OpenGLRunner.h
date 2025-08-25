@@ -88,7 +88,7 @@ public:
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new FragmentShaderResourceAdapter()));
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ShaderProgramResourceAdapter()));
 
-        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        if (!SDL_Init(SDL_INIT_VIDEO)) {
             logger->error("SDL_Init Error: %s", SDL_GetError());
             return false;
         }
