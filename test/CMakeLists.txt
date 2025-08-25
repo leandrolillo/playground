@@ -10,7 +10,7 @@ include(Catch)
 
 set(TESTS "playground_unit_tests")
 
-add_executable(${TESTS} playgroundTests.cpp audioRunnerTests.cpp videoRunnerTests.cpp openGLRunnerTests.cpp physicsRunnerTests.cpp)
+add_executable(${TESTS} playgroundTests.cpp audioRunnerTests.cpp openGLRunnerTests.cpp physicsRunnerTests.cpp)
 target_include_directories(${TESTS} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${TESTS} PUBLIC Catch2::Catch2WithMain playground audioRunner openGLRunner physicsRunner)
 
