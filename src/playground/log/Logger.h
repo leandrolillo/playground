@@ -134,7 +134,7 @@ protected:
                     if (fileYear != dateTime->tm_year || fileDay != dateTime->tm_yday) {
                         printf("Log file was NOT created today\n");
                         char newfileName[256];
-                        sprintf(newfileName, "%s.%s", getFileName(), textBuffer);
+                        snprintf(newfileName, sizeof(newfileName), "%s.%s", getFileName(), textBuffer);
                         printf("Renaming old log file to [%s]\n", newfileName);
 
                         if (rename(getFileName(), newfileName)) {
