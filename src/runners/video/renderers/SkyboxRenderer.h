@@ -11,6 +11,7 @@
 #include "CubeMapResource.h"
 #include "ShaderProgramResource.h"
 #include "VideoRunner.h"
+#include "Renderer.h"
 
 class SkyboxRenderer: public Renderer {
 private:
