@@ -20,15 +20,18 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG release-3.2.20
     GIT_SHALLOW TRUE
-    OVERRIDE_FIND_PACKAGE)
-    
+    OVERRIDE_FIND_PACKAGE)    
     
 set(BUILD_SHARED_LIBS FALSE)
 set(SDL_AUDIO            OFF)
-#set(SDL_RENDER           OFF)
+set(SDL_VIDEO            ON)
+set(SDL_RENDER           OFF)
+set(SDL_RENDER_GPU       OFF)
 set(SDL_GPU              OFF)
+set(SDL_OPENGL           ON)
 set(SDL_CAMERA           OFF)
-set(SDL_JOYSTICK         OFF)
+set(SDL_JOYSTICK         ON)
+set(SDL_VIRTUAL_JOYSTICK OFF)
 set(SDL_HAPTIC           OFF)
 set(SDL_HIDAPI           OFF)
 set(SDL_POWER            OFF)
@@ -39,8 +42,6 @@ set(SDL_DUMMYAUDIO       OFF)
 set(SDL_DUMMYCAMERA      OFF)
 set(SDL_DUMMYVIDEO       OFF)
 set(SDL_OFFSCREEN        OFF)
-set(SDL_RENDER_GPU       OFF)
-set(SDL_VIRTUAL_JOYSTICK OFF)
 
 FetchContent_MakeAvailable(SDL)
 

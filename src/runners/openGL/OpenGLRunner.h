@@ -89,7 +89,7 @@ public:
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ShaderProgramResourceAdapter()));
 
         if (!SDL_Init(SDL_INIT_VIDEO)) {
-            logger->error("SDL_Init Error: %s", SDL_GetError());
+            logger->error("SDL_Init Error: %s", SDL_GetError() == null ? "": SDL_GetError());
             return false;
         }
 
