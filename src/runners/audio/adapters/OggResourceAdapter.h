@@ -33,7 +33,7 @@ class OggResourceAdapter : public ResourceAdapter {
 			vorbis_comment *vorbisComment;
 
 			if(ov_open(request.getFileParser().getStream(), &oggStream, NULL, 0)  < 0) {
-				logger->error("Error opening ogg stream [%s]", request.getFilePath().c_str());
+				logger->error("Error opening ogg stream [%s] - file not found or not a valid ogg", Paths::absolute(request.getFilePath()).c_str());
 				return;
 			}
 

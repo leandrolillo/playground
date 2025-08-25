@@ -9,6 +9,7 @@
 #define SRC_PLAYGROUND_RESOURCES_PATHS_H_
 
 #include <sys/stat.h>
+#include <stdio.h>
 #include "JavaLike.h"
 #include "StringUtils.h"
 
@@ -35,6 +36,14 @@ public:
 		} else {
 			return Paths::add(Paths::getDirname(prefix), postFix);
 		}
+	}
+
+	static String absolute(const String &relative) {
+	  char resolvedPath[PATH_MAX];
+	  realpath(relative.c_str(), resolvedPath);
+
+
+	  return String(resolvedPath);
 	}
 
 	/**

@@ -71,7 +71,7 @@ make
 
 #todo: maybe add a target as parameter
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-	make test
+	ctest --output-on-failure
 fi
 
 popd > /dev/null

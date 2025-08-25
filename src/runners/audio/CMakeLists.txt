@@ -14,7 +14,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 FetchContent_Declare(
     Ogg
     GIT_REPOSITORY https://gitlab.xiph.org/xiph/ogg.git
-    GIT_TAG main
+    GIT_TAG v1.3.6
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Ogg)
 target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
@@ -23,10 +23,10 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
 FetchContent_Declare(
     Vorbis
     GIT_REPOSITORY https://gitlab.xiph.org/xiph/vorbis.git
-    GIT_TAG main
+    GIT_TAG v1.3.7
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Vorbis)
-target_link_libraries(${LIBRARY_NAME} INTERFACE Vorbis::vorbis)
+target_link_libraries(${LIBRARY_NAME} INTERFACE vorbis vorbisfile)
 
 #openAL
 find_package(OpenAL REQUIRED)
