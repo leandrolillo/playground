@@ -3,6 +3,7 @@
 
 #include <Math3d.h>
 #include "Resource.h"
+#include "StringUtils.h"
 
 /**
  * Should this be a resource?

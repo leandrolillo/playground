@@ -12,10 +12,11 @@
 #include "Logger.h"
 #include "Resource.h"
 #include "ImageResource.h"
+#include "Geometry.h"
 
 constexpr real one_over_max_color = 0.000000059604645; // 1.0 / (256.0 * 256.0 * 256.0)
 
-class HeightMapResource: public Resource {
+class HeightMapResource: public Resource, HeightMap {
 private:
     Logger *logger = LoggerFactory::getLogger("video/HeightMapResource");
     vector voxelSize;

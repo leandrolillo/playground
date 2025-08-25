@@ -21,3 +21,12 @@ target_include_directories(${LIBRARY_NAME} INTERFACE ${JPEG_INCLUDE_DIR})
 find_package(PNG REQUIRED)
 target_link_libraries(${LIBRARY_NAME} INTERFACE ${PNG_LIBRARY})
 target_include_directories(${LIBRARY_NAME} INTERFACE ${PNG_INCLUDE_DIR})
+
+FetchContent_Declare(
+    geometry
+    GIT_REPOSITORY https://github.com/leandrolillo/geometry.git
+    GIT_TAG master
+    GIT_SHALLOW TRUE)
+FetchContent_MakeAvailable(geometry)
+
+target_link_libraries(${LIBRARY_NAME} INTERFACE geometry)
