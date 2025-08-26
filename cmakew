@@ -6,6 +6,7 @@ help() {
   echo "| Usage: $(basename $0) [OPTIONS] Path-to-CMakeLists" >&2
   echo "| Options: " >&2
   echo "|   -c clean" >&2
+  echo "|   -d debug" >&2
   echo "|   -t test" >&2
   echo "|   -w working folder - defaults to 'build'" >&2
   echo "|" >&2
@@ -18,12 +19,14 @@ parseInputs() {
   inputs_parameters_working_folder="build"
   inputs_parameters_clean="false"
   inputs_parameters_test="false"
+  inputs_parameters_debug="false"
 
-  while getopts 'ctw:' opt; do
+  while getopts 'cdtw:' opt; do
     case "$opt" in
       c) inputs_parameters_clean="true";;
-   	  t) inputs_parameters_test="true";;
-  	  w) inputs_parameters_working_folder="${OPTARG}";;
+      d) inputs_parameters_debug="true";;
+      t) inputs_parameters_test="true";;
+      w) inputs_parameters_working_folder="${OPTARG}";;
       :)
         echo -e "option requires an argument.\n$(help)"
         exit 1
@@ -51,6 +54,7 @@ parseInputs() {
   echo "| target CMakeFile.txt path [${inputs_parameters_path}]" >&2
   echo "| working folder [${inputs_parameters_working_folder}]" >&2
   echo "| clean [${inputs_parameters_clean}]" >&2
+  echo "| debug [${inputs_parameters_debug}]" >&2
   echo "| test [${inputs_parameters_test}]" >&2
 
 }
@@ -61,17 +65,19 @@ parseInputs "$@"
 
 pushd ${inputs_parameters_path} > /dev/null
 if [[ "${inputs_parameters_clean}" == "true" ]]; then
-	rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
+  rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
 fi
+
+options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug" || echo "")
 
 mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
-cmake ..
+cmake ${options} ..
 make 
 
 #todo: maybe add a target as parameter
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-	ctest --output-on-failure
+  ctest --output-on-failure
 fi
 
 popd > /dev/null

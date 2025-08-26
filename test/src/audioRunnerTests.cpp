@@ -6,14 +6,18 @@
 TEST_CASE("Audio runner Test case")
 {
 	AudioRunner runner;
-	OggResourceAdapter resourceAdapter;
+	REQUIRE(1 == 1);
+}
 
+TEST_CASE("Ogg Resource Adapter Test case")
+{
+  OggResourceAdapter resourceAdapter;
 
-	ResourceManagerMock resourceManager("");
-	ResourceLoadRequest request("resources/background.ogg");
-	ResourceLoadResponse response(request, resourceManager);
+  ResourceManagerMock resourceManager("");
+  ResourceLoadRequest request("resources/background.ogg");
+  ResourceLoadResponse response(request, resourceManager);
 
-	resourceAdapter.load(request, response);
+  resourceAdapter.load(request, response);
 
-	REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::AUDIO));
+  REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::AUDIO));
 }

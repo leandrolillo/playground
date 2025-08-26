@@ -11,7 +11,6 @@
 #include "Paths.h"
 #include "Resource.h"
 #include "ResourceAdapter.h"
-#include "ResourceLoadRequest.h"
 
 /**
  * Comparator to enable sets of unique_ptr<ResourceAdapter>
@@ -125,13 +124,17 @@ public:
 
 	Resource *addResource(Resource *resource) {
 		if(resource != null) {
-			String key = getCacheKey(*resource);
-			if(!key.empty()) {
-				if(resources.find(resource) == resources.end()) {
-					resources.insert(std::unique_ptr<Resource>(resource));
-				}
-				resourcesCache[key] = resource;
-			}
+		  if(resource->getUri().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
+		    logger->error("ResourceManager: Could not add [%s] - uri and mimeType are required", resource->toString().c_str());
+		  } else {
+        String key = getCacheKey(*resource);
+        if(!key.empty()) {
+          if(resources.find(resource) == resources.end()) {
+            resources.insert(std::unique_ptr<Resource>(resource));
+          }
+          resourcesCache[key] = resource;
+        }
+		  }
 		}
 
 		return resource;

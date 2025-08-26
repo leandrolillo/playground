@@ -100,7 +100,7 @@ class PngResourceAdapter : public ResourceAdapter {
 			if ((row_pointers = new png_bytep[height]) == null) {
 				png_destroy_read_struct(&png_ptr, &info_ptr, null);
 				logger->error("Could not create row pointers: out of memory");
-				delete image_data;
+				delete [] image_data;
 				return;
 			}
 
@@ -117,7 +117,10 @@ class PngResourceAdapter : public ResourceAdapter {
 
 			unsigned long wimage_rowbytes = ((4 * width + 3L) >> 2) << 2;
 
-			if (!(pBitmap = new unsigned char[(wimage_rowbytes * height)])) {
+			ImageResource *resource = new ImageResource();
+      pBitmap = resource->resize(height, width, bit_depth, wimage_rowbytes * height);
+
+			if (!pBitmap) {
 				logger->error("could not create bitmap pointer: out of memory");
 				return;
 			}
@@ -145,12 +148,6 @@ class PngResourceAdapter : public ResourceAdapter {
 
 			bit_depth = 32;
 			delete image_data;
-
-			ImageResource *resource = new ImageResource(0, request.getOutputMimeType());
-			resource->setAlto(height);
-			resource->setAncho(width);
-			resource->setBpp(bit_depth);
-			resource->setData(pBitmap);
 
 			response.addResource(resource);
 		}

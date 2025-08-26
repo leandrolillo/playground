@@ -24,13 +24,16 @@ private:
 	std::set<String> labels;
 
 public:
-	Resource(unsigned long id, const String &mimeType) {
+	Resource(unsigned long id, const String &mimeType) : mimeType(mimeType) {
 		setId(id);
-		setMimeType(mimeType);
 	}
 
-    /* Not required by this class, but saves work to children classes if they need to implement rule of five/copy and swap*/
-    /*friend*/ static void swap(Resource &first, Resource &second)
+  Resource(const String &mimeType) : Resource(0, mimeType)  {
+  }
+
+  /* Not required by this class, but saves work to children classes if they need to implement rule of five/copy and swap*/
+  /*friend*/
+  static void swap(Resource &first, Resource &second)
 	{
 		// enable ADL (not necessary in our case, but good practice)
 		using std::swap;

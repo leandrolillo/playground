@@ -26,7 +26,7 @@ public:
 	}
 
 	virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
-		ImageResource *resource = new ImageResource(0, "image/tga");
+		ImageResource *resource = new ImageResource();
 
 		struct tgaHeader {
 			char id_length;
@@ -75,14 +75,8 @@ public:
 				return;
 			}
 
-		resource->setAncho(le_short(header.width));
-		resource->setAlto(le_short(header.height));
-		resource->setBpp(header.bits_per_pixel >> 3);
-
-		unsigned int size = resource->getAncho() * resource->getAlto() * resource->getBpp();
-		resource->setData(new char[size]);
-
-		if (request.getFileParser().read(resource->getData(), 1, size) != size) {
+		resource->resize(le_short(header.height), le_short(header.width), header.bits_per_pixel >> 3);
+		if (request.getFileParser().read(resource->getData(), 1, resource->getBufferSize()) != resource->getBufferSize()) {
 			logger->error("%s has incomplete image\n",
 					request.getFilePath().c_str());
 			dispose(resource);

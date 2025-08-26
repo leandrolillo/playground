@@ -10,6 +10,7 @@
 
 #include<Math3d.h>
 #include "Geometry.h"
+#include "Logger.h"
 
 class Camera {
 protected:

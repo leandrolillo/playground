@@ -35,13 +35,8 @@ public:
 		JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo,
 				JPOOL_IMAGE, row_stride, 1);
 
-		ImageResource *resource = new ImageResource(0, request.getOutputMimeType());
-		resource->setAlto(cinfo.output_height);
-		resource->setAncho(cinfo.output_width);
-		resource->setBpp(cinfo.output_components);
-		resource->setData(
-				new char[resource->getAncho() * resource->getAlto()
-						* resource->getBpp()]);
+		ImageResource *resource = new ImageResource();
+		resource->resize(cinfo.output_height, cinfo.output_width, cinfo.output_components);
 
 		while (cinfo.output_scanline < cinfo.output_height) {
 			/* jpeg_read_scanlines expects an array of pointers to scanlines.
@@ -53,7 +48,7 @@ public:
 			//put_scanline_someplace(buffer[0], row_stride);
 		}
 
-		//TODO: Translate cinfo into a resource
+		//TODO: Translate cinfo into a resource -- this does not work without this
 
 		jpeg_finish_decompress(&cinfo);
 

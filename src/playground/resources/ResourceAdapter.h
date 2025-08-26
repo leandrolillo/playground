@@ -45,6 +45,7 @@ public:
 	}
 
 
+	//TODO: Maybe this should be expanded for handling logic here instead of in resource manager - for example checking request has mimetype and matches the output of the adapter, there's a uri, etc.
 	virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const = 0;
 	virtual void dispose(Resource *resource) const {
 		if(resource != null && logger != null) {
