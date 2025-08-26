@@ -1,10 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "OpenGlRunner.h"
+#include "OpenGLRunner.h"
 
-TEST_CASE("GL Runner Test case")
+TEST_CASE("OpenGLRunner Test case")
 {
-	OpenGLRunner runner();
+	OpenGLRunner runner;
 
 	REQUIRE(1 == 1);
 

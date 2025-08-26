@@ -10,6 +10,7 @@
 
 #include <unistd.h>
 
+#define GL_SILENCE_DEPRECATION //hide opengl deprecated on osx warnings
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/glext.h>
@@ -64,16 +65,20 @@ public:
     }
 
     virtual ~OpenGLRunner() {
+      if(window != null) {
         SDL_HideWindow(window);
         logger->debug("HIding sdl window");
-        SDL_GL_DestroyContext(glcontext);
-        logger->debug("Deleted opengl context");
+        if(glcontext != null) {
+          SDL_GL_DestroyContext(glcontext);
+          logger->debug("Deleted opengl context");
+        }
         this->useProgramResource(null);
         logger->debug("Remove active shaders");
         SDL_DestroyWindow(window);
         logger->info("OpenGL/SDL Window destroyed");
-        SDL_Quit();
-        logger->info("SDL shutdown");
+      }
+      SDL_Quit();
+      logger->info("SDL shutdown");
     }
 
     virtual bool init() override {

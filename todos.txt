@@ -1,16 +1,18 @@
 Tech debts
-- split the project into at least three separate repos: math, physics and playground
-- use cmake uri dependencies and git submodules
-- move all apps to the same branch and generate multiple binaries instead of one per branch
-
 - Add toString to playground that will return the current playground information:
 	- name?
 	- all runners toString
 		- each runner would add its relevant information
 			- e.g.: collision tester pairs
 
-- review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
-	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.
+
+ResourceManager / Resource Adapters
+  - Move validation logic to resource adapters - right now they have an abstract load method - thus they accept any request. 
+      * Add base class logic to review that requests are valid and compatible with the adapter.
+      * Move label / options logic here
+    
+  - review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
+  	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.
 
 - load of a collection with only one object: currently we have to provide an mandatory object name, even if there' only one object in the collection (and even if that object gets a default name)
 	so this is a thing: resourcemanager.load("meshes/singleUnnamedObject.obj/singleUnnamedObject.obj") - you have to duplicate the filename.
@@ -25,7 +27,9 @@ Tech debts
 
 - review RAII and 5 of 5 principle (move semantics) in resources/playground classes.
 	specially in file parser / text parser and resources.
-	- resources that contain graphics handles (such as vertex shaders) shoudl be move only
+	- resources that contain graphics handles (such as vertex shaders) should be move only
+	- ideally all resources should be stateless, "definitions", and thus be move only. Resource manager returns pointers to them. 
+	     However this causes issues with openAL sources <-- openAL sources should not be resources but audioRunner objects instead.
 
 - review design of particle manager/collision detector / geometry vs particles / etc. Too much vector passing and copying. Review polymorfism / std::vector<unique_ptr> usage.
 

@@ -111,32 +111,23 @@ class PerVertexGLTrianglesNormalGenerator : public NormalGenerator
 	private:
 		void log(String prefix, std::vector<vector3> array)
 		{
-			char vectorBuffer[256];
-
-			prefix.append(" [");
-
-			for(std::vector<vector3>::iterator current = array.begin(); current != array.end(); current++) {
-				sprintf(vectorBuffer, "<%.2f, %.2f, %.2f> ", (*current).x, (*current).y, (*current).z);
-				prefix.append(vectorBuffer);
+			prefix.append("[");
+			for(auto &current : array) {
+				prefix.append(current.toString() + " ");
 			}
-
 			prefix.append(" ]");
-			logger->debug(prefix.c_str());
 
+			logger->debug(prefix.c_str());
 		}
 
 		void log(String prefix, std::vector<unsigned int> array)
 		{
-			char vectorBuffer[256];
-
 			prefix.append(" [");
-
-			for(std::vector<unsigned int>::iterator current = array.begin(); current != array.end(); current++) {
-				sprintf(vectorBuffer, "%d, ", *current);
-				prefix.append(vectorBuffer);
+			for(auto &current : array) {
+				prefix.append(std::to_string(current) + " ");
 			}
-
 			prefix.append(" ]");
+
 			logger->debug(prefix.c_str());
 
 		}

@@ -1,5 +1,5 @@
 #cmake/compiler options
-add_definitions(-w) # hide warnings
+#add_definitions(-w) # hide warnings
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -23,8 +23,3 @@ add_subdirectory(src)
 include(CTest) #Enable CTest - unfortunately this has to be on the main CMakeLists file or it will not detect tests.
 enable_testing()
 add_subdirectory(test)
-
-
-#test executable
-add_executable(playground_exec main.cpp)
-target_link_libraries(playground_exec playground audioRunner openGLRunner)

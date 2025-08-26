@@ -87,7 +87,6 @@ public:
       bufferSize = getBufferSize(alto, ancho, bpp);
     }
 
-    printf("BufferSize [%d] - [%d]x[%d]x[%d]bpp xBpp[%d]\n", bufferSize, alto, ancho, bpp, bpp >> 3);
     if(bufferSize < getBufferSize(alto, ancho, bpp)) {
       throw std::invalid_argument(StringFormatter::format("Image: Buffer size [%d] is smaller than dimensions [%d]x[%d]x[%d]bpp", bufferSize, alto, ancho, bpp));
     }

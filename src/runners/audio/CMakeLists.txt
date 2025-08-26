@@ -32,3 +32,6 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE vorbis vorbisfile)
 find_package(OpenAL REQUIRED)
 target_include_directories(${LIBRARY_NAME} INTERFACE ${OPENAL_INCLUDE_DIR})
 target_link_libraries(${LIBRARY_NAME} INTERFACE ${OPENAL_LIBRARY})
+
+# hide openAl deprecated on osx warnings
+target_compile_options(${LIBRARY_NAME} INTERFACE -W)
