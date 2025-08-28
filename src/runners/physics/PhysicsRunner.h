@@ -41,7 +41,7 @@ public:
 	    this->playbackSpeed = playbackspeed;
 	}
 
-	virtual bool afterInit() override {
+	virtual bool afterInitialize() override {
 		this->stopWatch = &this->getContainer()->getStopWatch();
 
 		this->start();

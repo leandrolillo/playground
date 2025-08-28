@@ -5,11 +5,15 @@ Tech debts
 		- each runner would add its relevant information
 			- e.g.: collision tester pairs
 
+Paths: normalize some/directory/structure/./../../ -> some
 
 ResourceManager / Resource Adapters
   - Move validation logic to resource adapters - right now they have an abstract load method - thus they accept any request. 
       * Add base class logic to review that requests are valid and compatible with the adapter.
       * Move label / options logic here
+      * Unify resourceAdapter with resourceLoadResponse class (might not be possible due to cyclic reference). 
+          Maybe do ResourceAdapter.load(ResourceManager &, ResourceLoadRequest &) instead of having it as a member.
+          
     
   - review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
   	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.

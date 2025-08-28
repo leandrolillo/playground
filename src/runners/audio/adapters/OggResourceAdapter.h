@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef OGGRESOURCEADAPTER_H_ //disabled momentarily. Please try again later.
-#define OGGRESOURCEADAPTER_H_
+#pragma once
 
 #include <ogg/ogg.h>
 #include <vorbis/codec.h>
@@ -73,8 +72,3 @@ class OggResourceAdapter : public ResourceAdapter {
 			response.addResource(resource);
 		}
 };
-
-
-
-#endif /* OGGRESOURCEADAPTER_H_ */
-

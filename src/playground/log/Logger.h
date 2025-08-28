@@ -312,10 +312,22 @@ public:
 
 class LoggerFactory {
 private:
+    static LogLevel defaultLogLevel;
+    static String logFileName;
     static std::set<std::unique_ptr<Appender>> appenders;
     static std::set<std::unique_ptr<Logger>> loggers;
 
+
 public:
+    static void setLogFileName(const String &logFilename) {
+      logFileName = logFilename;
+    }
+    static void doNotLogToFile() {
+      logFileName = "";
+    }
+    static void setDefaultLogLevel(LogLevel defaultLevel) {
+      defaultLogLevel = defaultLevel;
+    }
     static Appender* getAppender(String output) {
         for (auto &appender : appenders) {
             if (appender->getTarget() == output) {
@@ -343,9 +355,14 @@ public:
         }
 
         Logger *logger = new Logger(basename);
-        logger->setLogLevel(DEFAULT_LOG_LEVEL);
-        logger->addAppender(getAppender("playground.log"));
-        logger->addAppender(LogLevel::ERROR, getAppender("stdout"));
+        logger->setLogLevel(defaultLogLevel);
+        if(!logFileName.empty()) {
+          logger->addAppender(getAppender(logFileName));
+          logger->addAppender(LogLevel::ERROR, getAppender("stdout"));
+        } else {
+          logger->addAppender(getAppender("stdout"));
+        }
+
 
         LoggerFactory::loggers.insert(std::unique_ptr<Logger>(logger));
 

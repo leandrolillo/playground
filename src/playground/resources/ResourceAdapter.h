@@ -18,9 +18,9 @@ class ResourceLoadResponse;
 
 /**
  * Resource adapters have
- * - ONE input mimetype they know how to parse/handle (accepts)
+ * - ONE input mimetype - it knows how to parse/handle (accepts)
  * - SEVERAL output mimetypes - they can produce many resources of different mimetypes when loading a file (produces)
- * 		- If the produced resources require special logic for deleting them, they should provide dispose(Resource *resource) or the resource be raii
+ *    - If the produced resources require special logic for deleting them, they should provide dispose(Resource *resource) or the resource be raii
  */
 class ResourceAdapter {
 private:

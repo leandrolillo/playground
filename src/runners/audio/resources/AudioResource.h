@@ -18,7 +18,7 @@ class AudioResource : public Resource
 		std::vector<char> data;
 
 	public:
-		AudioResource() : Resource(0, MimeTypes::AUDIO) {
+		AudioResource() : Resource(MimeTypes::AUDIO) {
 			frequency = 0;
 			format = AudioFormat::MONO8;
 		}

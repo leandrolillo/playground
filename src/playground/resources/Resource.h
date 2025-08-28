@@ -33,7 +33,7 @@ public:
 
   /* Not required by this class, but saves work to children classes if they need to implement rule of five/copy and swap*/
   /*friend*/
-  static void swap(Resource &first, Resource &second)
+  static void swap(Resource &first, Resource &second) noexcept
 	{
 		// enable ADL (not necessary in our case, but good practice)
 		using std::swap;
@@ -83,6 +83,10 @@ public:
 
 	void addLabel(const String &label) {
 		this->labels.insert(label);
+	}
+
+	virtual bool supportsCaching() {
+	  return true;
 	}
 
 	virtual String toString() const {

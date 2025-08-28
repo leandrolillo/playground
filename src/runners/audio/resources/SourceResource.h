@@ -13,7 +13,7 @@
 
 class Source: public Resource {
 	private:
-		vector position;
+		vector position; //TODO: Review if this state should be in a resource or should be an external audioRunner concept. From resource manager point of view we only care about the source id for initialization and destruction.
 		vector velocity;
 		bool loop;
 		float gain;
@@ -74,6 +74,10 @@ class Source: public Resource {
 
 		void setVelocity(const vector& velocity) {
 			this->velocity = velocity;
+		}
+
+		bool supportsCaching() override { //Do not cache since we can have multiple sources from same audio file uri
+		  return false;
 		}
 };
 

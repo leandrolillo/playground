@@ -58,8 +58,11 @@ class ResourceManager {
 protected:
 	Logger *logger = LoggerFactory::getLogger("resources/ResourceManager");
 
-	std::set<std::unique_ptr<ResourceAdapter>, resourceAdapterComparator> resourceAdapters; // Define adapter before resources so that they are initialized before them, and deleted after them.
-	std::set<std::unique_ptr<Resource>, resourceComparator> resources; // Define adapter before resources so that they are initialized before them, and deleted after them.
+	/**
+	 * Define adapters before resources so that they are initialized before them, and deleted after them.
+	 */
+	std::set<std::unique_ptr<ResourceAdapter>, resourceAdapterComparator> resourceAdapters;
+	std::set<std::unique_ptr<Resource>, resourceComparator> resources;
 
 	std::map<String, Resource *> resourcesCache;
 	std::map<String, ResourceAdapter *> adaptersCache;
@@ -77,37 +80,32 @@ public:
 		this->rootFolder = std::filesystem::absolute(rootFolder); //for now it has to be an absolute path or there will be issues with resource loading
 	}
 
-	void logStatus() {
-		logger->debug("Resource Manager status:");
-		logger->debug("Resources %d", resourcesCache.size());
-		logger->debug("Resource adapters: %d", resourceAdapters.size());
+	ResourceLoadRequest newRequest(std::shared_ptr<FileParser> &fileParser) {
+	  return ResourceLoadRequest(fileParser);
 	}
 
-	const String& getRootFolder() {
-		return this->rootFolder;
+	ResourceLoadRequest newRequest(const String &fileName) {
+	  return ResourceLoadRequest(normalize(fileName));
 	}
 
 	ResourceAdapter *addAdapter(std::unique_ptr<ResourceAdapter> adapter);
 
 	Resource* load(const String &fileName) {
 		logger->debug("Load [%s]", fileName.c_str());
-
-		ResourceLoadRequest request(Paths::normalize(fileName, this->rootFolder));
+		ResourceLoadRequest request = newRequest(fileName);
 		return this->load(request);
 	}
 
 	Resource* load(std::shared_ptr<FileParser> &fileParser, const String &outputMimeType, std::set<String> labels = {}) {
 		logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileParser.get()->getFilename().c_str());
 
-		ResourceLoadRequest request(fileParser);
-		return load(request.acceptMimeType(outputMimeType).withLabels(labels));
+		return load(newRequest(fileParser).acceptMimeType(outputMimeType).withLabels(labels));
 	}
 
 	Resource* load(const String &fileName, const String &outputMimeType, std::set<String> labels = {}, std::map<String, String> options = {}) {
 		logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileName.c_str(), fileName.c_str());
 
-		ResourceLoadRequest request(Paths::normalize(fileName, this->rootFolder));
-		return load(request.acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
+		return load(newRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
 	}
 
 	/**
@@ -116,8 +114,7 @@ public:
 	Resource* load(const String &parentFilePath, const String &fileName, const String &outputMimeType) {
 		logger->debug("Load [%s] [%s] relative to [%s]", outputMimeType.c_str(), fileName.c_str(), parentFilePath.c_str());
 
-		ResourceLoadRequest request(Paths::relative(parentFilePath, fileName, this->rootFolder));
-		return load(request.acceptMimeType(outputMimeType));
+		return load(newRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
 	}
 
 	Resource* load(ResourceLoadRequest &loadRequest);
@@ -196,6 +193,17 @@ public:
 	void dispose(Resource *resource) const;
 	~ResourceManager();
 
+public:
+  const String& getRootFolder() {
+    return this->rootFolder;
+  }
+
+  void logStatus() {
+    logger->debug("Resource Manager status:");
+    logger->debug("Resources %d", resourcesCache.size());
+    logger->debug("Resource adapters: %d", resourceAdapters.size());
+  }
+
 	String normalize(const String &filePath) const {
 		return Paths::normalize(filePath, this->rootFolder);
 	}
@@ -248,7 +256,7 @@ private:
 			throw std::invalid_argument("Can not get cache key from empty values - filename: [" + filename + "] mimeType[ " + mimeType + "]");
 		}
 
-		return Paths::normalize(filename, this->rootFolder) + "|" + mimeType;
+		return normalize(filename) + "|" + mimeType;
 	}
 
 	const String getCacheKey(const Resource &resource) {

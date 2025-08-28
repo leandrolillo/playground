@@ -18,7 +18,14 @@ brew install libvorbis
 or singleline: brew install cmake libjpeg libpng sdl2 libogg libvorbis
 
 
+-------------
+Eclipse
+-------------
+Cmake support: cmake4eclipse plugin. Then File > Import > Existing Code as Makefile Project" and then choosing the "CMake driven"
 
+Installation issues: Proxy is changing certificates.
+Download packages from vendor and Help -> Install new Software -> Add -> Local?
+  
 -------------
 Building:
 -------------

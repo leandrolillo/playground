@@ -81,9 +81,9 @@ public:
       logger->info("SDL shutdown");
     }
 
-    virtual bool init() override {
+    virtual bool initialize() override {
         //logger->setLogLevel(LogLevel::DEBUG);
-        VideoRunner::init();
+        VideoRunner::initialize();
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TextureResourceAdapter()));
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new CubeMapResourceAdapter()));
         this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new HeightMapResourceAdapter()));
@@ -150,7 +150,7 @@ public:
         return true;
     }
 
-    virtual bool afterInit() override {
+    virtual bool afterInitialize() override {
         int height = 0;
         int width = 0;
         SDL_GetWindowSize(window, &width, &height);

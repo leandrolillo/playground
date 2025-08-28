@@ -4,8 +4,8 @@
 
 TEST_CASE("Playground Test case")
 {
-	Playground playground("");
-	REQUIRE(1 == 1);
+  Playground playground("");
+  REQUIRE(1 == 1);
 }
 
 TEST_CASE("Paths") {
@@ -39,7 +39,6 @@ TEST_CASE("Paths") {
   }
 
   SECTION("Add") {
-
     //relative path
     String actual = Paths::add("/home/assets", "resource.json");
     CHECK("/home/assets/resource.json" == actual);
@@ -79,5 +78,271 @@ TEST_CASE("Paths") {
 
     actual = Paths::add("", "");
     CHECK("" == actual);
+  }
+}
+
+TEST_CASE("ResourceLoadRequest tests") {
+  SECTION("ToString") {
+    ResourceLoadRequest request("/test/filename.json");
+    String actual = request.acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).toString();
+    CHECK("[test/mimetype]<-[application/json] [/test/filename.json]" == actual);
+  }
+
+  SECTION("IsValid") {
+    ResourceLoadRequest request("tests/fileToParse.txt");
+    bool actual = request.acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
+    assertTrue(assertMessage(request.errors()), actual);
+
+    /** Should be able to guess mimetype from filename even with object name*/
+    ResourceLoadRequest requestAgain("tests/fileToParse.txt/objectName");
+    actual = requestAgain.withParent(runner->getResourceManager()->getRootFolder()).acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
+    assertTrue(assertMessage(requestAgain.errors()), actual);
+
+    ResourceLoadRequest anotherRequest("");
+    actual = anotherRequest.isValid();
+    assertTrue(assertMessage(anotherRequest.errors()), !actual);
+
+    ResourceLoadRequest yetAnotherRequest("/tests/filename");
+    actual = yetAnotherRequest.acceptMimeType("test/mimetype").isValid();
+    assertTrue(assertMessage(yetAnotherRequest.errors()), !actual); //expect could not guess input mimetype
+  }
+
+  SECTION("FilePath") {
+    /* Just filename*/
+    ResourceLoadRequest request("/tests/filename.json");
+    String actual = request.getFilePath();
+    CHECK("/tests/filename.json" == actual);
+
+    /* Uri with name - relative to root */
+    ResourceLoadRequest requestB("tests/fileToParse.txt/name");
+    actual = requestB.withParent(runner->getResourceManager()->getRootFolder()) .getFilePath();
+    CHECK(Paths::add(runner->getResourceManager()->getRootFolder(), "tests/fileToParse.txt") == actual);
+
+    /* Uri with name - and parent - returns the object as well since filename does not exist */
+    ResourceLoadRequest requestC("tests/filename.json/name");
+    actual = requestC.withParent("/home").withParent("leandro").getFilePath();
+    CHECK( "/home/leandro/tests/filename.json/name" == actual);
+  }
+
+  SECTION("SimpleUri") {
+//    Resource parent(0, "test/mimetype");
+//    parent.setFileName("/tests/filename.json");
+//
+//    ResourceLoadRequest request("child/filename.json");
+//    //test fileParser
+//
+//
+//
+//    ResourceLoadRequest requestWithParent("/test/filename.json");
+//    requestWithParent.withParent(&parent);
+//    request.getFilePath() == "/tests/child/filename.json";
+//    //test fileParser
+//
+//    ResourceLoadRequest requestFromFileParser(fileparser);
+//    requestWithParent.withParent(&parent);
+//    request.getFilePath() == "/tests/child/filename.json";
+//    //test fileParser
+  }
+}
+
+TEST_CASE("ResourceLoadResponse tests")
+{
+  SECTION("FilePath") {
+    ResourceManagerMock resourceManager("./target/../../media");
+    ResourceLoadRequest request("geometry/basketball.json");
+
+    ResourceLoadResponse response(request, resourceManager);
+
+    String actual = response.getFullPath("~/images/basketball.png");
+
+    CHECK((String)std::__fs::filesystem::absolute("./target/../../media") + "/images/basketball.png" == actual);
+
+  }
+
+  SECTION("issueWithRootPathsBeingRelative") {
+    String rootFolder("./target/../../media");
+
+    ResourceManagerMock resourceManager(rootFolder);
+    ResourceLoadRequest request("geometry/basketball.json");
+    ResourceLoadResponse response(request, resourceManager);
+
+    String actual = response.getFullPath("~/images/basketball.png");
+    actual = Paths::normalize(actual, rootFolder);
+
+    CHECK((String)std::__fs::filesystem::absolute(rootFolder) + "/images/basketball.png" == actual);
+    //CHECK(rootFolder + "/images/basketball.png" == actual); // this is the failure before the fix in resource manager constructor.
+  }
+}
+
+TEST_CASE("ResourceManagerTests") {
+  SECTION("AddResourceAdapter") {
+    ResourceManagerMock resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(
+            new ResourceAdapterMock(std::set<String> {"test/outputMimeType"}, "test/inputMimeType")));
+    CHECK(resourceAdapter != null);
+    CHECK(resourceAdapter->getResourceManager() != null);
+    CHECK(1 == resourceManager.getAdaptersCount());
+  }
+
+  SECTION("GetResourceAdapter") {
+    CHECK(false); //"Implement getResourceAdapter tests for requests and resources"
+  }
+
+  SECTION("Load") {
+    ResourceManagerMock resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    ResourceAdapterMock *resourceAdapter = (ResourceAdapterMock *)resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(
+            new ResourceAdapterMock(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType")));
+
+    /* Should populate default values */
+    resourceAdapter->withLoadResult(new Resource(1, ""));
+    Resource *actual = resourceManager.load(ResourceLoadRequest("/test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"}));
+    CHECK(actual != null);
+    CHECK("test/outputMimeType" == actual->getMimeType());
+    CHECK("/test/filename" == actual->getUri());
+    CHECK(1 == actual->getLabels().size());
+    CHECK(1 == resourceManager.getResourcesCount());
+
+    /* unless already set */
+    Resource *mockResult = new Resource(1, "test/outputMimeType");
+    mockResult->setUri("/test/anotherFilename");
+    resourceAdapter->withLoadResult(mockResult);
+    actual = resourceManager.load(ResourceLoadRequest("/test/anotherFilename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType"));
+    CHECK(actual != null);
+    CHECK("test/outputMimeType" == actual->getMimeType());
+    CHECK("/test/anotherFilename" == actual->getUri());
+    CHECK(0 == actual->getLabels().size());
+    CHECK(2 == resourceManager.getResourcesCount());
+
+    /* Make sure we get the proper mimetype or null*/
+    actual = resourceManager.load(ResourceLoadRequest("test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/anotherOutputMimeType").withInputMimeType("test/inputMimeType"));
+    CHECK(actual != NULL);
+    CHECK(2 ==resourceManager.getResourcesCount());
+
+  }
+
+  SECTION ("AddResource") {
+    ResourceManagerMock resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    Resource *resource = new Resource(1, "test/mimetype");
+    resource->setUri("/test/filename");
+    resourceManager.addResource(resource);
+    resource->toString(); //any better way to try to trigger illegal access?
+    CHECK(1 == resourceManager.getResourcesCount());
+
+    resource = new Resource(2, "test/mimetype");
+    resource->setUri("/test/filename2");
+    resourceManager.addResource(resource);
+    resource->toString();//any better way to try to trigger illegal access?
+    CHECK(2 == resourceManager.getResourcesCount());
+
+    resource = resourceManager.load("/test/filename", "test/mimetype");
+    CHECK(resource != null);
+    CHECK("/test/filename" == resource->getUri());
+    CHECK("test/mimetype" == resource->getMimeType());
+
+    /**
+     * Add a duplicated resource to check nothing gets deleted
+     */
+    resourceManager.addResource(resource);
+    resource->toString(); //any better way to try to trigger illegal access?
+    CHECK(2 == resourceManager.getResourcesCount());
+  }
+
+  SECTION("Unload") {
+    ResourceManagerMock resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    Resource *resource = new Resource(1, "test/mimetype");
+    resource->setUri("test/filename1");
+    resource->addLabel("ephemeral");
+    resourceManager.addResource(resource);
+
+    resource = new Resource(2, "test/mimetype");
+    resource->setUri("test/filename2");
+    resource->addLabel("not ephemeral");
+    resource->addLabel("level 1");
+    resourceManager.addResource(resource);
+
+    resource = new Resource(3, "test/mimetype");
+    resource->setUri("test/filename3");
+    resource->addLabel("permanent");
+    resourceManager.addResource(resource);
+
+    resource = new Resource(4, "test/mimetype");
+    resource->setUri("test/filename4");
+    resourceManager.addResource(resource);
+
+    //    /*
+    //     * This one should evict the previous one from cache and keep resources count to 4
+    //     */
+    //    resource = new Resource(4, "test/mimetype");
+    //    resource->setFileName("test/filename4");
+    //    resourceManager.addResource(resource);
+
+    CHECK(4 == resourceManager.getResourcesCount());
+
+    /*
+     * Test unload by resource
+     */
+
+    resourceManager.unload(resource);
+    CHECK(3 == resourceManager.getResourcesCount());
+
+    /*
+     * Test unload by single label
+     */
+    resourceManager.unload("ephemeral");
+    CHECK(2 == resourceManager.getResourcesCount());
+
+    /*
+     * Test unload by multiple labels
+     */
+    resourceManager.unload(std::set<String> {"not ephemeral", "level 1"});
+    CHECK(1 == resourceManager.getResourcesCount());
+
+  }
+
+  SECTION("InvalidResource")
+  {
+    ResourceManager resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    Resource *resource = resourceManager.load("tests/fake.wav", MimeTypes::AUDIO);
+    CHECK(null == resource);
+
+    resource = resourceManager.load("tests/fake.nomimetype", MimeTypes::AUDIO);
+    CHECK(null == resource);
+
+  }
+
+  SECTION("FileParser")
+  {
+    ResourceManager resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
+
+    String token;
+
+    FileParser commentFileParser(resourceManager.normalize("tests/commentFileToParse.txt"));
+    CHECK(FileParser::eof == commentFileParser.peekToken());
+    CHECK(FileParser::eof == commentFileParser.takeToken());
+    commentFileParser.close();
+
+    FileParser emptyFileParser(resourceManager.normalize("tests/emptyFileToParse.txt"));
+    CHECK(FileParser::eof == emptyFileParser.peekToken());
+    CHECK(FileParser::eof == emptyFileParser.takeToken());
+    commentFileParser.close();
+
+    FileParser fileParser(resourceManager.normalize("tests/fileToParse.txt"));
+    CHECK("{" == fileParser.peekToken());
+    CHECK("{" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("property" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK(":" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("value" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("}" == fileParser.takeToken());
+    CHECK(FileParser::eof == fileParser.peekToken());
+    CHECK(FileParser::eof == fileParser.takeToken());
   }
 }

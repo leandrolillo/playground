@@ -36,7 +36,7 @@ class AudioRunner: public PlaygroundRunner {
 			return ID;
 		}
 
-		virtual bool init() override {
+		virtual bool initialize() override {
 			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new SourceResourceAdapter));
 			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new BufferResourceAdapter));
 			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new OggResourceAdapter));

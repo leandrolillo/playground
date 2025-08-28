@@ -17,9 +17,16 @@
 class ResourceLoadRequest {
 private:
 	Logger *logger = LoggerFactory::getLogger("ResourceLoadRequest");
+
+	/*resource uri*/
 	String uri;
+
+	/*Mimetype of the file to read - if not provided it will be guessed from uri*/
 	String inputMimeType;
+
+	/*MimeType of the expected resulting resource*/
 	String outputMimeType;
+
 	std::set<String> labels;
 	std::shared_ptr<FileParser> fileParser;
 	const Resource *parent = null;

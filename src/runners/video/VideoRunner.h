@@ -69,7 +69,7 @@ public:
 
 	virtual void setMousePosition(unsigned int x, unsigned int y) = 0;
 
-	virtual bool init() override {
+	virtual bool initialize() override {
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new PngResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new JpegResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TgaResourceAdapter()));
