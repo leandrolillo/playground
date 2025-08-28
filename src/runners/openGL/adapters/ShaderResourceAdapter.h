@@ -13,7 +13,8 @@
 class ShaderResourceAdapter: public OpenGLResourceAdapter {
 	public:
 		ShaderResourceAdapter() {
-			this->accepts(MimeTypes::GLSL);
+		  logger = LoggerFactory::getLogger("video/ShaderResourceAdapter");
+		  this->accepts(MimeTypes::GLSL);
 		}
 
 		virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {

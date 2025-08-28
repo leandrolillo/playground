@@ -35,12 +35,17 @@ private:
 
 public:
 	ResourceLoadRequest(const String &uri) {
-		this->uri = uri;
+		withUri(uri);
 	}
 
 	ResourceLoadRequest(std::shared_ptr<FileParser> &fileParser) : fileParser(fileParser) {
 		this->uri = fileParser.get()->getFilename();
 	}
+
+  ResourceLoadRequest &withUri(const String &uri) {
+    this->uri= uri;
+    return *this;
+  }
 
 	//TODO: review if it would be better to return new objects - would be safer and shorter syntax while giving up performance
 	ResourceLoadRequest &acceptMimeType(const String &mimeType) {

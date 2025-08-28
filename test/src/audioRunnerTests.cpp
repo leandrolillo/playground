@@ -55,15 +55,15 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   Playground playground("resources");
-  AudioRunner *audioRunner = (AudioRunner *)playground.addRunner(new AudioRunner());
-  audioRunner->initialize();
+  AudioRunner *runner = (AudioRunner *)playground.addRunner(new AudioRunner());
+  runner->initialize();
 
   SECTION("AudioBufferResourceAdapter") { //requires initialized audio runner
     BufferResourceAdapter resourceAdapter;
-    resourceAdapter.setResourceManager(audioRunner->getResourceManager()); //TODO: Move resourceManager to load method?
+    resourceAdapter.setResourceManager(runner->getResourceManager()); //TODO: Move resourceManager to load method?
 
-    ResourceLoadRequest request = audioRunner->getResourceManager()->newRequest("audio.ogg");
-    ResourceLoadResponseMock response(request, *audioRunner->getResourceManager());
+    ResourceLoadRequest request = runner->getResourceManager()->newRequest("audio.ogg");
+    ResourceLoadResponseMock response(request, *runner->getResourceManager());
 
     resourceAdapter.load(request.acceptMimeType(MimeTypes::AUDIOBUFFER), response);
     BufferResource *resource = (BufferResource *)response.getLastAdded();

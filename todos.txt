@@ -11,7 +11,7 @@ ResourceManager / Resource Adapters
   - Move validation logic to resource adapters - right now they have an abstract load method - thus they accept any request. 
       * Add base class logic to review that requests are valid and compatible with the adapter.
       * Move label / options logic here
-      * Unify resourceAdapter with resourceLoadResponse class (might not be possible due to cyclic reference). 
+      * KILL RESOURCELOADRESPONSE!! Unify resourceAdapter with resourceLoadResponse class (might not be possible due to cyclic reference). 
           Maybe do ResourceAdapter.load(ResourceManager &, ResourceLoadRequest &) instead of having it as a member.
           
     
