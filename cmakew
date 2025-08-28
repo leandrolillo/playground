@@ -8,6 +8,7 @@ help() {
   echo "|   -c clean" >&2
   echo "|   -d debug" >&2
   echo "|   -t test" >&2
+  echo "|   -f offline" >&2
   echo "|   -w working folder - defaults to 'build'" >&2
   echo "|" >&2
   echo "|  Note: Path-to-CmakeLists HAS to be the last parameter! It is the only required parameter as well." >&2
@@ -20,18 +21,21 @@ parseInputs() {
   inputs_parameters_clean="false"
   inputs_parameters_test="false"
   inputs_parameters_debug="false"
+  inputs_parameters_offline="false"
 
-  while getopts 'cdtw:' opt; do
+  while getopts 'cdtfw:' opt; do
     case "$opt" in
       c) inputs_parameters_clean="true";;
       d) inputs_parameters_debug="true";;
       t) inputs_parameters_test="true";;
+      f) inputs_parameters_offline="true";;
       w) inputs_parameters_working_folder="${OPTARG}";;
       :)
         echo -e "option requires an argument.\n$(help)"
         exit 1
         ;;
       ?)
+        inputs_parameters_options="${inputs_parameters_options} ${opt}"
         echo -e "Invalid command option.\n$(help)"
         exit 1
         ;;
@@ -56,7 +60,7 @@ parseInputs() {
   echo "| clean [${inputs_parameters_clean}]" >&2
   echo "| debug [${inputs_parameters_debug}]" >&2
   echo "| test [${inputs_parameters_test}]" >&2
-
+  echo "| offline [${inputs_parameters_offline}]" >&2  
 }
 
 parseInputs "$@"
@@ -68,7 +72,8 @@ if [[ "${inputs_parameters_clean}" == "true" ]]; then
   rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
 fi
 
-options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug" || echo "")
+options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug " || echo "")
+options=$([[ "${inputs_parameters_offline}" == "true" ]] && echo "${options}-DFETCHCONTENT_UPDATES_DISCONNECTED=ON" || echo "")
 
 mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
