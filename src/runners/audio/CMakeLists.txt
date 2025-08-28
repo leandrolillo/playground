@@ -13,7 +13,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 #ogg
 FetchContent_Declare(
     Ogg
-    GIT_REPOSITORY https://gitlab.xiph.org/xiph/ogg.git
+    GIT_REPOSITORY https://github.com/xiph/ogg.git
     GIT_TAG v1.3.6
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Ogg)
@@ -22,7 +22,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
 #vorbis
 FetchContent_Declare(
     Vorbis
-    GIT_REPOSITORY https://gitlab.xiph.org/xiph/vorbis.git
+    GIT_REPOSITORY https://github.com/xiph/vorbis.git
     GIT_TAG v1.3.7
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Vorbis)

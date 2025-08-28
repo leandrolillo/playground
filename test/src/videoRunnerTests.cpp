@@ -117,18 +117,20 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(3 == resource->getTextureCoordinates().size());
     CHECK(3 == resource->getNormals().size());
   }
-//  SECTION("ObjResourceAdapter tests") {
-//    ObjResourceAdapter resourceAdapter;
-//    ResourceLoadRequest request = resourceManager.newRequest("axes.obj");
-//    ResourceLoadResponseMock response(request, resourceManager);
-//
-//    resourceAdapter.load(request, response);
-//
-//    GeometryCollection *resources = (GeometryCollection *)response.getLastAdded();
-//    REQUIRE(resources != null);
-//    GeometryResource *resource = resources->getObject("axes.obj");
-//    REQUIRE(resource != null);
-//  }
+  SECTION("ObjResourceAdapter tests") {
+    ObjResourceAdapter resourceAdapter;
+    resourceAdapter.setResourceManager(&resourceManager);
+
+    ResourceLoadRequest request = resourceManager.newRequest("axes.obj");
+    ResourceLoadResponseMock response(request, resourceManager);
+
+    resourceAdapter.load(request, response);
+
+    GeometryCollection *resources = (GeometryCollection *)response.getLastAdded();
+    REQUIRE(resources != null);
+    GeometryResource *resource = resources->getObject("Axes");
+    REQUIRE(resource != null);
+  }
 }
 
   //  SECTION("ResourceManager Load") {
