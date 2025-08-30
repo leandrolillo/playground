@@ -16,8 +16,6 @@
 #include "AudioResource.h"
 
 class OggResourceAdapter : public ResourceAdapter {
-	private:
-		Logger *logger;
 	public:
 		OggResourceAdapter() {
 			logger = LoggerFactory::getLogger("audio/OggResourceAdapter.h");
@@ -25,15 +23,18 @@ class OggResourceAdapter : public ResourceAdapter {
 			this->accepts(MimeTypes::OGG);
 		}
 
+	protected:
 		const unsigned int OGG_BUFFER_SIZE = 4096 * 4;
-		virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
+		virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
+		  std::vector<Resource *> response;
+
 			OggVorbis_File oggStream;
 			vorbis_info *vorbisInfo;
 			vorbis_comment *vorbisComment;
 
 			if(ov_open(request.getFileParser().getStream(), &oggStream, NULL, 0)  < 0) {
 				logger->error("Error opening ogg stream [%s] - file not found or not a valid ogg", Paths::absolute(request.getFilePath()).c_str());
-				return;
+				return response;
 			}
 
 			vorbisInfo = ov_info(&oggStream, -1);
@@ -65,10 +66,12 @@ class OggResourceAdapter : public ResourceAdapter {
 
 			if(bytes < 0) {
 				logger->error("Error reading ogg file [%s] data", request.getFilePath().c_str());
-				return;
+				return response;
 			}
 
 			resource->setData(bufferData);
-			response.addResource(resource);
+			response.push_back(resource);
+
+			return response;
 		}
 };

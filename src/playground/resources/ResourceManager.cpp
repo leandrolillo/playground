@@ -8,37 +8,41 @@
 
 const String ResourceManager::EphemeralLabel = {"ephemeral"};
 
-ResourceAdapter * ResourceManager::addAdapter(std::unique_ptr<ResourceAdapter> adapterUniquePtr) { //should this accept a unique_ptr and move it?
+ResourceAdapter * ResourceManager::addAdapter(std::unique_ptr<ResourceAdapter> adapterUniquePtr) {
 	logger->debug("Adding adapter");
-	if(adapterUniquePtr.get() != null && adapterUniquePtr->isValid()) {
-		logger->debug("Adapter [%s] is valid - proceeding to add it", adapterUniquePtr->toString().c_str());
+	if(adapterUniquePtr.get() != null) {
+	  adapterUniquePtr->setResourceManager(*this);
 
-		ResourceAdapter * adapter = adapterUniquePtr.get();
-		if(resourceAdapters.find(adapter) == resourceAdapters.end()) {
-			/* std::move makes this an l-value so it behaves like it is a temporary variable - it makes adapterUniquePtr variable point to null so it should not be referenced after this. */
-			resourceAdapters.insert(std::move(adapterUniquePtr));
-			adapter->setResourceManager(this);
+	  if(adapterUniquePtr->isValid()) {
+      logger->debug("Adapter [%s] is valid - proceeding to add it", adapterUniquePtr->toString().c_str());
 
-			logger->debug("Adapter [%s] added to set with resourceManager [%d]", adapter->toString().c_str(), adapter->getResourceManager());
-		} else {
-			logger->warn("Skipping adapter [%s] - already managed", adapter->toString().c_str());
-		}
+      ResourceAdapter * adapter = adapterUniquePtr.get();
+      if(resourceAdapters.find(adapter) == resourceAdapters.end()) {
+        /* std::move makes this an l-value so it behaves like it is a temporary variable - it makes adapterUniquePtr variable point to null so it should not be referenced after this. */
+        resourceAdapters.insert(std::move(adapterUniquePtr));
 
-		for(auto &outputMimeType : adapter->getOutputMimeTypes()) {
-			String key = adapter->getInputMimeType().empty() ? outputMimeType  + "|" : outputMimeType + "|" + adapter->getInputMimeType();
-			adaptersCache[key] = adapter;
+        logger->debug("Adapter [%s] added to set", adapter->toString().c_str());
+      } else {
+        logger->warn("Skipping adapter [%s] - already managed", adapter->toString().c_str());
+      }
 
-			logger->debug("Adapter [%s] added to manage [%s] with key [%s]", adapter->toString().c_str(), outputMimeType.c_str(), key.c_str());
-		}
+      for(auto &outputMimeType : adapter->getOutputMimeTypes()) {
+        String key = adapter->getInputMimeType().empty() ? outputMimeType  + "|" : outputMimeType + "|" + adapter->getInputMimeType();
+        adaptersCache[key] = adapter;
 
-		return adapter;
+        logger->debug("Adapter [%s] added to manage [%s] with key [%s]", adapter->toString().c_str(), outputMimeType.c_str(), key.c_str());
+      }
+
+      return adapter;
+	  }
 	}
 
-	logger->error("NOT adding invalid adapter [%s]: [%s] ",
-			adapterUniquePtr.get() == null ? "null" : adapterUniquePtr->toString().c_str(),
-			adapterUniquePtr.get() == null ? "N/A" : adapterUniquePtr->errors().c_str());
+	String errorMessage = StringFormatter::format("NOT adding invalid adapter [%s]: [%s] ",
+      adapterUniquePtr.get() == null ? "null" : adapterUniquePtr->toString().c_str(),
+      adapterUniquePtr.get() == null ? "N/A" : adapterUniquePtr->errors().c_str());
 
-	return null;
+	logger->error(errorMessage);
+	throw std::invalid_argument(errorMessage);
 }
 
 Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
@@ -61,8 +65,10 @@ Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
 								adapter->toString().c_str());
 
 						try {
-							ResourceLoadResponse response(resourceLoadRequest, *this);
-							adapter->load(resourceLoadRequest, response);
+							for(auto resource : adapter->load(resourceLoadRequest)) {
+							  logger->debug("Adding Resource [%s]", resource->toString().c_str());
+							  this->addResource(resource);
+							}
 						} catch(std::exception &exception) {
 							logger->error("Could not load %s with adapter [%s]: %s", resourceLoadRequest.toString().c_str(), adapter->toString().c_str(), exception.what());
 						} catch(...) {
@@ -117,6 +123,7 @@ void ResourceManager::dispose(Resource *resource) const {
 		logger->warn("Skipping resource disposal due to missing required information (resource not null and mimetype not empty)");
 	}
 }
+
 
 ResourceManager::~ResourceManager() {
     logger->debug("Shutting down resource manager");

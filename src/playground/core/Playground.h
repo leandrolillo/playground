@@ -76,7 +76,7 @@ public:
 
   Chronometer& getStopWatch() const;
 
-  ResourceManager* getResourceManager() const;
+  ResourceManager &getResourceManager() const;
 
   virtual unsigned char getId() const = 0;
 
@@ -151,8 +151,8 @@ public:
     return this;
   }
 
-  virtual ResourceManager* getResourceManager() {
-    return &resourceManager;
+  virtual ResourceManager &getResourceManager() {
+    return resourceManager;
   }
 
   PlaygroundStatus getStatus() const {
@@ -250,7 +250,7 @@ public:
     logger->info("\n -------------------\n| Running %s\n -------------------",
         this->toString().c_str());
 
-    this->getResourceManager()->logStatus();
+    this->getResourceManager().logStatus();
 
     this->initialize();
 

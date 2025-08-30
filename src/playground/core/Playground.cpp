@@ -10,7 +10,7 @@
 
 
 
-ResourceManager *PlaygroundRunner::getResourceManager() const {
+ResourceManager &PlaygroundRunner::getResourceManager() const {
 	return this->container->getResourceManager();
 }
 

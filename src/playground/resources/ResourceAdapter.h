@@ -10,10 +10,8 @@
 #include<vector>
 #include "Resource.h"
 #include "ResourceLoadRequest.h"
-#include "ResourceLoadResponse.h"
 
 class ResourceManager;
-class ResourceLoadResponse;
 
 /**
  * Resource adapters have
@@ -26,31 +24,39 @@ private:
   ResourceManager *resourceManager = null;
   String inputMimeType = "";
   std::set<String> outputMimeTypes;
-  protected:
+
+protected:
   Logger *logger = null;
-  public:
+
+  virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const = 0;
+
+public:
   virtual ~ResourceAdapter() {
     if (logger != null) {
       logger->debug("Destroying resource adapter %s", this->toString().c_str());
     }
   }
 
-  ResourceManager* getResourceManager() const {
-    return resourceManager;
+  ResourceManager &getResourceManager() const {
+    return *resourceManager;
   }
 
-  void setResourceManager(ResourceManager *resourceManager) {
-    this->resourceManager = resourceManager;
+  void setResourceManager(ResourceManager &resourceManager) {
+    this->resourceManager = &resourceManager;
   }
 
   //TODO: Maybe this should be expanded for handling logic here instead of in resource manager - for example checking request has mimetype and matches the output of the adapter, there's a uri, etc.
-  virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const = 0;
+  std::vector<Resource *> load(ResourceLoadRequest &request);
+  std::vector<Resource *> load(ResourceLoadRequest &&rvalue) {
+    ResourceLoadRequest request(rvalue);
+    return load(request);
+  }
+
   virtual void dispose(Resource *resource) const {
     if (resource != null && logger != null) {
       logger->warn("NOT disposing [%s] since dispose method is not overridden", resource->toString().c_str());
     }
   }
-  ;
 
   const String& getInputMimeType() const {
     return inputMimeType;
@@ -77,12 +83,19 @@ private:
   String errors() const {
     String errors;
 
+    if(resourceManager == null) {
+      errors.append("ResourceManager is required");
+    }
+
     if (outputMimeTypes.empty()) {
       errors.append("Output mimetypes are required");
     }
 
     return errors;
   }
+
+  //String getFullPath(const String parentPath, const String &path) const;
+
 
   bool isValid() const {
     return errors().empty();

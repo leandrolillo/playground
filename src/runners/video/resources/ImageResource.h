@@ -29,35 +29,35 @@ public:
   /*
    * Rule of five and copy-and-swap
    */
-  friend void swap(ImageResource &first, ImageResource &second) {
+  friend void swap(ImageResource &left, ImageResource &right) {
     // enable ADL (not necessary in our case, but good practice)
     using std::swap;
 
-    Resource::swap(first, second);
+    Resource::swap(left, right);
 
     // by swapping the members of two objects, the two objects are effectively swapped
-    swap(first.data, second.data);
-    swap(first.alto, second.alto);
-    swap(first.ancho, second.ancho);
-    swap(first.bpp, second.bpp);
-    swap(first.format, second.format);
+    swap(left.data, right.data);
+    swap(left.alto, right.alto);
+    swap(left.ancho, right.ancho);
+    swap(left.bpp, right.bpp);
+    swap(left.format, right.format);
   }
 
-  ImageResource(const ImageResource &other) :
-      Resource(other) {
+  ImageResource(const ImageResource &right) :
+      Resource(right) {
 
-    this->resize(other.alto, other.ancho, other.bpp);
-    this->format = other.format;
-    memcpy(data, other.data, this->getBufferSize());
+    this->resize(right.alto, right.ancho, right.bpp);
+    this->format = right.format;
+    memcpy(data, right.data, this->getBufferSize());
   }
 
-  ImageResource(ImageResource &&other) :
-      Resource(other) {
-    swap(*this, other);
+  ImageResource(ImageResource &&rvalue) :
+      Resource(rvalue) {
+    swap(*this, rvalue);
   }
 
-  ImageResource& operator =(ImageResource other) {
-    swap(*this, other);
+  ImageResource& operator =(ImageResource right) {
+    swap(*this, right);
     return *this;
   }
   /*

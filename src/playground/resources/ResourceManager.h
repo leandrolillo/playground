@@ -51,6 +51,9 @@ struct resourceComparator
 };
 
 class ResourceManager {
+public:
+  static const String EphemeralLabel;
+
 protected:
   Logger *logger = LoggerFactory::getLogger("resources/ResourceManager");
 
@@ -64,8 +67,6 @@ protected:
   std::map<String, ResourceAdapter*> adaptersCache;
 
   String rootFolder;
-  public:
-  static const String EphemeralLabel;
 
 public:
   ResourceManager(const ResourceManager&) = delete;
@@ -76,6 +77,37 @@ public:
     this->rootFolder = std::filesystem::absolute(rootFolder); //for now it has to be an absolute path or there will be issues with resource loading
   }
 
+  /*
+   * Rule of five and copy-and-swap
+   */
+  friend void swap(ResourceManager &left, ResourceManager &right) {
+    // enable ADL (not necessary in our case, but good practice)
+    using std::swap;
+
+    // by swapping the members of two objects, the two objects are effectively swapped
+    swap(left.resourceAdapters, right.resourceAdapters);
+    swap(left.resources, right.resources);
+    swap(left.resourcesCache, right.resourcesCache);
+    swap(left.rootFolder, right.rootFolder);
+  }
+
+  ResourceManager(ResourceManager &&rvalue) {
+    swap(*this, rvalue);
+  }
+
+  /*
+   * End of Rule of five and copy-and-swap
+   */
+
+  /*****************
+   * Adapter methods
+   *****************/
+  ResourceAdapter* addAdapter(std::unique_ptr<ResourceAdapter> adapter);
+
+  /*************************************
+   * ResourceLoadRequest factory methods
+   *************************************/
+
   ResourceLoadRequest newRequest(std::shared_ptr<FileParser> &fileParser) {
     return ResourceLoadRequest(fileParser);
   }
@@ -84,25 +116,26 @@ public:
     return ResourceLoadRequest(normalize(fileName));
   }
 
-  ResourceAdapter* addAdapter(std::unique_ptr<ResourceAdapter> adapter);
+  /*************************************
+   * Load methods
+   *************************************/
 
   Resource* load(const String &fileName) {
     logger->debug("Load [%s]", fileName.c_str());
-    ResourceLoadRequest request = newRequest(fileName);
-    return this->load(request);
+    return this->load(ResourceLoadRequest(fileName));
   }
 
   Resource* load(std::shared_ptr<FileParser> &fileParser, const String &outputMimeType, std::set<String> labels = { }) {
     logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileParser.get()->getFilename().c_str());
 
-    return load(newRequest(fileParser).acceptMimeType(outputMimeType).withLabels(labels));
+    return load(ResourceLoadRequest(fileParser).acceptMimeType(outputMimeType).withLabels(labels));
   }
 
   Resource* load(const String &fileName, const String &outputMimeType, std::set<String> labels = { },
       std::map<String, String> options = { }) {
     logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileName.c_str(), fileName.c_str());
 
-    return load(newRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
+    return load(ResourceLoadRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
   }
 
   /**
@@ -111,11 +144,18 @@ public:
   Resource* load(const String &parentFilePath, const String &fileName, const String &outputMimeType) {
     logger->debug("Load [%s] [%s] relative to [%s]", outputMimeType.c_str(), fileName.c_str(), parentFilePath.c_str());
 
-    return load(newRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
+    return load(ResourceLoadRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
   }
 
-  Resource* load(ResourceLoadRequest &loadRequest);
+  Resource* load(ResourceLoadRequest &resourceLoadRequest);
+  Resource* load(ResourceLoadRequest &&rvalue) {
+    ResourceLoadRequest resourceLoadRequest(rvalue);
+    return load(resourceLoadRequest);
+  }
 
+  /*****************
+   * Resource methods
+   *****************/
   Resource* addResource(Resource *resource) {
     if (resource != null) {
       if (resource->getUri().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
@@ -265,6 +305,7 @@ private:
   const String getCacheKey(const ResourceLoadRequest &resourceLoadRequest) {
     return getCacheKey(resourceLoadRequest.getUri(), resourceLoadRequest.getOutputMimeType());
   }
+
 
   Resource* getCacheResource(const String &cacheKey) {
     auto pair = resourcesCache.find(cacheKey);

@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 #include "ResourceManagerMock.h"
-#include "ResourceLoadResponseMock.h"
 
 #include "AudioRunner.h"
 
@@ -8,6 +7,16 @@
 #include "WavResourceAdapter.h"
 #include "BufferResourceAdapter.h"
 #include "Logger.h"
+
+
+//template<typename Adapter>
+//class AdapterFixture : public Adapter {
+//public:
+//  // You can add public helper methods here if needed for testing
+//  std::vector<Resource *> doLoad(ResourceLoadRequest &request) const {
+//    return Adapter::doLoad(request);
+//  }
+//};
 
 TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
 {
@@ -17,16 +26,14 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
 
   SECTION("OggResourceAdapter")
   {
-    OggResourceAdapter resourceAdapter;
+    //AdapterFixture<OggResourceAdapter> resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<OggResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("audio.ogg");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(resourceManager.newRequest("audio.ogg"));
 
-    resourceAdapter.load(request, response);
+    CHECK(response.size() == 1);
 
-    CHECK(1 == resourceManager.getResourcesCount(MimeTypes::AUDIO));
-
-    AudioResource *resource = (AudioResource *)response.getLastAdded();
+    AudioResource *resource = (AudioResource *)response.back();
     REQUIRE(resource != null);
     CHECK(!resource->getData().empty());
     CHECK(MimeTypes::AUDIO == resource->getMimeType());
@@ -34,16 +41,14 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
 
   SECTION("AudioResourceAdapter")
   {
-    WavResourceAdapter resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<WavResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("audio.wav");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(request);
 
-    resourceAdapter.load(request, response);
+    CHECK(response.size() == 1);
 
-    CHECK(1 == resourceManager.getResourcesCount(MimeTypes::AUDIO));
-
-    AudioResource *resource = (AudioResource *)response.getLastAdded();
+    AudioResource *resource = (AudioResource *)response.back();
     REQUIRE(resource != null);
     CHECK(!resource->getData().empty());
     CHECK(MimeTypes::AUDIO == resource->getMimeType());
@@ -55,19 +60,16 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   Playground playground("resources");
+  ResourceManager &resourceManager = playground.getResourceManager();
   AudioRunner *runner = (AudioRunner *)playground.addRunner(new AudioRunner());
   runner->initialize();
 
   SECTION("AudioBufferResourceAdapter") { //requires initialized audio runner
-    BufferResourceAdapter resourceAdapter;
-    resourceAdapter.setResourceManager(runner->getResourceManager()); //TODO: Move resourceManager to load method?
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<BufferResourceAdapter>());
 
-    ResourceLoadRequest request = runner->getResourceManager()->newRequest("audio.ogg");
-    ResourceLoadResponseMock response(request, *runner->getResourceManager());
-
-    resourceAdapter.load(request.acceptMimeType(MimeTypes::AUDIOBUFFER), response);
-    BufferResource *resource = (BufferResource *)response.getLastAdded();
-
+    auto response = resourceAdapter->load(resourceManager.newRequest("audio.ogg").acceptMimeType(MimeTypes::AUDIOBUFFER));
+    CHECK(response.size() == 1);
+    BufferResource *resource = (BufferResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getId() != 0);
   }

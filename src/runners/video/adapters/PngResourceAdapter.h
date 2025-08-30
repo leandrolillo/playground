@@ -118,7 +118,7 @@ class PngResourceAdapter : public ResourceAdapter {
 			unsigned long wimage_rowbytes = ((4 * width + 3L) >> 2) << 2;
 
 			ImageResource *resource = new ImageResource();
-      pBitmap = resource->resize(height, width, bit_depth, wimage_rowbytes * height);
+      pBitmap = resource->resize(height, width, 32, wimage_rowbytes * height);
 
 			if (!pBitmap) {
 				logger->error("could not create bitmap pointer: out of memory");

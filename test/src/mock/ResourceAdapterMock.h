@@ -15,9 +15,13 @@ public:
 		return *this;
 	}
 
-	virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
+	virtual std::vector<Resource *> doload(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
+	  std::vector<Resource *> result;
+
 		if(mockedLoadResult != null) {
-			response.addResource(mockedLoadResult);
+			result.push_back(mockedLoadResult);
 		}
+
+		return result;
 	}
 };

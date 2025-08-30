@@ -13,6 +13,8 @@ ResourceManager / Resource Adapters
       * Move label / options logic here
       * KILL RESOURCELOADRESPONSE!! Unify resourceAdapter with resourceLoadResponse class (might not be possible due to cyclic reference). 
           Maybe do ResourceAdapter.load(ResourceManager &, ResourceLoadRequest &) instead of having it as a member.
+
+  - Create cache class and use it to store resources in resourcemanager.
           
     
   - review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?

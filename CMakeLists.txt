@@ -1,5 +1,5 @@
 #cmake/compiler options
-#add_definitions(-w) # hide warnings
+add_definitions(-w) # hide warnings since they are annoying and I haven't found a way of disabling them per library
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_CXX_STANDARD          17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -73,7 +73,7 @@ if [[ "${inputs_parameters_clean}" == "true" ]]; then
 fi
 
 options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug " || echo "")
-options=$([[ "${inputs_parameters_offline}" == "true" ]] && echo "${options}-DFETCHCONTENT_UPDATES_DISCONNECTED=ON" || echo "")
+options=${options}$([[ "${inputs_parameters_offline}" == "true" ]] && echo "-DFETCHCONTENT_UPDATES_DISCONNECTED=ON" || echo "")
 
 mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cd ${inputs_parameters_path}/${inputs_parameters_working_folder}

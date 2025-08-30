@@ -232,7 +232,7 @@ protected:
     	}
     }
 
-    void printMessage(LogLevel logLevel, const char *formato, va_list *args) {
+    void printMessage(LogLevel logLevel, const char *formato, va_list *args = null) {
         if (this->appendersByLogLevel.find(logLevel) != appendersByLogLevel.end()) {
             char textBuffer[256];
             strftime(textBuffer, sizeof(textBuffer), "%d/%m/%Y %H:%M:%S", Appender::getCurrentTime());
@@ -272,6 +272,9 @@ public:
 			printMessage(LogLevel::DEBUG, formato, &args);
 			va_end(args);
         }
+    }
+    void error(String message) {
+      printMessage(LogLevel::ERROR, message.c_str());
     }
     void error(const char *formato, ...) {
         va_list args;

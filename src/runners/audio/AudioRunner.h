@@ -37,10 +37,10 @@ class AudioRunner: public PlaygroundRunner {
 		}
 
 		virtual bool initialize() override {
-			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new SourceResourceAdapter));
-			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new BufferResourceAdapter));
-			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new OggResourceAdapter));
-			this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new WavResourceAdapter));
+			this->getResourceManager().addAdapter(std::unique_ptr<ResourceAdapter>(new SourceResourceAdapter));
+			this->getResourceManager().addAdapter(std::unique_ptr<ResourceAdapter>(new BufferResourceAdapter));
+			this->getResourceManager().addAdapter(std::unique_ptr<ResourceAdapter>(new OggResourceAdapter));
+			this->getResourceManager().addAdapter(std::unique_ptr<ResourceAdapter>(new WavResourceAdapter));
 
 			device = alcOpenDevice(null);
 			if(device == null) {
@@ -71,7 +71,7 @@ class AudioRunner: public PlaygroundRunner {
 
 		Source *createSource(String fileName, const vector &position = vector(0, 0, 0), const vector &velocity = vector(0, 0, 0), bool loop = true)
 		{
-			Source *source = (Source *)this->getResourceManager()->load(fileName, MimeTypes::AUDIOSOURCE);
+			Source *source = (Source *)getResourceManager().load(fileName, MimeTypes::AUDIOSOURCE);
 			if(source != null)
 			{
 				source->setPosition(position);

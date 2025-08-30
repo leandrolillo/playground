@@ -19,6 +19,7 @@ public:
     this->produces(MimeTypes::AUDIO);
   }
 
+protected:
   uint32_t asDword(char *string) const {
     uint32_t result = 0;
 
@@ -41,39 +42,37 @@ public:
     return result;
   }
 
-  virtual void load(ResourceLoadRequest &request,
-      ResourceLoadResponse &response) const override {
-    AudioResource *audioResource = null;
+  virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
+    std::vector<Resource *> response;
 
     struct ChunkHeader {
       uint32_t id;
       uint32_t length;
-    } chunkHeader;
+    }chunkHeader;
 
     struct RiffChunk {
       uint32_t waveId; 	//Dice WAVE
-    } *riffChunk = null;
+    }*riffChunk = null;
 
     struct FormatChunk {
       uint16_t formatTag;	//Wave format. Tipo de encriptamiento.
-      uint16_t numberOfChannels;		//Canales 1 = mono, 2 stereo
-      uint32_t numberOfSamplesPerSec;	//Playback Frecuency
+      uint16_t numberOfChannels;//Canales 1 = mono, 2 stereo
+      uint32_t numberOfSamplesPerSec;//Playback Frecuency
       uint32_t numberOfAvgBytesPerSec;// =nChannels * nSamplesPerSec * (nBitsPerSample/8)
       uint16_t numberBlockAlign;//nBlockAlign = nChannels * (nBitsPerSample / 8)
-      uint16_t numberBytesPerSample;	//Format specific data area
-    } *formatChunk = null;
+      uint16_t numberBytesPerSample;//Format specific data area
+    }*formatChunk = null;
 
     struct DataChunk {
       std::vector<char> data;
-    } *dataChunk = null;
+    }*dataChunk = null;
 
     while (request.getFileParser().read(&chunkHeader, sizeof(ChunkHeader), 1)
         == 1) {
       if (asString(chunkHeader.id) == "RIFF") {
         logger->verbose("Reading riff chunk");
         riffChunk = new RiffChunk;
-        if (request.getFileParser().read(riffChunk, sizeof(RiffChunk), 1)
-            != 1) { // riff chunk length is the file size, so read based on struct size instead.
+        if (request.getFileParser().read(riffChunk, sizeof(RiffChunk), 1) != 1) { // riff chunk length is the file size, so read based on struct size instead.
           logger->error("Could not read RIFF chunk");
           delete riffChunk;
           riffChunk = null;
@@ -82,8 +81,7 @@ public:
         logger->verbose("Reading format chunk");
         if (sizeof(FormatChunk) >= chunkHeader.length) {
           formatChunk = new FormatChunk;
-          if (request.getFileParser().read(formatChunk, sizeof(char),
-              chunkHeader.length) != chunkHeader.length) {
+          if (request.getFileParser().read(formatChunk, sizeof(char), chunkHeader.length) != chunkHeader.length) {
             logger->error("Could not read fmt chunk");
             delete formatChunk;
             formatChunk = null;
@@ -102,7 +100,7 @@ public:
         char buffer[chunkHeader.length];
 
         if (request.getFileParser().read(buffer, sizeof(char),
-            chunkHeader.length) != chunkHeader.length) {
+                chunkHeader.length) != chunkHeader.length) {
           logger->error("Could not read data chunk");
           delete dataChunk;
           dataChunk = null;
@@ -123,18 +121,16 @@ public:
           logger->verbose("Loading [%s] file [%s] [%u]bps [%u] bytes]",
               asString(riffChunk->waveId).c_str(),
               formatChunk->numberOfChannels == 1 ? "mono" : "stereo",
-              formatChunk->numberOfSamplesPerSec
-                  * formatChunk->numberOfChannels, dataChunk->data.size());
+              formatChunk->numberOfSamplesPerSec * formatChunk->numberOfChannels, dataChunk->data.size());
 
-          audioResource = new AudioResource();
+          AudioResource *audioResource = new AudioResource();
           audioResource->setFormat(
               formatChunk->numberOfChannels == 1 ?
-                  formatChunk->numberBytesPerSample == 1 ?
-                      AudioFormat::MONO8 : AudioFormat::MONO16
-              : formatChunk->numberBytesPerSample == 1 ?
-                  AudioFormat::STEREO8 : AudioFormat::STEREO16);
+              formatChunk->numberBytesPerSample == 1 ? AudioFormat::MONO8 : AudioFormat::MONO16
+              : formatChunk->numberBytesPerSample == 1 ? AudioFormat::STEREO8 : AudioFormat::STEREO16);
           audioResource->setFrequency(formatChunk->numberOfSamplesPerSec);
           audioResource->setData(dataChunk->data);
+          response.push_back(audioResource);
         } else {
           logger->error("Missing or invalid data chunk");
         }
@@ -158,6 +154,6 @@ public:
       delete dataChunk;
     }
 
-    response.addResource(audioResource);
+    return response;
   }
 };
