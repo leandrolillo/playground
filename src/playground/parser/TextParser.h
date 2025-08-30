@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_PLAYGROUND_PARSER_TEXTPARSER_H_
-#define SRC_PLAYGROUND_PARSER_TEXTPARSER_H_
+#pragma once
 
 #include <Math3d.h>
 #include "FileParser.h"
@@ -188,7 +187,3 @@ protected:
     }
 
 };
-
-
-
-#endif /* SRC_PLAYGROUND_PARSER_TEXTPARSER_H_ */

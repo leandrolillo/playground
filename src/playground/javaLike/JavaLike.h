@@ -5,13 +5,9 @@
  *      Author: Lean
  */
 
-#ifndef JAVA_LIKE
-#define JAVA_LIKE
-
+#pragma once
 #include<string>
 
 typedef std::string String;
 
 #define null nullptr
-
-#endif

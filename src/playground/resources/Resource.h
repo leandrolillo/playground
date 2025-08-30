@@ -4,9 +4,7 @@
  *  Created on: 30/12/2012
  *      Author: Lean
  */
-
-#ifndef RESOURCE_H_
-#define RESOURCE_H_
+#pragma once
 
 #include<set>
 #include "JavaLike.h"
@@ -93,5 +91,3 @@ public:
 		return String("Resource(id:" + std::to_string(this->getId()) + ") [" + this->getMimeType() + "] [" + this->uri + "]");
 	}
 };
-
-#endif /* RESOURCE_H_ */

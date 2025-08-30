@@ -4,9 +4,7 @@
  *  Created on: Oct 21, 2022
  *      Author: leandro
  */
-
-#ifndef SRC_PLAYGROUND_RESOURCES_RESOURCELOADREQUEST_H_
-#define SRC_PLAYGROUND_RESOURCES_RESOURCELOADREQUEST_H_
+#pragma once
 
 #include <set>
 #include <map>
@@ -176,8 +174,3 @@ public:
 		return StringFormatter::format("[%s]<-[%s] [%s]", getOutputMimeType().c_str(), getInputMimeType().c_str(), getUri().c_str());
 	}
 };
-
-
-
-
-#endif /* SRC_PLAYGROUND_RESOURCES_RESOURCELOADREQUEST_H_ */

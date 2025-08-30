@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_UTIL_STRINGFORMATTER_H_
-#define SRC_UTIL_STRINGFORMATTER_H_
-
+#pragma once
 #include<stdio.h>
 #include "JavaLike.h"
 
@@ -37,7 +35,3 @@ public:
             return result;
         }
 };
-
-
-
-#endif /* SRC_UTIL_STRINGFORMATTER_H_ */

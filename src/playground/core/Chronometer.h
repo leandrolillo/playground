@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_PLAYGROUND_CORE_CHRONOMETER_H_
-#define SRC_PLAYGROUND_CORE_CHRONOMETER_H_
-
+#pragma once
 #include<Math3d.h>
 
 /**
@@ -56,7 +54,3 @@ public:
 	virtual ~Chronometer() {
 	}
 };
-
-
-
-#endif /* SRC_PLAYGROUND_CORE_CHRONOMETER_H_ */

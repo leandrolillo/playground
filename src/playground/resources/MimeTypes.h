@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_PLAYGROUND_RESOURCES_MIMETYPES_H_
-#define SRC_PLAYGROUND_RESOURCES_MIMETYPES_H_
-
+#pragma once
 #include "JavaLike.h"
 
 class MimeTypes {
@@ -91,8 +89,3 @@ public:
 	    }
 
 	};
-
-
-
-
-#endif /* SRC_PLAYGROUND_RESOURCES_MIMETYPES_H_ */

@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef FILEPARSER_H_
-#define FILEPARSER_H_
+#pragma once
 
 #include <string>
 #include<stdio.h>
@@ -310,5 +309,3 @@ public:
     	return String(this->filename + ":(" + std::to_string(this->getLine()) + ":" + std::to_string(this->getColumn()) + ")");
     }
 };
-
-#endif /* FILEPARSER_H_ */

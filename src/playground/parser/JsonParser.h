@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef JSONPARSER_H_
-#define JSONPARSER_H_
+#pragma once
 
 #include <Math3d.h>
 #include <vector>
@@ -217,5 +216,3 @@ class JsonParser : public TextParser
 			return array;
 		}
 };
-
-#endif /* JSONPARSER_H_ */

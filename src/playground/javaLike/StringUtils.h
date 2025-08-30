@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_PLAYGROUND_JAVALIKE_STRINGUTILS_H_
-#define SRC_PLAYGROUND_JAVALIKE_STRINGUTILS_H_
-
+#pragma once
 #include <sstream>
 #include <vector>
 #include "JavaLike.h"
@@ -63,4 +61,3 @@ public:
 		return result;
 	}
 };
-#endif /* SRC_PLAYGROUND_JAVALIKE_STRINGUTILS_H_ */

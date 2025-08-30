@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef LOGGER_H_
-#define LOGGER_H_
+#pragma once
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -369,4 +368,3 @@ public:
         return logger;
     }
 };
-#endif /* LOGGER_H_ */
