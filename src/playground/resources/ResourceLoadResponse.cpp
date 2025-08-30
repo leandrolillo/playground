@@ -27,6 +27,8 @@ Resource *ResourceLoadResponse::addResource(Resource *resource) {
 
 		return resourceManager.addResource(resource);
 	}
+
+	return null;
 }
 
 

@@ -8,6 +8,7 @@
 #include "GeometryResourceAdapter.h"
 #include "ObjResourceAdapter.h"
 
+#include "DefaultRenderer.h"
 #include "Camera.h"
 
 TEST_CASE("Video Runner Test case")
@@ -167,17 +168,17 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 ////  }
 //      }
 //    }
-    TEST_CASE("MousePicking tests") {
-      vector4 point(0, 0, -1, 0);
+TEST_CASE("MousePicking tests") {
+  vector4 point(0, 0, -1, 0);
 
-      unsigned int width = 640;
-      unsigned int height = 480;
+  unsigned int width = 640;
+  unsigned int height = 480;
 
-      Camera camera;
-      camera.setPerspectiveProjectionFov(45.0, (real) width / (real) height, 0.1, 300.0);
-      camera.setViewMatrix(matriz_4x4::identidad);
+  Camera camera;
+  camera.setPerspectiveProjectionFov(45.0, (real) width / (real) height, 0.1, 300.0);
+  camera.setViewMatrix(matriz_4x4::identidad);
 
-      vector rayDirection = camera.getRayDirection(320, 240, width, height);
+  vector rayDirection = camera.getRayDirection(320, 240, width, height);
 
 //        vector4 eyePoint = camera.getViewMatrix() * point;
 //        vector4 projectedPoint = camera.getProjectionMatrix() * point;
@@ -194,5 +195,11 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 //                ndcPoint.toString("%.2f").c_str(),
 //                renderedPoint.toString("%.2f").c_str());
 
-      CHECK(vector(0, 0, -1) == rayDirection);
-    }
+  CHECK(vector(0, 0, -1) == rayDirection);
+}
+
+TEST_CASE("DefaultRenderer") {
+  DefaultRenderer renderer;
+}
+
+

@@ -120,7 +120,7 @@ public:
 		return type;
 	}
 
-	void setType(String type) {
+	void setType(String type) { //TODO: Move this to an enum
 		this->type = type;
 	}
 

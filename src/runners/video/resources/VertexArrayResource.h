@@ -79,12 +79,12 @@ class VertexArrayResource : public Resource
 {
 	private:
 		std::unordered_map<unsigned int, std::unique_ptr<VertexAttribPointer>> attributes;
-		unsigned int primitiveType;
+		String primitiveType; // //TODO: Move this to an enum
 		vector size;
 	public:
 		VertexArrayResource(unsigned int id) : Resource(id, MimeTypes::VERTEXARRAY)
 		{
-			primitiveType = GL_TRIANGLES;
+			primitiveType = "triangles";
 		}
 
 		/**
@@ -112,11 +112,11 @@ class VertexArrayResource : public Resource
 			attributes.clear();
 		}
 
-		unsigned int getPrimitiveType() const {
+		String getPrimitiveType() const {
 			return primitiveType;
 		}
 
-		void setPrimitiveType(unsigned int primitiveType) {
+		void setPrimitiveType(String primitiveType) {
 			this->primitiveType = primitiveType;
 		}
 

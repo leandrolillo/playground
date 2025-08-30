@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef OPENGLVIDEORUNNER_H_
-#define OPENGLVIDEORUNNER_H_
+#pragma once
 
 #include <unistd.h>
 
@@ -17,6 +16,7 @@
 #include "SDL3/SDL.h"
 
 #include "Playground.h"
+#include "VideoRunner.h"
 #include "CubeMapResourceAdapter.h"
 #include "FragmentShaderResourceAdapter.h"
 #include "MeshResourceAdapter.h"
@@ -24,8 +24,8 @@
 #include "TextureResourceAdapter.h"
 #include "VertexArrayAdapter.h"
 #include "VertexShaderResourceAdapter.h"
-#include "HeightMapResourceAdapter.h"
-#include "VideoRunner.h"
+#include "TerrainResourceAdapter.h"
+
 
 constexpr unsigned int DEPTH_TEST=GL_DEPTH_TEST;
 constexpr unsigned int CULL_FACE=GL_CULL_FACE;
@@ -84,14 +84,15 @@ public:
     virtual bool initialize() override {
         //logger->setLogLevel(LogLevel::DEBUG);
         VideoRunner::initialize();
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TextureResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new CubeMapResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new HeightMapResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexArrayResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new MeshResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexShaderResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new FragmentShaderResourceAdapter()));
-        this->getContainer()->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ShaderProgramResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TextureResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new CubeMapResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexArrayResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new MeshResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexShaderResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new FragmentShaderResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ShaderProgramResourceAdapter()));
+        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TerrainResourceAdapter()));
+
 
         if (!SDL_Init(SDL_INIT_VIDEO)) {
             logger->error("SDL_Init Error: %s", SDL_GetError() == null ? "": SDL_GetError());
@@ -501,7 +502,9 @@ public:
     void drawVertexArray(const VertexArrayResource *vertexArrayResource) const override {
         String errorMessage;
 
-        if (vertexArrayResource != null && vertexArrayResource->getId() > 0 && vertexArrayResource->getPrimitiveType() < 7) {
+        if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
+          unsigned int primitiveType = asGlPrimitive(vertexArrayResource->getPrimitiveType());
+          if(primitiveType < 7) {
             getGlError();
             //logger->info("Drawing vertexArray %s", vertexArrayResource->toString().c_str());
 
@@ -513,12 +516,12 @@ public:
 
             const VertexAttribPointer *indices = vertexArrayResource->getAttribute(INDEX_LOCATION);
             if (indices != null) {
-                glDrawElements(vertexArrayResource->getPrimitiveType(), indices->getCount(), GL_UNSIGNED_INT, (GLvoid*) 0);
+                glDrawElements(primitiveType, indices->getCount(), GL_UNSIGNED_INT, (GLvoid*) 0);
                 if (!(errorMessage = getGlError()).empty()) {
                     logger->error("Error drawing elements [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
                 }
             } else {
-                glDrawArrays(vertexArrayResource->getPrimitiveType(), 0, vertexArrayResource->getAttribute(VERTEX_LOCATION)->getCount());
+                glDrawArrays(primitiveType, 0, vertexArrayResource->getAttribute(VERTEX_LOCATION)->getCount());
                 if (!(errorMessage = getGlError()).empty()) {
                     logger->error("Error drawing arrays [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
                 }
@@ -526,6 +529,7 @@ public:
 
             //glBindVertexArray(0);
             glDisableVertexAttribArray(0);
+          }
         }
 
     }
@@ -627,5 +631,3 @@ bool playgroundEventFilter(void *context, SDL_Event *event) {
     OpenGLRunner *runner = (OpenGLRunner*) context;
     return runner->processEvent(event);
 }
-
-#endif /* VIDEORUNNER_H_ */

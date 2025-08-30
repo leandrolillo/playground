@@ -5,13 +5,10 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_VIDEORUNNER_H_
-#define SRC_RUNNERS_VIDEO_VIDEORUNNER_H_
+#pragma once
 
-#include <resources/LightResource.h>
-#include <Math3d.h>
+#include "Math3d.h"
 #include "Playground.h"
-#include "TerrainResourceAdapter.h"
 #include "GeometryResourceAdapter.h"
 #include "JpegResourceAdapter.h"
 #include "MtlResourceAdapter.h"
@@ -21,6 +18,8 @@
 #include "LightResource.h"
 #include "ShaderProgramResource.h"
 #include "VertexArrayResource.h"
+#include "HeightMapResourceAdapter.h"
+#include "TextureResource.h"
 
 
 class VideoRunner : public PlaygroundRunner, public Chronometer {
@@ -74,9 +73,10 @@ public:
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new JpegResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TgaResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new GeometryResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TerrainResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ObjResourceAdapter()));
 		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new MtlResourceAdapter()));
+    this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new HeightMapResourceAdapter()));
+
 
 		this->getContainer()->setStopWatch(this);
 
@@ -121,9 +121,3 @@ public:
 		return "VideoRunner(id:" + std::to_string(this->getId()) + ")";
 	}
 };
-
-const unsigned char VideoRunner::ID = 0;
-
-
-
-#endif /* SRC_RUNNERS_VIDEO_VIDEORUNNER_H_ */

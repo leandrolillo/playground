@@ -38,7 +38,7 @@ public:
         glGenVertexArrays(1, &vertexArray);
 
         resource = new VertexArrayResource(vertexArray);
-        resource->setPrimitiveType(asGlPrimitiveType(geometry->getType()));
+        resource->setPrimitiveType(geometry->getType());
         resource->setSize(geometry->getSize());
         resource->setUri(geometry->getUri());
 

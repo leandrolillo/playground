@@ -33,7 +33,7 @@ public:
          */
         matriz_3x3 reducedModelMatrix = (matriz_3x3) modelMatrix;
         real determinante = reducedModelMatrix.determinante();
-        if(!equalsZero(determinante)) {
+        if(!equalsZeroAbsoluteMargin(determinante)) {
             this->normalMatrix = reducedModelMatrix.inversa(determinante).traspuesta();
         } else {
             this->normalMatrix = matriz_3x3::identidad;
@@ -126,7 +126,7 @@ public:
             			real determinante = reducedModelMatrix.determinante();
 
 						videoRunner->sendMatrix("matrices.normal",
-								!equalsZero(determinante) ?
+								!equalsZeroAbsoluteMargin(determinante) ?
 										reducedModelMatrix.inversa(determinante).traspuesta() :
 										matriz_3x3::identidad);
 						videoRunner->drawVertexArray(mesh->getVertexArray());
