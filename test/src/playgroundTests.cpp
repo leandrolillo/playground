@@ -179,8 +179,8 @@ TEST_CASE("ResourceManagerTests") {
   ResourceManagerMock resourceManager("resources");
 
   SECTION("AddResourceAdapter") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ResourceAdapterMock>(
-            std::set<String> {"test/outputMimeType"}, "test/inputMimeType"));
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(
+        std::make_unique<ResourceAdapterMock>(std::set<String> {"test/outputMimeType"}, "test/inputMimeType"));
     CHECK(resourceAdapter != null);
     CHECK(1 == resourceManager.getAdaptersCount());
   }
@@ -190,8 +190,8 @@ TEST_CASE("ResourceManagerTests") {
 //  }
 
   SECTION("Load") {
-    ResourceAdapterMock *resourceAdapter = (ResourceAdapterMock *)resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(
-            new ResourceAdapterMock(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType")));
+    ResourceAdapterMock *resourceAdapter = (ResourceAdapterMock *)resourceManager.addAdapter(
+        std::make_unique<ResourceAdapterMock>(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType"));
 
     /* Should populate default values */
     resourceAdapter->withLoadResult(new Resource(1, ""));

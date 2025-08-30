@@ -5,9 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef AUDIORUNNER_H_
-#define AUDIORUNNER_H_
-
+#pragma once
 #include <Math3d.h>
 #include "Playground.h"
 #include "BufferResourceAdapter.h"
@@ -156,5 +154,3 @@ class AudioRunner: public PlaygroundRunner {
 
 
 const unsigned char AudioRunner::ID = 3;
-
-#endif /* AUDIORUNNER_H_ */

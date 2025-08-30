@@ -5,8 +5,8 @@
  *      Author: Lean
  */
 
-#ifndef JPEGRESOURCEADAPTER_H_
-#define JPEGRESOURCEADAPTER_H_
+#pragma once
+
 #include <jpeglib.h>
 
 #include "ResourceAdapter.h"
@@ -21,7 +21,8 @@ public:
 		this->produces(MimeTypes::IMAGE);
 	}
 
-	virtual void load(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
+protected:
+	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
 		struct jpeg_decompress_struct cinfo;
 		struct jpeg_error_mgr jerr;
 
@@ -54,7 +55,6 @@ public:
 
 		jpeg_destroy_decompress(&cinfo);
 
-		response.addResource(resource);
+		return std::vector<Resource *> {resource};
 	}
 };
-#endif /* JPEGRESOURCEADAPTER_H_ */

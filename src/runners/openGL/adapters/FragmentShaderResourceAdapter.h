@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_OPENGL_ADAPTERS_FRAGMENTSHADERRESOURCEADAPTER_H_
-#define SRC_RUNNERS_OPENGL_ADAPTERS_FRAGMENTSHADERRESOURCEADAPTER_H_
-
+#pragma once
 
 #include "ShaderResourceAdapter.h"
 
@@ -18,6 +16,3 @@ public:
 		this->produces(MimeTypes::FRAGMENTSHADER);
 	}
 };
-
-
-#endif /* SRC_RUNNERS_OPENGL_ADAPTERS_FRAGMENTSHADERRESOURCEADAPTER_H_ */

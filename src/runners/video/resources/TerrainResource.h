@@ -70,7 +70,7 @@ public:
 		this->r = r;
 	}
 
-	const VertexArrayResource* getModel() const {
+	VertexArrayResource* getModel() const {
 		return model;
 	}
 

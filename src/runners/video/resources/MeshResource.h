@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RESOURCES_MESHRESOURCE_H_
-#define SRC_RUNNERS_VIDEO_RESOURCES_MESHRESOURCE_H_
+#pragma once
 
 #include "Resource.h"
 #include "MaterialResource.h"
@@ -64,6 +63,3 @@ public:
 		this->specularMap = specularMap;
 	}
 };
-
-
-#endif /* SRC_RUNNERS_VIDEO_RESOURCES_MESHRESOURCE_H_ */

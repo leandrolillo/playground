@@ -67,8 +67,8 @@ public:
   virtual void afterLoop() {
   }
 
-  void setContainer(Playground *container) {
-    this->container = container;
+  void setContainer(Playground &container) {
+    this->container = &container;
   }
   Playground* getContainer() const {
     return this->container;
@@ -219,9 +219,8 @@ public:
       currentRunnerIterator++;
     }
 
-    runner->setContainer(this);
-    runners.insert(currentRunnerIterator,
-        std::unique_ptr < PlaygroundRunner > (runner));
+    runner->setContainer(*this);
+    runners.insert(currentRunnerIterator, std::unique_ptr < PlaygroundRunner > (runner));
     runners_by_id[runner->getId()] = runner;
 
     return runner;

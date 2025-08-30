@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 #include "ResourceManagerMock.h"
-#include "ResourceLoadResponseMock.h"
 #include "ImageResource.h"
 #include "PngResourceAdapter.h"
 #include "JpegResourceAdapter.h"
@@ -50,30 +49,27 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
   SECTION("PngResourceAdapter tests")
   {
-    PngResourceAdapter resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("image.png");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(request);
 
-    resourceAdapter.load(request, response);
-
-    REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::IMAGE));
-    ImageResource *resource = (ImageResource *)response.getLastAdded();
+    REQUIRE(1 == response.size());
+    ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
   SECTION("JpegResourceAdapter tests") {
-    JpegResourceAdapter resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("image.jpg");
-    ResourceLoadResponseMock response(request, resourceManager);
-    resourceAdapter.load(request, response);
+    auto response = resourceAdapter->load(request);
 
-    REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::IMAGE));
+    REQUIRE(1 == response.size());
 
-    ImageResource *resource = (ImageResource *)response.getLastAdded();
+    ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
     CHECK(756 == resource->getAncho());
@@ -82,16 +78,14 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
   }
 
   SECTION("TgaResourceAdapter") {
-    TgaResourceAdapter resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("image.tga");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(request);
 
-    resourceAdapter.load(request, response);
+    REQUIRE(1 == response.size());
 
-    REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::IMAGE));
-
-    ImageResource *resource = (ImageResource *)response.getLastAdded();
+    ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
     CHECK(400 == resource->getAncho());
@@ -100,15 +94,14 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
   }
 
   SECTION("GeometryResourceAdapter") {
-    GeometryResourceAdapter resourceAdapter;
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+
     ResourceLoadRequest request = resourceManager.newRequest("geometry.json");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(request);
 
-    resourceAdapter.load(request, response);
+    REQUIRE(1 <= response.size());
 
-    REQUIRE(1 == resourceManager.getResourcesCount(MimeTypes::GEOMETRYCOLLECTION));
-
-    GeometryCollection *resources = (GeometryCollection *)response.getLastAdded();
+    GeometryCollection *resources = (GeometryCollection *)response.back();
     REQUIRE(resources != null);
     GeometryResource *resource = resources->getObject("geometry.json");
     REQUIRE(resource != null);
@@ -119,15 +112,12 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(3 == resource->getNormals().size());
   }
   SECTION("ObjResourceAdapter tests") {
-    ObjResourceAdapter resourceAdapter;
-    resourceAdapter.setResourceManager(&resourceManager);
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("axes.obj");
-    ResourceLoadResponseMock response(request, resourceManager);
+    auto response = resourceAdapter->load(request);
 
-    resourceAdapter.load(request, response);
-
-    GeometryCollection *resources = (GeometryCollection *)response.getLastAdded();
+    GeometryCollection *resources = (GeometryCollection *)response.back();
     REQUIRE(resources != null);
     GeometryResource *resource = resources->getObject("Axes");
     REQUIRE(resource != null);

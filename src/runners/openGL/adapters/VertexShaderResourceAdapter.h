@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_OPENGL_ADAPTERS_VERTEXSHADERRESOURCEADAPTER_H_
-#define SRC_RUNNERS_OPENGL_ADAPTERS_VERTEXSHADERRESOURCEADAPTER_H_
+#pragma once
 
 #include "ShaderResourceAdapter.h"
 
@@ -18,6 +17,3 @@ public:
 		this->accepts(MimeTypes::GLSL);
 	}
 };
-
-
-#endif /* SRC_RUNNERS_OPENGL_ADAPTERS_VERTEXSHADERRESOURCEADAPTER_H_ */

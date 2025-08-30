@@ -84,14 +84,14 @@ public:
     virtual bool initialize() override {
         //logger->setLogLevel(LogLevel::DEBUG);
         VideoRunner::initialize();
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TextureResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new CubeMapResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexArrayResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new MeshResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new VertexShaderResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new FragmentShaderResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ShaderProgramResourceAdapter()));
-        this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TerrainResourceAdapter()));
+        this->getResourceManager().addAdapter(std::make_unique<TextureResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<CubeMapResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<VertexArrayResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<MeshResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<VertexShaderResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<FragmentShaderResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<ShaderProgramResourceAdapter>());
+        this->getResourceManager().addAdapter(std::make_unique<TerrainResourceAdapter>());
 
 
         if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -137,7 +137,7 @@ public:
          */
         defaultTexture = new TextureResource(this->generateDefaultTexture());
         defaultTexture->setUri("OpenGLRunner::defaultTextureResource");
-        this->getContainer()->getResourceManager()->addResource(defaultTexture);
+        this->getContainer()->getResourceManager().addResource(defaultTexture);
 
 
         if (!SDL_Init(SDL_INIT_GAMEPAD)) {

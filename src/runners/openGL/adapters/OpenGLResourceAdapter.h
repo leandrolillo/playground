@@ -5,9 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_OPENGL_ADAPTERS_OPENGLRESOURCEADAPTER_H_
-#define SRC_RUNNERS_OPENGL_ADAPTERS_OPENGLRESOURCEADAPTER_H_
-
+#pragma once
 #include <OpenGL/gl3.h>
 #include "ResourceAdapter.h"
 
@@ -116,7 +114,3 @@ protected:
 		return response;
 	}
 };
-
-
-
-#endif /* SRC_RUNNERS_OPENGL_ADAPTERS_OPENGLRESOURCEADAPTER_H_ */

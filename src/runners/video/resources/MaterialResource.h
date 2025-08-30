@@ -22,7 +22,7 @@ private:
 	String diffuseTexture = "";
 	String specularTexture = "";
 	String alphaTexture = "";
-	String bumptTexture = "";
+	String bumpTexture = "";
 
 public:
 	MaterialResource(const vector &ambient, const vector &diffuse, const vector &specular, real shininess, real alpha = 1.0) : Resource(0, MimeTypes::WAVEFRONT_MATERIAL) {
@@ -110,12 +110,12 @@ public:
 		this->ambientTexture = ambientTexture;
 	}
 
-	const String& getBumptTexture() const {
-		return bumptTexture;
+	const String& getBumpTexture() const {
+		return bumpTexture;
 	}
 
-	void setBumptTexture(const String &bumptTexture) {
-		this->bumptTexture = bumptTexture;
+	void setBumpTexture(const String &bumptTexture) {
+		this->bumpTexture = bumptTexture;
 	}
 
 	const String& getDiffuseTexture() const {

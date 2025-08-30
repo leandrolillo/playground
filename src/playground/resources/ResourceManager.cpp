@@ -10,7 +10,7 @@ const String ResourceManager::EphemeralLabel = {"ephemeral"};
 
 ResourceAdapter * ResourceManager::addAdapter(std::unique_ptr<ResourceAdapter> adapterUniquePtr) {
 	logger->debug("Adding adapter");
-	if(adapterUniquePtr.get() != null) {
+	if(adapterUniquePtr) {
 	  adapterUniquePtr->setResourceManager(*this);
 
 	  if(adapterUniquePtr->isValid()) {
@@ -22,27 +22,33 @@ ResourceAdapter * ResourceManager::addAdapter(std::unique_ptr<ResourceAdapter> a
         resourceAdapters.insert(std::move(adapterUniquePtr));
 
         logger->debug("Adapter [%s] added to set", adapter->toString().c_str());
+
+        for(auto &outputMimeType : adapter->getOutputMimeTypes()) {
+          String key = adapter->getInputMimeType().empty() ? outputMimeType  + "|" : outputMimeType + "|" + adapter->getInputMimeType();
+          adaptersCache[key] = adapter;
+
+          logger->debug("Adapter [%s] added to manage [%s] with key [%s]", adapter->toString().c_str(), outputMimeType.c_str(), key.c_str());
+        }
       } else {
         logger->warn("Skipping adapter [%s] - already managed", adapter->toString().c_str());
-      }
 
-      for(auto &outputMimeType : adapter->getOutputMimeTypes()) {
-        String key = adapter->getInputMimeType().empty() ? outputMimeType  + "|" : outputMimeType + "|" + adapter->getInputMimeType();
-        adaptersCache[key] = adapter;
-
-        logger->debug("Adapter [%s] added to manage [%s] with key [%s]", adapter->toString().c_str(), outputMimeType.c_str(), key.c_str());
+        //TODO: should return previous adapter?
       }
 
       return adapter;
+	  } else {
+	    String errorMessage = StringFormatter::format("NOT adding invalid adapter [%s]: [%s] ",
+	        adapterUniquePtr->toString().c_str(),
+	        adapterUniquePtr->errors().c_str());
+	    logger->error(errorMessage);
+	    throw std::invalid_argument(errorMessage);
+
 	  }
+	} else {
+	  logger->error("NOT adding invalid adapter - null pointer");
+	  throw std::invalid_argument("NOT adding invalid adapter - null pointer");
+
 	}
-
-	String errorMessage = StringFormatter::format("NOT adding invalid adapter [%s]: [%s] ",
-      adapterUniquePtr.get() == null ? "null" : adapterUniquePtr->toString().c_str(),
-      adapterUniquePtr.get() == null ? "N/A" : adapterUniquePtr->errors().c_str());
-
-	logger->error(errorMessage);
-	throw std::invalid_argument(errorMessage);
 }
 
 Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
@@ -66,8 +72,10 @@ Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
 
 						try {
 							for(auto resource : adapter->load(resourceLoadRequest)) {
-							  logger->debug("Adding Resource [%s]", resource->toString().c_str());
-							  this->addResource(resource);
+							  if(resource != null) {
+                  logger->debug("Adding Resource [%s]", resource->toString().c_str());
+                  this->addResource(resource);
+							  }
 							}
 						} catch(std::exception &exception) {
 							logger->error("Could not load %s with adapter [%s]: %s", resourceLoadRequest.toString().c_str(), adapter->toString().c_str(), exception.what());

@@ -69,13 +69,13 @@ public:
 	virtual void setMousePosition(unsigned int x, unsigned int y) = 0;
 
 	virtual bool initialize() override {
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new PngResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new JpegResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new TgaResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new GeometryResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new ObjResourceAdapter()));
-		this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new MtlResourceAdapter()));
-    this->getResourceManager()->addAdapter(std::unique_ptr<ResourceAdapter>(new HeightMapResourceAdapter()));
+		this->getResourceManager().addAdapter(std::make_unique<PngResourceAdapter>());
+		this->getResourceManager().addAdapter(std::make_unique<JpegResourceAdapter>());
+		this->getResourceManager().addAdapter(std::make_unique<TgaResourceAdapter>());
+		this->getResourceManager().addAdapter(std::make_unique<GeometryResourceAdapter>());
+		this->getResourceManager().addAdapter(std::make_unique<ObjResourceAdapter>());
+		this->getResourceManager().addAdapter(std::make_unique<MtlResourceAdapter>());
+    this->getResourceManager().addAdapter(std::make_unique<HeightMapResourceAdapter>());
 
 
 		this->getContainer()->setStopWatch(this);
