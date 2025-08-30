@@ -61,6 +61,7 @@ stl
 	- vectors are insertion ordered
 	- sets are ordered according to natural <, or some provided lambda/functor
 	- deletion + iteration can only be done with iterators
+		auto iterator = resources.begin
 		while (iterator != resources.end()) {
 			if(shouldDelete) {
 				iterator = resources.erase(iterator);

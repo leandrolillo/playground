@@ -3,7 +3,7 @@
 #include "ResourceAdapter.h"
 
 class ResourceAdapterMock : public ResourceAdapter {
-	Resource *mockedLoadResult = null;
+	std::vector<Resource *>mockedLoadResult;
 public:
 	ResourceAdapterMock(const std::set<String> &outputMimeTypes, String inputMimeType) {
 	  logger = LoggerFactory::getLogger("tests/ResourceAdapterMock.h");
@@ -12,17 +12,16 @@ public:
 	}
 
 	ResourceAdapterMock &withLoadResult(Resource *mockLoadResult) {
-		this->mockedLoadResult = mockLoadResult;
+		this->mockedLoadResult.push_back(mockLoadResult);
 		return *this;
 	}
 
+	ResourceAdapterMock &withLoadResult(std::vector<Resource *>mockedLoadResults) {
+	    mockedLoadResult.insert(mockedLoadResult.end(), mockedLoadResult.begin(), mockedLoadResult.end());
+	    return *this;
+	  }
+
 	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
-	  std::vector<Resource *> result;
-
-		if(mockedLoadResult != null) {
-			result.push_back(mockedLoadResult);
-		}
-
-		return result;
+		return mockedLoadResult;
 	}
 };

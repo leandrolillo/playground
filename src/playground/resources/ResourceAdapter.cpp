@@ -9,17 +9,25 @@ std::vector<Resource *> ResourceAdapter::load(ResourceLoadRequest &request) {
 
   auto resources = doLoad(request);
 
-  for (auto resource : resources) {
-    if (resource->getUri().empty()) {
-      resource->setUri(request.getUri());
-    }
+  auto iterator = resources.begin();
+  while (iterator != resources.end()) {
+    Resource *resource = *iterator;
+    if(resource != null) {
+      if (resource->getUri().empty()) {
+        resource->setUri(request.getUri());
+      }
 
-    if (resource->getMimeType().empty()) {
-      resource->setMimeType(request.getOutputMimeType());
-    }
+      if (resource->getMimeType().empty()) {
+        resource->setMimeType(request.getOutputMimeType());
+      }
 
-    resource->setLabels(request.getLabels());
-    logger->debug("Loaded [%s]", resource->toString().c_str());
+      resource->setLabels(request.getLabels());
+      logger->debug("Loaded [%s]", resource->toString().c_str());
+      iterator++; //only increment iterator if not deleting anything
+    } else { //remove null pointers from result
+      resources.erase(iterator);
+      logger->warn("Request [%s] returned null", request.toString().c_str());
+    }
   }
 
   return resources;

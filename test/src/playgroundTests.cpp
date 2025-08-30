@@ -194,7 +194,9 @@ TEST_CASE("ResourceManagerTests") {
         std::make_unique<ResourceAdapterMock>(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType"));
 
     /* Should populate default values */
+    resourceAdapter->withLoadResult(null);
     resourceAdapter->withLoadResult(new Resource(1, ""));
+    resourceAdapter->withLoadResult(null);
     Resource *actual = resourceManager.load(ResourceLoadRequest("/test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"}));
     REQUIRE(actual != null);
     CHECK("test/outputMimeType" == actual->getMimeType());
@@ -335,4 +337,24 @@ TEST_CASE("ResourceManagerTests") {
     CHECK(FileParser::eof == fileParser.peekToken());
     CHECK(FileParser::eof == fileParser.takeToken());
   }
+}
+
+TEST_CASE("ResourceAdapterTest") {
+  ResourceManagerMock resourceManager("resources");
+
+  ResourceAdapterMock *resourceAdapter = (ResourceAdapterMock *)resourceManager.addAdapter(
+      std::make_unique<ResourceAdapterMock>(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType"));
+
+  resourceAdapter->withLoadResult(new Resource(1, "test/outputMimeType"));
+  resourceAdapter->withLoadResult(null);
+  resourceAdapter->withLoadResult(new Resource(2, "test/outputMimeType"));
+
+
+  auto response = resourceAdapter->load(resourceManager.newRequest("basketball.json"));
+
+  CHECK(response.size() == 2);
+  for(auto item : response) {
+    CHECK(item != null);
+  }
+
 }
