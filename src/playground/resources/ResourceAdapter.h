@@ -94,9 +94,6 @@ public:
     return errors;
   }
 
-  //String getFullPath(const String parentPath, const String &path) const;
-
-
   bool isValid() const {
     return errors().empty();
   }

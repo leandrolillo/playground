@@ -24,8 +24,3 @@ std::vector<Resource *> ResourceAdapter::load(ResourceLoadRequest &request) {
 
   return resources;
 }
-
-//String ResourceAdapter::getFullPath(const String parentPath, const String &path) const {
-//  return Paths::relative(parentPath, path, getResourceManager().getRootFolder());
-//}
-

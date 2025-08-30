@@ -6,6 +6,7 @@ class ResourceAdapterMock : public ResourceAdapter {
 	Resource *mockedLoadResult = null;
 public:
 	ResourceAdapterMock(const std::set<String> &outputMimeTypes, String inputMimeType) {
+	  logger = LoggerFactory::getLogger("tests/ResourceAdapterMock.h");
 		this->setOutputMimeTypes(outputMimeTypes);
 		this->accepts(inputMimeType);
 	}
@@ -15,7 +16,7 @@ public:
 		return *this;
 	}
 
-	virtual std::vector<Resource *> doload(ResourceLoadRequest &request, ResourceLoadResponse &response) const override {
+	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
 	  std::vector<Resource *> result;
 
 		if(mockedLoadResult != null) {

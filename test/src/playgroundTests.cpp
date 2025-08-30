@@ -155,9 +155,7 @@ TEST_CASE("ResourceLoadResponse tests")
     ResourceManagerMock resourceManager("resources");
 
     ResourceLoadRequest request("basketball.json");
-    ResourceLoadResponse response(request, resourceManager);
-
-    String actual = response.getFullPath("~/images/basketball.png");
+    String actual = resourceManager.getFullPath(request.getUri(), "~/images/basketball.png");
 
     CHECK((String)std::__fs::filesystem::absolute("resources") + "/images/basketball.png" == actual);
 
@@ -168,9 +166,8 @@ TEST_CASE("ResourceLoadResponse tests")
     ResourceManagerMock resourceManager(rootFolder);
 
     ResourceLoadRequest request("geometry/basketball.json");
-    ResourceLoadResponse response(request, resourceManager);
 
-    String actual = response.getFullPath("~/images/basketball.png");
+    String actual = resourceManager.getFullPath(request.getUri(), "~/images/basketball.png");
     actual = Paths::normalize(actual, rootFolder);
 
     CHECK((String)std::__fs::filesystem::absolute(rootFolder) + "/images/basketball.png" == actual);
@@ -185,7 +182,6 @@ TEST_CASE("ResourceManagerTests") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(
             new ResourceAdapterMock(std::set<String> {"test/outputMimeType"}, "test/inputMimeType")));
     CHECK(resourceAdapter != null);
-    CHECK(resourceAdapter->getResourceManager() != null);
     CHECK(1 == resourceManager.getAdaptersCount());
   }
 

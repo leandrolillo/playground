@@ -247,6 +247,11 @@ public:
     return Paths::normalize(filePath, this->rootFolder);
   }
 
+  String getFullPath(const String parentPath, const String &path) const {
+    return Paths::relative(parentPath, path, this->rootFolder);
+  }
+
+
 private:
   /**
    * Find Adapter suitable for handling the request
