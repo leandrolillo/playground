@@ -5,9 +5,18 @@ Tech debts
 		- each runner would add its relevant information
 			- e.g.: collision tester pairs
 
-Paths: normalize some/directory/structure/./../../ -> some
-
-ResourceManager / Resource Adapters
+- ResourceManager / Paths: 
+  !Do not let resource manager to load stuff outside of the root folder!
+    * method constraintToRoot to make everything relative to root.
+    
+    * root + parents + path
+      /root + /parent + path = /root/parent/path     # a starting "/" refers to root
+      /root + ~/parent + path = /root/parent/path    # a startin "~" now also refers to root
+      /root + ~/parent + /path = /root/path           # a startin "~" now also refers to root
+  
+    * normalize some/directory/structure/./../../ -> some
+  
+- ResourceManager / Resource Adapters
   - Move validation logic to resource adapters - right now they have an abstract load method - thus they accept any request. 
       * Add base class logic to review that requests are valid and compatible with the adapter.
       * Move label / options logic here
@@ -15,7 +24,6 @@ ResourceManager / Resource Adapters
           Maybe do ResourceAdapter.load(ResourceManager &, ResourceLoadRequest &) instead of having it as a member.
 
   - Create cache class and use it to store resources in resourcemanager.
-          
     
   - review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
   	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.
