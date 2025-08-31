@@ -398,7 +398,7 @@ private:
       logger->debug("initializing runners:");
 
       for (auto &currentRunner : runners) {
-        logger->info("Initializing runner [%s]", currentRunner->toString());
+        logger->info("Initializing runner [%s]", currentRunner->toString().c_str());
 
         try {
           if (!currentRunner->initialize()) {
