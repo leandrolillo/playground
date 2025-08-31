@@ -122,20 +122,20 @@ public:
 
   Resource* load(const String &fileName) {
     logger->debug("Load [%s]", fileName.c_str());
-    return this->load(ResourceLoadRequest(fileName));
+    return this->load(newRequest(fileName));
   }
 
   Resource* load(std::shared_ptr<FileParser> &fileParser, const String &outputMimeType, std::set<String> labels = { }) {
     logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileParser.get()->getFilename().c_str());
 
-    return load(ResourceLoadRequest(fileParser).acceptMimeType(outputMimeType).withLabels(labels));
+    return load(newRequest(fileParser).acceptMimeType(outputMimeType).withLabels(labels));
   }
 
   Resource* load(const String &fileName, const String &outputMimeType, std::set<String> labels = { },
       std::map<String, String> options = { }) {
     logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileName.c_str(), fileName.c_str());
 
-    return load(ResourceLoadRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
+    return load(newRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
   }
 
   /**
@@ -144,7 +144,7 @@ public:
   Resource* load(const String &parentFilePath, const String &fileName, const String &outputMimeType) {
     logger->debug("Load [%s] [%s] relative to [%s]", outputMimeType.c_str(), fileName.c_str(), parentFilePath.c_str());
 
-    return load(ResourceLoadRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
+    return load(newRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
   }
 
   Resource* load(ResourceLoadRequest &resourceLoadRequest);
