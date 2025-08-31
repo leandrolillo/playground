@@ -13,6 +13,7 @@
 #include "Resource.h"
 
 class ResourceLoadRequest {
+  friend class ResourceManager;
 private:
   Logger *logger = LoggerFactory::getLogger("ResourceLoadRequest");
 
@@ -31,7 +32,6 @@ private:
   const Resource *parent = null;
   std::vector<String> parents;
 
-public:
   ResourceLoadRequest(const String &uri) {
     withUri(uri);
   }
@@ -40,6 +40,7 @@ public:
     this->fileParser = fileParser;
   }
 
+public:
   /*
    * Rule of five and copy-and-swap
    */
@@ -80,9 +81,6 @@ public:
   /*
    * End of Rule of five and copy-and-swap
    */
-
-  String getFullPath(const String &path) const;
-
 
   ResourceLoadRequest& withUri(const String &uri) {
     this->uri = uri;

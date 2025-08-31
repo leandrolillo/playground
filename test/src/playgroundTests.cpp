@@ -86,46 +86,37 @@ TEST_CASE("ResourceLoadRequest tests") {
   ResourceManagerMock resourceManager("resources");
 
   SECTION("ToString") {
-    ResourceLoadRequest request("/test/filename.json");
-    String actual = request.acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).toString();
+    String actual = resourceManager.newRequest("/test/filename.json").acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).toString();
     CHECK("[test/mimetype]<-[application/json] [/test/filename.json]" == actual);
   }
 
   SECTION("IsValid") {
-    ResourceLoadRequest request("fileToParse.txt");
-    bool actual = request.acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
+    bool actual = resourceManager.newRequest("fileToParse.txt").acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
     CHECK(actual);
 
     /** Should be able to guess mimetype from filename even with object name*/
-    ResourceLoadRequest requestAgain("fileToParse.txt/objectName");
-    actual = requestAgain.withParent(resourceManager.getRootFolder()).acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
-    INFO("requestAgain errors: " << requestAgain.errors());
+    actual = resourceManager.newRequest("fileToParse.txt/objectName").withParent(resourceManager.getRootFolder()).acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).isValid();
     CHECK(actual);
 
-    ResourceLoadRequest anotherRequest("");
-    actual = anotherRequest.isValid();
+    actual = resourceManager.newRequest("").isValid();
     CHECK(!actual);
 
-    ResourceLoadRequest yetAnotherRequest("filename");
-    actual = yetAnotherRequest.acceptMimeType("test/mimetype").isValid();
+    actual = resourceManager.newRequest("filename").acceptMimeType("test/mimetype").isValid();
     CHECK(!actual); //expect could not guess input mimetype
   }
 
   SECTION("FilePath") {
     /* Just filename*/
-    ResourceLoadRequest request("/tests/filename.json");
-    String actual = request.getFilePath();
+    String actual = resourceManager.newRequest("/tests/filename.json").getFilePath();
     CHECK("/tests/filename.json" == actual);
 
     /* Uri with name - relative to root*/
-    ResourceLoadRequest requestB("fileToParse.txt/name");
-    actual = requestB.withParent(resourceManager.getRootFolder()).getFilePath();
+    actual = resourceManager.newRequest("fileToParse.txt/name").withParent(resourceManager.getRootFolder()).getFilePath();
     CHECK(Paths::add(resourceManager.getRootFolder(), "fileToParse.txt") == actual);
 
     /* Uri with name - and parent - returns the object as well since filename does not exist */
-    ResourceLoadRequest requestC("filename.json/name");
-    actual = requestC.withParent("/home").withParent("leandro").getFilePath();
-    CHECK( "/home/leandro/filename.json/name" == actual);
+    actual = resourceManager.newRequest("filename.json/name").withParent("/home").withParent("leandro").getFilePath();
+    CHECK( resourceManager.getRootFolder() + "/home/leandro/filename.json/name" == actual);
   }
 
   SECTION("SimpleUri") {
@@ -154,8 +145,7 @@ TEST_CASE("ResourceLoadResponse tests")
   SECTION("FilePath") {
     ResourceManagerMock resourceManager("resources");
 
-    ResourceLoadRequest request("basketball.json");
-    String actual = resourceManager.getFullPath(request.getUri(), "~/images/basketball.png");
+    String actual = resourceManager.getFullPath(resourceManager.newRequest("basketball.json").getUri(), "~/images/basketball.png");
 
     CHECK((String)std::__fs::filesystem::absolute("resources") + "/images/basketball.png" == actual);
 
@@ -165,9 +155,7 @@ TEST_CASE("ResourceLoadResponse tests")
     String rootFolder("./target/../../media");
     ResourceManagerMock resourceManager(rootFolder);
 
-    ResourceLoadRequest request("geometry/basketball.json");
-
-    String actual = resourceManager.getFullPath(request.getUri(), "~/images/basketball.png");
+    String actual = resourceManager.getFullPath("geometry/basketball.json", "~/images/basketball.png");
     actual = Paths::normalize(actual, rootFolder);
 
     CHECK((String)std::__fs::filesystem::absolute(rootFolder) + "/images/basketball.png" == actual);
@@ -197,7 +185,7 @@ TEST_CASE("ResourceManagerTests") {
     resourceAdapter->withLoadResult(null);
     resourceAdapter->withLoadResult(new Resource(1, ""));
     resourceAdapter->withLoadResult(null);
-    Resource *actual = resourceManager.load(ResourceLoadRequest("/test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"}));
+    Resource *actual = resourceManager.load(resourceManager.newRequest("/test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"}));
     REQUIRE(actual != null);
     CHECK("test/outputMimeType" == actual->getMimeType());
     CHECK("/test/filename" == actual->getUri());
@@ -208,7 +196,7 @@ TEST_CASE("ResourceManagerTests") {
     Resource *mockResult = new Resource(1, "test/outputMimeType");
     mockResult->setUri("/test/anotherFilename");
     resourceAdapter->withLoadResult(mockResult);
-    actual = resourceManager.load(ResourceLoadRequest("/test/anotherFilename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType"));
+    actual = resourceManager.load(resourceManager.newRequest("/test/anotherFilename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType"));
     REQUIRE(actual != null);
     CHECK("test/outputMimeType" == actual->getMimeType());
     CHECK("/test/anotherFilename" == actual->getUri());
@@ -216,7 +204,7 @@ TEST_CASE("ResourceManagerTests") {
     CHECK(2 == resourceManager.getResourcesCount());
 
     /* Make sure we get the proper mimetype or null*/
-    actual = resourceManager.load(ResourceLoadRequest("test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/anotherOutputMimeType").withInputMimeType("test/inputMimeType"));
+    actual = resourceManager.load(resourceManager.newRequest("test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/anotherOutputMimeType").withInputMimeType("test/inputMimeType"));
     REQUIRE(actual == null);
     CHECK(2 ==resourceManager.getResourcesCount());
 

@@ -378,7 +378,8 @@ public:
       runnersToString += "  *" + runner->toString() + "\n";
     }
 
-    return "Playground" + (this->name.empty() ? "" : " [" + this->name + "]")
+    return "Playground" + (this->name.empty() ? "" : " [" + this->name + "]") + "\n"
+        + resourceManager.toString() + "\n"
         + (runnersToString.empty() ? "" : ":\n" + runnersToString);
   }
 
@@ -397,7 +398,7 @@ private:
       logger->debug("initializing runners:");
 
       for (auto &currentRunner : runners) {
-        logger->debug("Initializing runner [%d]", currentRunner->getId());
+        logger->info("Initializing runner [%s]", currentRunner->toString());
 
         try {
           if (!currentRunner->initialize()) {

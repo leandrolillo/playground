@@ -45,7 +45,7 @@ protected:
 			} else if (token == "vertices") {
 				resource->setVertices(parser.readVector3Array());
 			} else if (token == "material") {
-			  MaterialResource *material = parseMaterial(parser, request.getUri());
+			  MaterialResource *material = parseMaterial(parser, request.getFilePath());
 			  response.push_back(material);
 				resource->setMaterial(material);
 			} else if (token == "textureCoordinates") {

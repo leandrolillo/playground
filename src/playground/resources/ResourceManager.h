@@ -251,6 +251,10 @@ public:
     return Paths::relative(parentPath, path, this->rootFolder);
   }
 
+  String toString() const {
+    return "ResourceManager[" + this->rootFolder + "] / [ " + std::to_string(resourceAdapters.size()) + "] adapters";
+  }
+
 
 private:
   /**

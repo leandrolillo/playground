@@ -29,7 +29,7 @@ protected:
     String token;
     while ((token = textParser.takeToken()) != FileParser::eof) {
       if (token == "newmtl") {
-        MaterialResource *material = parseMaterial(textParser, textParser.takeLine(), request.getUri());
+        MaterialResource *material = parseMaterial(textParser, textParser.takeLine(), request.getFilePath());
         material->setUri(Paths::add(request.getFilePath(), material->getName()));
         material->setMimeType(MimeTypes::WAVEFRONT_MATERIAL);
 
