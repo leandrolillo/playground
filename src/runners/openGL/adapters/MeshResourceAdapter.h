@@ -40,8 +40,6 @@ protected:
       for (auto &geometry : geometryCollection->getObjects()) {
         response.push_back(buildMesh(geometry.second, request, response));
       }
-
-      response.push_back(geometryCollection);
     }
 
     return response;

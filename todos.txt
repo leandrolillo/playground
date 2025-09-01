@@ -1,15 +1,62 @@
 Tech debts
+- split audioRunner and openALRunner
+
+- split tests closer to classes rather than runners
+
+- make all libraries public to troubleshoot includes
+
+- make chronometer use native c++ timers instead of sdl - make the class accesible for anyone not via runners
+
 - Add toString to playground that will return the current playground information:
 	- name?
 	- all runners toString
 		- each runner would add its relevant information
 			- e.g.: collision tester pairs
 
+- Remove GeometryCollection, MaterialCollection and MeshCollection: resourceAdapters now return a list of objects so resource manager 
+  can have logic to decide which one to return. This would a apply to all resources, not only these three.
+  
+  Examples - 
+    given /resources/objBundle.obj a bundle with 3 objects and 2 materials:
+    when  resourceManager.load(/resources/objBundle.obj/meshes/corvette) 
+      - resourceManager to check in cache if there is a resource "/resources/objBundle.obj/meshes/corvette"
+        - if it does not exist, load it via adapter and add it to the cache: 
+          - since existing file is /resources/objBundle.obj thus requested objectName is meshes/corvette.      
+          - resource Adapter requested to load /resources/objBundle.obj. It returns 3 meshes and 2 materials
+          - resource manager to review returned resources:
+              - if there are several returned objects: 
+                - if they have names, these are respected. Otherwise are auto-generated as mesh_0, mesh_1, mesh2 and material_1, material_2.             
+              - In the case there is only one result
+                - if it has a name, it is respected. Otherwise it is set to "".
+                
+              - each object is sent to the cache as "/resources/objBundle.obj" + "/" + name (trailing "/" is later removed)
+          
+      - finally resource "/resources/objBundle.obj/meshes/corvette" is returned from the cache. Null if not exists.
+
+  - load of a collection with only one object: currently we have to provide an mandatory object name, even if there' only one object in the collection (and even if that object gets a default name)
+    so this is a thing: resourcemanager.load("meshes/singleUnnamedObject.obj/singleUnnamedObject.obj") - you have to duplicate the filename.
+    - review if there's a way of returning the first one only.
+    - also auto generated names should be object_1, object_2, etc.
+
 - ResourceManager / Paths: 
-  !Do not let resource manager to load stuff outside of the root folder!
+    resources: fqdn
+    resourceLoadRequest:
+      root folder
+      parents
+      requested path
+      
+      fullpath = root + parents + path
+      Children resourceLoadRequest(dirname(root + parents + path) + requested path)
+      
+  !Do not let resource manager to load stuff outside of the root folder! ->does this mean request paths do not need to include the rootFolder?
     * method constraintToRoot to make everything relative to root.
     
     * root + parents + path
+      /root + null + [path|/path|~/path|./path] = /root/path #usual case
+      /root + /geometry/ + [../images/image.png] = /root/images/image.png #resource referencing another resource path
+      
+      /root + null + [../images/image.png] = exception! Path /images/image.png outside of root folder
+      
       /root + /parent + path = /root/parent/path     # a starting "/" refers to root
       /root + ~/parent + path = /root/parent/path    # a startin "~" now also refers to root
       /root + ~/parent + /path = /root/path           # a startin "~" now also refers to root
@@ -27,11 +74,6 @@ Tech debts
     
   - review resource adapters chaining load/addResource calls. Unify resourceManager/resourceLoadRequest/resourceLoadResponse in a single class (make it simpler)?
   	- issue is getResourceManager()->load(...) is not propagating labels nor options unless calling with a resourceLoadRequest clone.
-
-- load of a collection with only one object: currently we have to provide an mandatory object name, even if there' only one object in the collection (and even if that object gets a default name)
-	so this is a thing: resourcemanager.load("meshes/singleUnnamedObject.obj/singleUnnamedObject.obj") - you have to duplicate the filename.
-	- review if there's a way of returning the first one only.
-	- also auto generated names should be object_1, object_2, etc.
 
 - troubleshoot grid renderer - while it does not crash, it renders nothing
 

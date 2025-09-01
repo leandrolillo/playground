@@ -11,6 +11,7 @@ include(Catch)
 #executable
 set(TESTS "playground_unit_tests")
 add_executable(${TESTS})
+target_link_libraries(${TESTS} PUBLIC Catch2::Catch2WithMain)
 
 #sources
 add_subdirectory(src)
