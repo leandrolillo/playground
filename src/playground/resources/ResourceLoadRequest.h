@@ -126,6 +126,10 @@ public:
     return *this;
   }
 
+  ResourceLoadRequest newRequest(String relativeUri) {
+    return ResourceLoadRequest(*this).withRootFolder(Paths::getDirname(this->getFilePath())).withUri(asRelativePath(relativeUri));
+  }
+
   const String& getUri() const {
     return this->uri;
   }

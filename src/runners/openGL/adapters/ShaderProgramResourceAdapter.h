@@ -66,7 +66,7 @@ protected:
         std::vector<String> vertexShadersFiles = parser.readStringArray();
 
         for (auto shaderFile : vertexShadersFiles) {
-          ShaderResource *shader = (ShaderResource*) getResourceManager().load(request.relativeUri(shaderFile), shadersMimeTypes.at(token));
+          ShaderResource *shader = (ShaderResource*) getResourceManager().load(request.newRequest(shaderFile).acceptMimeType(shadersMimeTypes.at(token)));
           if (shader != null)
             resource->getShaders().push_back(shader);
           else
