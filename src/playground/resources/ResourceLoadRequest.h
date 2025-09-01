@@ -79,6 +79,18 @@ public:
    * End of Rule of five and copy-and-swap
    */
 
+  ResourceLoadRequest newRequest(String uri) {
+    ResourceLoadRequest clone(*this);
+    clone.fileParser = null;
+    clone.withUri(relativeUri(uri));
+    return clone;
+  }
+
+  String relativeUri(const String &uri) {
+    return Paths::add(uriOnly(Paths::getDirname(getFilePath())), uri);
+  }
+
+
   ResourceLoadRequest& withUri(const String &uri) {
     this->uri = StringUtils::trim(uri);
     this->inputMimeType = ""; //Let it guess the mimetype
@@ -125,17 +137,6 @@ public:
   ResourceLoadRequest& withRootFolder(const String &rootFolder) {
     this->rootFolder = rootFolder;
     return *this;
-  }
-
-  ResourceLoadRequest newRequest(String uri) {
-    ResourceLoadRequest clone(*this);
-    //this->fileParser.reset(); //TODO: WARNING: What to do with the fileparser
-    //this->fileParser = null;
-    return clone.withUri(relativeUri(uri));
-  }
-
-  String relativeUri(const String &uri) {
-    return Paths::add(uriOnly(Paths::getDirname(getFilePath())), uri);
   }
 
   const String& getUri() const {
