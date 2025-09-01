@@ -113,7 +113,7 @@ public:
   }
 
   ResourceLoadRequest newRequest(const String &fileName) {
-    return ResourceLoadRequest(normalize(fileName));
+    return ResourceLoadRequest(fileName).withRootFolder(rootFolder);
   }
 
   /*************************************
@@ -136,15 +136,6 @@ public:
     logger->debug("Load [%s] [%s]", outputMimeType.c_str(), fileName.c_str(), fileName.c_str());
 
     return load(newRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
-  }
-
-  /**
-   * Loads a file using the parent file path as base for relative paths - TODO: Replace by load with parent resource
-   */
-  Resource* load(const String &parentFilePath, const String &fileName, const String &outputMimeType) {
-    logger->debug("Load [%s] [%s] relative to [%s]", outputMimeType.c_str(), fileName.c_str(), parentFilePath.c_str());
-
-    return load(newRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
   }
 
   Resource* load(ResourceLoadRequest &resourceLoadRequest);
@@ -243,14 +234,6 @@ public:
     logger->debug("Resource adapters: %d", resourceAdapters.size());
   }
 
-  String normalize(const String &filePath) const {
-    return Paths::normalize(filePath, this->rootFolder);
-  }
-
-  String getFullPath(const String parentPath, const String &path) const {
-    return Paths::relative(parentPath, path, this->rootFolder);
-  }
-
   String toString() const {
     return "ResourceManager[" + this->rootFolder + "] / [ " + std::to_string(resourceAdapters.size()) + "] adapters";
   }
@@ -304,7 +287,7 @@ private:
       throw std::invalid_argument("Can not get cache key from empty values - filename: [" + filename + "] mimeType[ " + mimeType + "]");
     }
 
-    return normalize(filename) + "|" + mimeType;
+    return filename + "|" + mimeType;
   }
 
   const String getCacheKey(const Resource &resource) {

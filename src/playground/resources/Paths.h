@@ -13,29 +13,10 @@
 
 class Paths {
 public:
-  /**
-   * Return an absolute path from root folder and filename.
-   */
-  static String normalize(const String &fileName, const String &rootFolder) {
-    if (fileName.substr(0, 2) == "~/") {
-      return Paths::add(rootFolder, fileName.substr(2, fileName.size() - 2));
-    }
-    return Paths::add(rootFolder, fileName);
-  }
 
   /**
-   * TODO: Unify with normalize
+   * Mostly a helper for error messages - it is clearer to have an absolutePath
    */
-  static String relative(const String &prefix, const String &postFix, const String &home = "") {
-    String normalizedPostfix = StringUtils::trim(postFix);
-
-    if (normalizedPostfix.length() >= 2 && normalizedPostfix.substr(0, 2) == "~/") {
-      return Paths::add(home, normalizedPostfix.substr(2, normalizedPostfix.size() - 2));
-    } else {
-      return Paths::add(Paths::getDirname(prefix), postFix);
-    }
-  }
-
   static String absolute(const String &relative) {
     char resolvedPath[PATH_MAX];
     realpath(relative.c_str(), resolvedPath);
@@ -43,35 +24,62 @@ public:
     return String(resolvedPath);
   }
 
+  static String normalized(const String &path) {
+    std::vector<String> tokens = StringUtils::split(path, '/');
+    std::vector<String>normalizedPath;
+
+    //printf("Normalized [%s]\n", path.c_str());
+
+    for(auto token : tokens) {
+      //printf("token [%s]\n", token.c_str());
+      token = StringUtils::trim(token);
+      if(token == "..") {
+        if(normalizedPath.size() > 0) {
+          normalizedPath.pop_back();
+        } else {
+          throw std::invalid_argument("Path [%s] can not refer outside of the root");
+        }
+      } else if (token == "") {
+        if(normalizedPath.size() == 0) {  //this means a starting / in path, then add "" to have a starting / in the result
+          normalizedPath.push_back("");
+        }
+      } else if(token == "~") { //only support ~ at the start of the path
+        if(normalizedPath.size() != 0) {
+          throw std::invalid_argument("Invalid path [" + path + "]. Unexpected '~': only supported as first character");
+        } else {
+          normalizedPath.push_back(""); //add "" to have a starting / in the result
+        }
+      } else if (token == ".") { // skip
+      } else {
+        normalizedPath.push_back(token);
+      }
+      //printf("Normalized path: [%s]\n", StringUtils::join(normalizedPath, '/').c_str());
+    }
+
+    //printf("\n");
+
+    return StringUtils::join(normalizedPath, '/');
+  }
+
+
   /**
-   * if the provided postfix is an absolute path, return that.
-   * if the provided postfix starts with ~/ then it is relative to the "home" directory.
-   * Otherwise concatenate the prefix + postfix and remove extra slashes.
+   * Absolute paths are considered if starting with / or ~/.
+   * if provided postfix is an absolute path, return that.
+   * Otherwise return normalized "prefix/postfix"
    */
   static String add(const String &prefix, const String &postFix) {
-    String normalizedPrefix = StringUtils::trim(prefix);
-    String normalizedPostfix = StringUtils::trim(postFix);
+    String path = StringUtils::trim(postFix);
+    String pathPrefix = StringUtils::trim(prefix);
 
-    if (normalizedPostfix.rfind("/", 0) == 0) {
-      return normalizedPostfix;
+    if (path.find("/") != 0 && path.find("~/") != 0 && !pathPrefix.empty()) { //if prefix is empty or postfix is absolute path, then return postfix, otherwise concatenate prefix + / + postfix
+      if(path.empty()) { //if postfix is empty, return prefix
+        path = pathPrefix;
+      } else {
+        path = pathPrefix + "/" + path;
+      }
     }
 
-    if (normalizedPrefix.empty()) {
-      return normalizedPostfix;
-    } else {
-
-      size_t position = 0;
-      if ((position = normalizedPostfix.rfind("./", 0)) == 0) {
-        normalizedPostfix.replace(0, 2, "");
-      }
-      if ((position = normalizedPostfix.rfind("~/", 0)) == 0) {
-        normalizedPostfix.replace(0, 2, "");
-      }
-
-      normalizedPrefix = normalizedPrefix.substr(normalizedPrefix.length() - 1, 1) == "/" ? normalizedPrefix : normalizedPrefix + "/";
-
-      return normalizedPrefix + normalizedPostfix;
-    }
+    return Paths::normalized(path);
   }
 
   /**

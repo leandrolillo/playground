@@ -48,8 +48,7 @@ protected:
         textParser.takeToken();
         String materialLibraryName = textParser.takeLine();
 
-        materials = (MaterialCollection*) this->getResourceManager().load(textParser.getFilename(), materialLibraryName,
-            MimeTypes::MATERIALCOLLECTION);
+        materials = (MaterialCollection*) this->getResourceManager().load(request.relativeUri(materialLibraryName), MimeTypes::MATERIALCOLLECTION);
       } else {
         String line = textParser.takeLine().c_str();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());

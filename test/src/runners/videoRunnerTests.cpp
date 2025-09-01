@@ -53,8 +53,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
     ResourceLoadRequest request = resourceManager.newRequest("image.png");
     auto response = resourceAdapter->load(request);
-
     REQUIRE(1 == response.size());
+
     ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
@@ -66,7 +66,6 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
     ResourceLoadRequest request = resourceManager.newRequest("image.jpg");
     auto response = resourceAdapter->load(request);
-
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -82,7 +81,6 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
     ResourceLoadRequest request = resourceManager.newRequest("image.tga");
     auto response = resourceAdapter->load(request);
-
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -98,8 +96,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry.json");
     auto response = resourceAdapter->load(request);
-
-    REQUIRE(1 <= response.size());
+    REQUIRE(response.size() > 0);
 
     GeometryCollection *resources = (GeometryCollection *)response.back();
     REQUIRE(resources != null);
@@ -116,6 +113,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
 
     ResourceLoadRequest request = resourceManager.newRequest("axes.obj");
     auto response = resourceAdapter->load(request);
+    REQUIRE(response.size() > 0);
 
     GeometryCollection *resources = (GeometryCollection *)response.back();
     REQUIRE(resources != null);

@@ -44,6 +44,10 @@ public:
 			result.push_back(token);
 		}
 
+		if(result.size() == 0) {
+		  result.push_back(text);
+		}
+
 		return result;
 	}
 
