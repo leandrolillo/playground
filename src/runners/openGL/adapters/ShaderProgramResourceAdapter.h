@@ -70,7 +70,7 @@ protected:
           if (shader != null)
             resource->getShaders().push_back(shader);
           else
-            logger->error("Could not load shader [%s]", shaderFile.c_str());
+            logger->error("[%s] Could not load shader [%s]", request.toString().c_str(), shaderFile.c_str());
         }
 
         if (parser.peekToken() == ",") {
