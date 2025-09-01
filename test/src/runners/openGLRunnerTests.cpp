@@ -15,7 +15,7 @@ TEST_CASE("OpenGLRunner Test case")
     ResourceAdapter *resourceAdapter = runner->getResourceManager().addAdapter(std::make_unique<TextureResourceAdapter>());
 
     //From PNG
-    ResourceLoadRequest pngRequest = runner->getResourceManager().newRequest("image.png").acceptMimeType(MimeTypes::TEXTURE);
+    ResourceLoadRequest pngRequest = runner->getResourceManager().newRequest("images/image.png").acceptMimeType(MimeTypes::TEXTURE);
     auto response = resourceAdapter->load(pngRequest);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
@@ -24,7 +24,7 @@ TEST_CASE("OpenGLRunner Test case")
     CHECK(MimeTypes::TEXTURE == resource->getMimeType());
 
     //From JPG
-    ResourceLoadRequest jpgRequest = runner->getResourceManager().newRequest("image.jpg").acceptMimeType(MimeTypes::TEXTURE);
+    ResourceLoadRequest jpgRequest = runner->getResourceManager().newRequest("images/image.jpg").acceptMimeType(MimeTypes::TEXTURE);
     response = resourceAdapter->load(jpgRequest);
     REQUIRE(response.size() > 0);
     resource = response.back();
@@ -33,7 +33,7 @@ TEST_CASE("OpenGLRunner Test case")
     CHECK(MimeTypes::TEXTURE == resource->getMimeType());
 
     //From TGA
-    ResourceLoadRequest tgaRequest = runner->getResourceManager().newRequest("image.tga").acceptMimeType(MimeTypes::TEXTURE);
+    ResourceLoadRequest tgaRequest = runner->getResourceManager().newRequest("images/image.tga").acceptMimeType(MimeTypes::TEXTURE);
     response = resourceAdapter->load(tgaRequest);
     REQUIRE(response.size() > 0);
     resource = response.back();
@@ -45,7 +45,7 @@ TEST_CASE("OpenGLRunner Test case")
   SECTION("LoadVertexBuffer") {
     ResourceAdapter *resourceAdapter = runner->getResourceManager().addAdapter(std::make_unique<VertexArrayResourceAdapter>());
 
-    ResourceLoadRequest request = runner->getResourceManager().newRequest("geometry.json");
+    ResourceLoadRequest request = runner->getResourceManager().newRequest("geometry/geometry.json");
     auto response = resourceAdapter->load(request.acceptMimeType(MimeTypes::VERTEXARRAY));
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
@@ -57,7 +57,7 @@ TEST_CASE("OpenGLRunner Test case")
   SECTION("LoadShaders")  {
     ResourceAdapter *resourceAdapter = runner->getResourceManager().addAdapter(std::make_unique<ShaderResourceAdapter>());
 
-    ResourceLoadRequest request = runner->getResourceManager().newRequest("vertexShader.glsl");
+    ResourceLoadRequest request = runner->getResourceManager().newRequest("shader/vertexShader.glsl");
     auto response = resourceAdapter->load(request.acceptMimeType(MimeTypes::VERTEXSHADER));
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
@@ -69,8 +69,9 @@ TEST_CASE("OpenGLRunner Test case")
   SECTION("LoadShaderProgram") {
     ResourceAdapter *resourceAdapter = runner->getResourceManager().addAdapter(std::make_unique<ShaderProgramResourceAdapter>());
 
-    ResourceLoadRequest request = runner->getResourceManager().newRequest("shaderProgram.json");
+    ResourceLoadRequest request = runner->getResourceManager().newRequest("shader/shaderProgram.json");
     auto response = resourceAdapter->load(request.acceptMimeType(MimeTypes::SHADERPROGRAM));
+    REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);
     CHECK(resource->getId() != 0);

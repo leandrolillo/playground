@@ -126,8 +126,15 @@ public:
     return *this;
   }
 
-  ResourceLoadRequest newRequest(String relativeUri) {
-    return ResourceLoadRequest(*this).withRootFolder(Paths::getDirname(this->getFilePath())).withUri(asRelativePath(relativeUri));
+  ResourceLoadRequest newRequest(String uri) {
+    ResourceLoadRequest clone(*this);
+    //this->fileParser.reset(); //TODO: What to do with the fileparser
+    //this->fileParser = null;
+    return clone.withUri(relativeUri(uri));
+  }
+
+  String relativeUri(const String &uri) {
+    return Paths::add(uriOnly(Paths::getDirname(getFilePath())), uri);
   }
 
   const String& getUri() const {
@@ -147,11 +154,6 @@ public:
     }
 
     return Paths::getActualPath(Paths::add(this->rootFolder, asRelativePath(uri)));
-  }
-
-  String relativeUri(const String &uri) {
-    return Paths::add(Paths::getDirname(this->getFilePath()), asRelativePath(uri));
-
   }
 
   const String& getInputMimeType() {
@@ -225,5 +227,14 @@ private:
     }
 
     return relativeUri;
+  }
+
+  String uriOnly(const String &uri) const{
+    String uriOnly = uri;
+    if(uriOnly.find(rootFolder) == 0) {
+      return uriOnly.erase(0, rootFolder.size());
+    }
+
+    return uriOnly;
   }
 };

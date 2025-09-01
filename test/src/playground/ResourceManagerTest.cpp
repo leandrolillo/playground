@@ -26,17 +26,47 @@ TEST_CASE("ResourceLoadRequest tests") {
   }
 
   SECTION("FilePath") {
-    /* Just filename*/
-    String actual = resourceManager.newRequest("/tests/filename.json").getFilePath();
-    CHECK("tests/filename.json" == actual);
+    /* Uri (existing file)*/
+    ResourceLoadRequest rootRequest = resourceManager.newRequest("children/fileToParse.json");
+    CHECK(resourceManager.getRootFolder() + "/children/fileToParse.json" == rootRequest.getFilePath());
 
-//    /* Uri with name - relative to root*/
-//    actual = resourceManager.newRequest("fileToParse.txt/name").withParent(resourceManager.getRootFolder()).getFilePath();
-//    CHECK(Paths::add(resourceManager.getRootFolder(), "fileToParse.txt") == actual);
-//
-//    /* Uri with name - and parent - returns the object as well since filename does not exist */
-//    actual = resourceManager.newRequest("filename.json/name").withParent("/home").withParent("leandro").getFilePath();
-//    CHECK( resourceManager.getRootFolder() + "/home/leandro/filename.json/name" == actual);
+    /* Uri with name (not existing file) - return name as well*/
+    ResourceLoadRequest request = resourceManager.newRequest("children/notExistingFile.json/name");
+    CHECK(resourceManager.getRootFolder() + "/children/notExistingFile.json/name" == request.getFilePath());
+
+    /* Uri (existing file) - relative parent request/*/
+    request = rootRequest.newRequest("anotherFileToParse.json");
+    CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.json" == request.getFilePath());
+
+    /* Uri with name(existing file) - relative parent request/*/
+    request = rootRequest.newRequest("anotherFileToParse.json/name");
+    CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.json" == request.getFilePath());
+
+    /* URI (existing file) - relative to root with /*/
+    request = rootRequest.newRequest("/anotherFileToParse.json");
+    CHECK(resourceManager.getRootFolder() + "/anotherFileToParse.json" == request.getFilePath());
+
+    /* URI (existing file) - relative to root with ~*/
+    request = rootRequest.newRequest("~/anotherFileToParse.json");
+    CHECK(resourceManager.getRootFolder() + "/anotherFileToParse.json" == request.getFilePath());
+
+    /* URI with name (existing file) - relative to root with /*/
+    request = rootRequest.newRequest("/fileToParse.txt/name");
+    CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+
+    /* URI with name(existing file) - relative to root with ~*/
+    request = rootRequest.newRequest("~/fileToParse.txt/name");
+    CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+
+    /* Uri with name - and parent - returns the object as well since filename does not exist */
+    request = rootRequest.newRequest("/tests/filename.json/name");
+    CHECK( resourceManager.getRootFolder() + "/tests/filename.json/name" == request.getFilePath());
+
+    //Issue With Root Paths Being Relative") {
+    String rootFolder("src/../resources");
+    ResourceManagerMock relativeResourceManager(rootFolder);
+    request = relativeResourceManager.newRequest("children/fileToParse.json").newRequest("/fileToParse.json");
+    CHECK( resourceManager.getRootFolder() + "/fileToParse.json" == request.getFilePath());
   }
 
   SECTION("SimpleUri") {
@@ -62,12 +92,6 @@ TEST_CASE("ResourceLoadRequest tests") {
 
 TEST_CASE("ResourceLoadResponse tests")
 {
-  SECTION("FilePath") {
-//    ResourceManagerMock resourceManager("resources");
-//    String actual = resourceManager.getFullPath(resourceManager.newRequest("basketball.json").getUri(), "~/images/basketball.png");
-//    CHECK((String)std::__fs::filesystem::absolute("resources") + "/images/basketball.png" == actual);
-
-  }
 
   SECTION("issueWithRootPathsBeingRelative") {
     String rootFolder("./target/../../media");
