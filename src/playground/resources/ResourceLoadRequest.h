@@ -81,6 +81,7 @@ public:
 
   ResourceLoadRequest& withUri(const String &uri) {
     this->uri = StringUtils::trim(uri);
+    this->inputMimeType = ""; //Let it guess the mimetype
     return *this;
   }
 
@@ -128,7 +129,7 @@ public:
 
   ResourceLoadRequest newRequest(String uri) {
     ResourceLoadRequest clone(*this);
-    //this->fileParser.reset(); //TODO: What to do with the fileparser
+    //this->fileParser.reset(); //TODO: WARNING: What to do with the fileparser
     //this->fileParser = null;
     return clone.withUri(relativeUri(uri));
   }

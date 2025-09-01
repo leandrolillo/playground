@@ -29,34 +29,46 @@ TEST_CASE("ResourceLoadRequest tests") {
     /* Uri (existing file)*/
     ResourceLoadRequest rootRequest = resourceManager.newRequest("children/fileToParse.json");
     CHECK(resourceManager.getRootFolder() + "/children/fileToParse.json" == rootRequest.getFilePath());
+    CHECK(MimeTypes::JSON == rootRequest.getInputMimeType());
 
     /* Uri with name (not existing file) - return name as well*/
     ResourceLoadRequest request = resourceManager.newRequest("children/notExistingFile.json/name");
     CHECK(resourceManager.getRootFolder() + "/children/notExistingFile.json/name" == request.getFilePath());
 
     /* Uri (existing file) - relative parent request/*/
+    request = rootRequest.newRequest("anotherFileToParse.txt");
+    CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
+
+    /* Uri (existing file) - relative parent request/*/
     request = rootRequest.newRequest("anotherFileToParse.json");
     CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.json" == request.getFilePath());
+    CHECK(MimeTypes::JSON == request.getInputMimeType());
 
     /* Uri with name(existing file) - relative parent request/*/
-    request = rootRequest.newRequest("anotherFileToParse.json/name");
-    CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.json" == request.getFilePath());
+    request = rootRequest.newRequest("anotherFileToParse.txt/name");
+    CHECK(resourceManager.getRootFolder() + "/children/anotherFileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
 
-    /* URI (existing file) - relative to root with /*/
-    request = rootRequest.newRequest("/anotherFileToParse.json");
-    CHECK(resourceManager.getRootFolder() + "/anotherFileToParse.json" == request.getFilePath());
+    /* URI - relative to root with /*/
+    request = rootRequest.newRequest("/fileToParse.txt");
+    CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
 
-    /* URI (existing file) - relative to root with ~*/
-    request = rootRequest.newRequest("~/anotherFileToParse.json");
-    CHECK(resourceManager.getRootFolder() + "/anotherFileToParse.json" == request.getFilePath());
+    /* URI - relative to root with ~*/
+    request = rootRequest.newRequest("~/fileToParse.txt");
+    CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
 
     /* URI with name (existing file) - relative to root with /*/
     request = rootRequest.newRequest("/fileToParse.txt/name");
     CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
 
     /* URI with name(existing file) - relative to root with ~*/
     request = rootRequest.newRequest("~/fileToParse.txt/name");
     CHECK(resourceManager.getRootFolder() + "/fileToParse.txt" == request.getFilePath());
+    CHECK(MimeTypes::TXT == request.getInputMimeType());
 
     /* Uri with name - and parent - returns the object as well since filename does not exist */
     request = rootRequest.newRequest("/tests/filename.json/name");
