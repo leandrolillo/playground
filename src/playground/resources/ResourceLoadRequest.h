@@ -60,6 +60,7 @@ public:
   ResourceLoadRequest(const ResourceLoadRequest &right) {
     fileParser = right.fileParser;
     uri = right.uri;
+    rootFolder = right.rootFolder;
     inputMimeType = right.inputMimeType;
     outputMimeType = right.outputMimeType;
     labels = right.labels;

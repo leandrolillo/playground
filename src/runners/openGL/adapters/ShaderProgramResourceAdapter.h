@@ -61,32 +61,29 @@ protected:
     parser.readStartObject();
     while ((token = parser.readToken()) != END_OBJECT && token != FileParser::eof)
     {
-      if (token == "vertexShaders" || token == "fragmentShaders" || token == "geometryShaders" || token == "tesellationShaders") {
+      if (shadersMimeTypes.find(token) != shadersMimeTypes.end()) {
         parser.readValueSeparator();
         std::vector<String> vertexShadersFiles = parser.readStringArray();
 
-        for (std::vector<String>::iterator stringIterator = vertexShadersFiles.begin(); stringIterator != vertexShadersFiles.end();
-            stringIterator++) {
-          ShaderResource *shader = (ShaderResource*) getResourceManager().load(request.getFilePath(), *stringIterator,
-              shadersMimeTypes.at(token));
+        for (auto shaderFile : vertexShadersFiles) {
+          ShaderResource *shader = (ShaderResource*) getResourceManager().load(request.relativeUri(shaderFile), shadersMimeTypes.at(token));
           if (shader != null)
             resource->getShaders().push_back(shader);
           else
-            logger->error("Could not load shader [%s]", (*stringIterator).c_str());
+            logger->error("Could not load shader [%s]", shaderFile.c_str());
         }
 
         if (parser.peekToken() == ",") {
           parser.readToken();
         }
-
       } else {
         logger->warn("Unexpected token: %s", token.c_str());
       }
     }
 
-    for (std::vector<ShaderResource*>::iterator shaderIterator = resource->getShaders().begin();
-        shaderIterator != resource->getShaders().end(); shaderIterator++)
-      glAttachShader(resource->getId(), (*shaderIterator)->getId());
+    for (auto shader : resource->getShaders()) {
+      glAttachShader(resource->getId(), shader->getId());
+    }
 
     glBindAttribLocation(resource->getId(), VERTEX_LOCATION, "position");
     glBindAttribLocation(resource->getId(), INDEX_LOCATION, "index");

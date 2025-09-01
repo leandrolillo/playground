@@ -15,6 +15,7 @@ public:
   ShaderResourceAdapter() {
     logger = LoggerFactory::getLogger("video/ShaderResourceAdapter");
     this->accepts(MimeTypes::GLSL);
+    setOutputMimeTypes(std::set<String> { MimeTypes::VERTEXSHADER, MimeTypes::FRAGMENTSHADER, MimeTypes::GEOMETRYSHADER, MimeTypes::TESELLATIONSHADER});
   }
 
   virtual void dispose(Resource *resource) const override {
