@@ -31,7 +31,7 @@ public:
   inline static const String WAVEFRONT_OBJ = "model/obj";
   inline static const String WAVEFRONT_MATERIAL = "model/mtl";
   inline static const String GEOMETRY = "model/geometry";
-  inline static const String MATERIAL = "model/geometry";
+  inline static const String MATERIAL = "model/material";
   inline static const String VERTEXARRAY = "video/vertex-array";
   inline static const String MESH = "video/mesh";
 
