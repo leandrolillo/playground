@@ -93,7 +93,7 @@ Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
 			 * The returned object is always read from the cache - even if the adapter logic was invoked.
 			 */
 			result = getCacheResource(getCacheKey(resourceLoadRequest));
-			if(result == null) {
+			if(result == null) { //Most likely cause of errors at this point are caused by resource key being different than request key.
 				logger->warn("Could not load [%s]", resourceLoadRequest.toString().c_str());
 			} else if(result->getMimeType() != resourceLoadRequest.getOutputMimeType()) {
 				logger->warn("Could not load [%s] with mimetype [%s] (found with mimetype[%s])", resourceLoadRequest.toString().c_str(), resourceLoadRequest.getOutputMimeType().c_str(), result->getMimeType().c_str());

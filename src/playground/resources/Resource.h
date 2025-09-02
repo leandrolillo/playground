@@ -107,6 +107,6 @@ public:
 	}
 
 	virtual String toString() const {
-		return String("Resource(id:" + std::to_string(this->getId()) + ") [" + this->getMimeType() + "] [" + this->uri + "]");
+		return String("Resource(id:" + std::to_string(this->getId()) + ") [" + this->getMimeType() + "] [" + getFqdn() + "]");
 	}
 };
