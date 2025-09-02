@@ -26,14 +26,12 @@ protected:
   virtual std::vector<Resource*> doLoad(ResourceLoadRequest &request) const override {
     std::vector<Resource*> response;
 
-    String geometryMimeType;
-
     GeometryResource *geometry = (GeometryResource *) this->getResourceManager().load(
         ResourceLoadRequest(request).acceptMimeType(MimeTypes::GEOMETRY).withAdditionalLabels(std::set<String> {
             ResourceManager::EphemeralLabel })
             );
     if (geometry == null) {
-      logger->error("Could not load geometry [%s] with mimetype [%s]", request.getFilePath().c_str(), geometryMimeType.c_str());
+      logger->error("Could not load geometry [%s] with mimetype [%s]", request.getFilePath().c_str(), MimeTypes::GEOMETRY.c_str());
     } else {
         response.push_back(buildMesh(geometry, request, response));
     }

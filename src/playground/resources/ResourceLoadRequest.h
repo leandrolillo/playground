@@ -159,10 +159,6 @@ public:
   }
 
   const String getFqdn() const {
-    if(fileParser) {
-      return fileParser->getFilename();
-    }
-
     return Paths::add(this->rootFolder, asRelativePath(uri));
   }
 
