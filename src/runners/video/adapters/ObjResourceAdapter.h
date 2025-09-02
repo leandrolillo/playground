@@ -99,7 +99,8 @@ protected:
         }
       } else if (token == "usemtl" && materialsRequest) {
         String materialName = StringUtils::trim(textParser.takeLine());
-        geometry->setMaterial((MaterialResource *)this->getResourceManager().load(materialsRequest->newRequest(materialName)));
+        geometry->setMaterial((MaterialResource *)this->getResourceManager().load(
+            materialsRequest->newRequest(Paths::add(materialsRequest->getUri(), materialName))));
       } else {
         String line = textParser.takeLine();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());

@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include "MimeTypes.h"
 #include "Paths.h"
+#include "StringUtils.h"
 
 class Resource {
 protected:
@@ -77,17 +78,17 @@ public:
 	}
 
 	Resource &setName(const String &name) {
-	  this->name = name;
+	  this->name = StringUtils::trim(name);
 	  return *this;
 	}
 
 	void setMimeType(const String & mimeType) {
-		this->mimeType = mimeType;
+		this->mimeType = StringUtils::trim(mimeType);
 	}
 
 
 	void setUri(const String & fileName) {
-		this->uri = fileName;
+		this->uri = StringUtils::trim(fileName);
 	}
 
 	const std::set<String>& getLabels() const {
@@ -99,7 +100,7 @@ public:
 	}
 
 	void addLabel(const String &label) {
-		this->labels.insert(label);
+		this->labels.insert(StringUtils::trim(label));
 	}
 
 	virtual bool supportsCaching() {

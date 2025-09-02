@@ -191,6 +191,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    *****/
   SECTION("ObjResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
+    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj");
     auto response = resourceAdapter->load(request);
@@ -199,15 +200,26 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     GeometryResource *resource = (GeometryResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getMimeType() == MimeTypes::GEOMETRY);
+    CHECK(resource->getVertices().size() > 0);
+    CHECK(resource->getMaterial() != null); //Should add Material resource adapter for this to be loaded.
   }
 
   SECTION("ObjResourceAdapter with ResourceManager test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
+    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::GEOMETRY);
-    Resource *resource = resourceManager.load(request);
+    GeometryResource *resource = (GeometryResource *)resourceManager.load(request);
     REQUIRE(resource != null);
     CHECK(resource->getMimeType() == MimeTypes::GEOMETRY);
+    CHECK(resource->getVertices().size() > 0);
+    REQUIRE(resource->getMaterial() != null);
+    CHECK(resource->getMaterial()->getName() == "Material.002");
+    CHECK(resource->getMaterial()->getDiffuseTexture() == "/geometry/image.png");
+    CHECK(resource->getMaterial()->getShininess() == 250);
+
+
+
     CHECK(4 == resourceManager.getResourcesCount(MimeTypes::GEOMETRY));
   }
 }

@@ -101,17 +101,17 @@ public:
 
   //TODO: review if it would be better to return new objects - would be safer and shorter syntax while giving up performance
   ResourceLoadRequest& acceptMimeType(const String &mimeType) {
-    this->outputMimeType = mimeType;
+    this->outputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
   ResourceLoadRequest& produceMimeType(const String &mimeType) {
-    this->outputMimeType = mimeType;
+    this->outputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
   ResourceLoadRequest& withInputMimeType(const String &mimeType) {
-    this->inputMimeType = mimeType;
+    this->inputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
@@ -137,7 +137,7 @@ public:
   }
 
   ResourceLoadRequest& withRootFolder(const String &rootFolder) {
-    this->rootFolder = rootFolder;
+    this->rootFolder = StringUtils::trim(rootFolder);
     this->inputMimeType = this->inputMimeType.empty() ? MimeTypes::defaultInputMimeType(getFilePath()): this->inputMimeType;
     this->outputMimeType = this->outputMimeType.empty() ? MimeTypes::defaultOutputMimeType(getFilePath()) : this->outputMimeType;
 
@@ -196,7 +196,7 @@ public:
     return outputMimeType;
   }
 
-  String errors() {
+  String errors() const {
     String errors;
 
     if (uri.empty()) {
@@ -214,7 +214,7 @@ public:
     return errors;
   }
 
-  bool isValid() {
+  bool isValid() const {
     return errors().empty();
   }
 
@@ -239,7 +239,7 @@ private:
   String uriOnly(const String &uri) const{
     String uriOnly = uri;
     if(uriOnly.find(rootFolder) == 0) {
-      return uriOnly.erase(0, rootFolder.size());
+      uriOnly.erase(0, rootFolder.size());
     }
 
     return uriOnly;

@@ -45,7 +45,6 @@ New stuff:
 - blockout: following udemy learn advanced modern c++ 
 
 - Road fighter:
-	- Add support for loading single resources from a file containing multiple objects (obj files)
 	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 
 	- Add labels to resources, so that we can unload a level resources and load next levels.
 
