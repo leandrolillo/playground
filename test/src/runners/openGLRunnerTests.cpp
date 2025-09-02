@@ -45,8 +45,8 @@ TEST_CASE("OpenGLRunner Test case")
   SECTION("LoadVertexBuffer") {
     ResourceAdapter *resourceAdapter = runner->getResourceManager().addAdapter(std::make_unique<VertexArrayResourceAdapter>());
 
-    ResourceLoadRequest request = runner->getResourceManager().newRequest("geometry/geometry.json");
-    auto response = resourceAdapter->load(request.acceptMimeType(MimeTypes::VERTEXARRAY));
+    ResourceLoadRequest request = runner->getResourceManager().newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::VERTEXARRAY);
+    auto response = resourceAdapter->load(request);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);

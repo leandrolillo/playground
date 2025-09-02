@@ -17,6 +17,8 @@ TEST_CASE("Video Runner Test case")
 
 }
 
+//---
+
 TEST_CASE("Image Resource test case")
 {
   LoggerFactory::doNotLogToFile();
@@ -40,18 +42,23 @@ TEST_CASE("Image Resource test case")
   CHECK(resource.getBufferSize() == 200 * 300 * 1);
 }
 
-TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
+//---
+
+TEST_CASE("VideoRunner ResourceAdapters Tests")
 {
   LoggerFactory::doNotLogToFile();
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   ResourceManagerMock resourceManager("resources"); //This will be a new one per SECTION
 
-  SECTION("PngResourceAdapter tests")
+  /*****
+   * PNG
+   *****/
+  SECTION("PngResourceAdapter (No resource manager) test")
   {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("image.png");
+    ResourceLoadRequest request = resourceManager.newRequest("images/image.png");
     auto response = resourceAdapter->load(request);
     REQUIRE(1 == response.size());
 
@@ -61,10 +68,25 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
-  SECTION("JpegResourceAdapter tests") {
+  SECTION("PngResourceAdapter with ResourceManager test")
+    {
+      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
+
+      ResourceLoadRequest request = resourceManager.newRequest("images/image.png").acceptMimeType(MimeTypes::IMAGE);
+      ImageResource *resource = (ImageResource *)resourceManager.load(request);
+      REQUIRE(resource != null);
+      CHECK(resource->getData() != null);
+      CHECK(MimeTypes::IMAGE == resource->getMimeType());
+    }
+
+  /*****
+   * JPG
+   *****/
+
+  SECTION("JpegResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("image.jpg");
+    ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
     auto response = resourceAdapter->load(request);
     REQUIRE(1 == response.size());
 
@@ -76,10 +98,25 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
-  SECTION("TgaResourceAdapter") {
+  SECTION("JpegResourceAdapter with ResourceManager test") {
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
+
+    ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
+    ImageResource *resource = (ImageResource *)resourceManager.load(request);
+    REQUIRE(resource != null);
+    CHECK(resource->getData() != null);
+    CHECK(756 == resource->getAncho());
+    CHECK(512 == resource->getAlto());
+    CHECK(MimeTypes::IMAGE == resource->getMimeType());
+  }
+
+  /*****
+   * TGA
+   *****/
+  SECTION("TgaResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("image.tga");
+    ResourceLoadRequest request = resourceManager.newRequest("images/image.tga");
     auto response = resourceAdapter->load(request);
     REQUIRE(1 == response.size());
 
@@ -91,10 +128,25 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
-  SECTION("GeometryResourceAdapter") {
+  SECTION("TgaResourceAdapter with ResourceManager test") {
+      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
+
+      ResourceLoadRequest request = resourceManager.newRequest("images/image.tga").acceptMimeType(MimeTypes::IMAGE);
+      ImageResource *resource = (ImageResource *)resourceManager.load(request);
+      REQUIRE(resource != null);
+      CHECK(resource->getData() != null);
+      CHECK(400 == resource->getAncho());
+      CHECK(300 == resource->getAlto());
+      CHECK(MimeTypes::IMAGE == resource->getMimeType());
+    }
+
+  /**********
+   * GEOMETRY
+   **********/
+  SECTION("GeometryResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("geometry.json");
+    ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json");
     auto response = resourceAdapter->load(request);
     REQUIRE(response.size() > 0);
 
@@ -105,53 +157,63 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(3 == resource->getColors().size());
     CHECK(3 == resource->getTextureCoordinates().size());
     CHECK(3 == resource->getNormals().size());
+    CHECK("geometry" == resource->getName());
+
+    REQUIRE(resource->getMaterial() != null);
+    CHECK(resource->getMaterial()->getName() == "material");
+    CHECK(resource->getMaterial()->getMimeType() == MimeTypes::MATERIAL);
+    CHECK(resource->getMaterial()->getDiffuseTexture() == "/images/image.png");
+    CHECK(resource->getMaterial()->getAmbientTexture() == "/geometry/fakeImage.png");
   }
-  SECTION("ObjResourceAdapter tests") {
+
+  SECTION("GeometryResourceAdapter with ResourceManager test") {
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+
+    ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::GEOMETRY);
+    GeometryResource *resource = (GeometryResource *)resourceManager.load(request);
+    REQUIRE(resource != null);
+    CHECK(MimeTypes::GEOMETRY == resource->getMimeType());
+    CHECK(11 == resource->getVertices().size());
+    CHECK(3 == resource->getColors().size());
+    CHECK(3 == resource->getTextureCoordinates().size());
+    CHECK(3 == resource->getNormals().size());
+    CHECK("geometry" == resource->getName());
+
+    REQUIRE(resource->getMaterial() != null);
+    CHECK(resource->getMaterial()->getName() == "material");
+    CHECK(resource->getMaterial()->getMimeType() == MimeTypes::MATERIAL);
+    CHECK(resource->getMaterial()->getDiffuseTexture() == "/images/image.png");
+    CHECK(resource->getMaterial()->getAmbientTexture() == "/geometry/fakeImage.png");
+  }
+
+  /*****
+   * OBJ
+   *****/
+  SECTION("ObjResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
 
-    ResourceLoadRequest request = resourceManager.newRequest("axes.obj");
+    ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj");
     auto response = resourceAdapter->load(request);
     REQUIRE(response.size() > 0);
 
     GeometryResource *resource = (GeometryResource *)response.back();
     REQUIRE(resource != null);
+    CHECK(resource->getMimeType() == MimeTypes::GEOMETRY);
+  }
+
+  SECTION("ObjResourceAdapter with ResourceManager test") {
+    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
+
+    ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::GEOMETRY);
+    Resource *resource = resourceManager.load(request);
+    REQUIRE(resource != null);
+    CHECK(resource->getMimeType() == MimeTypes::GEOMETRY);
+    CHECK(4 == resourceManager.getResourcesCount(MimeTypes::GEOMETRY));
   }
 }
 
-  //  SECTION("ResourceManager Load") {
-//    /*
-//     * Note that resource Adapters are owned by resource manager, thus we should send a new() and not a heap variable.
-//     * Otherwise we get crazy things like accessing deleted memory in logs appenders.
-//     */
-//    resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(new GeometryResourceAdapter()));
-//
-//    Resource *resource = resourceManager.load("tests/geometry.json", MimeTypes::GEOMETRYCOLLECTION);
-//    CHECK(resource != null);
-//  }
-//
-//      SECTION("ObjResourceAdapter tests") {
-//        ResourceManagerMock resourceManager(runner->getContainer()->getResourceManager()->getRootFolder());
-//        ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(new ObjResourceAdapter()));
-//
-//        ResourceLoadRequest request(Paths::normalize("tests/axes.obj", runner->getContainer()->getResourceManager()->getRootFolder()));
-//        ResourceLoadResponseMock response(request, resourceManager);
-//        resourceAdapter->load(request.acceptMimeType(MimeTypes::GEOMETRYCOLLECTION), response);
-//        Resource *resource = response.getLastAdded();
-//        CHECK(resource != null);
-////  SECTION("ResourceMAnager Load") {
-////    /*
-////     * Note that resource Adapters are owned by resource manager, thus we should send a new() and not a heap variable.
-////     * Otherwise we get crazy things like accessing deleted memory in logs appenders.
-////     */
-////    resourceManager.addAdapter(std::unique_ptr<ResourceAdapter>(new ObjResourceAdapter()));
-////
-////    Resource *resource = resourceManager.load("tests/axes.obj", MimeTypes::GEOMETRYCOLLECTION);
-////    CHECK(resource != null);
-////    CHECK(4, = resourceManager.getResourcesCount(MimeTypes::GEOMETRY));
-////    CHECK(1 = resourceManager.getResourcesCount(MimeTypes::GEOMETRYCOLLECTION));
-////  }
-//      }
-//    }
+//---
+
 TEST_CASE("MousePicking tests") {
   vector4 point(0, 0, -1, 0);
 

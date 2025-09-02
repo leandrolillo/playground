@@ -15,7 +15,9 @@ target_link_libraries(${TESTS} PUBLIC Catch2::Catch2WithMain)
 
 #sources
 add_subdirectory(src)
-#add test resources
+
+#resources - clean and copy fro scratch
+file(REMOVE_RECURSE "${CMAKE_CURRENT_BINARY_DIR}/resources")
 add_custom_command( 
     TARGET ${TESTS} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
