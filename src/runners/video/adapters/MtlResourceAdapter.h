@@ -10,13 +10,12 @@
 #include "TextParser.h"
 #include "ResourceAdapter.h"
 #include "MaterialResource.h"
-#include "MaterialCollection.h"
 
 class MtlResourceAdapter: public ResourceAdapter {
 public:
   MtlResourceAdapter() {
     logger = LoggerFactory::getLogger(typeid(*this).name());
-    this->produces(MimeTypes::MATERIALCOLLECTION);
+    this->produces(MimeTypes::MATERIAL);
     this->accepts(MimeTypes::WAVEFRONT_MATERIAL);
   }
 protected:
@@ -24,24 +23,18 @@ protected:
     std::vector<Resource*> response;
     TextParser textParser(request.getFileParser());
 
-    MaterialCollection *materials = new MaterialCollection();
-
     String token;
     while ((token = textParser.takeToken()) != FileParser::eof) {
       if (token == "newmtl") {
         MaterialResource *material = parseMaterial(textParser, textParser.takeLine(), request);
         material->setUri(Paths::add(request.getFilePath(), material->getName()));
-        material->setMimeType(MimeTypes::WAVEFRONT_MATERIAL);
 
         response.push_back(material);
-        materials->addMaterial(material);
       } else {
         String line = textParser.takeLine().c_str();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());
       }
     }
-
-    response.push_back(materials);
 
     return response;
   }

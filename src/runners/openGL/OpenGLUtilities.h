@@ -41,6 +41,7 @@ public:
         resource->setPrimitiveType(geometry->getType());
         resource->setSize(geometry->getSize());
         resource->setUri(geometry->getUri());
+        resource->setName(geometry->getName());
 
         glBindVertexArray(resource->getId());
         GLenum glError = glGetError();

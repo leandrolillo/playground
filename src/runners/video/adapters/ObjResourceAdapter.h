@@ -8,14 +8,12 @@
 #pragma once
 
 #include "ResourceAdapter.h"
-#include "GeometryCollection.h"
-#include "MaterialCollection.h"
 
 class ObjResourceAdapter: public ResourceAdapter {
 public:
   ObjResourceAdapter() {
     logger = LoggerFactory::getLogger("video/ObjResourceAdapter");
-    this->produces(MimeTypes::GEOMETRYCOLLECTION);
+    this->produces(MimeTypes::GEOMETRY);
     this->accepts(MimeTypes::WAVEFRONT_OBJ);
   }
 
@@ -32,23 +30,20 @@ protected:
     std::vector<vector> normals;
     std::vector<vector2> textCoords;
 
-    GeometryCollection *objects = new GeometryCollection();
-    MaterialCollection *materials = null;
+    String materialLibraryName;
 
     String token;
     while ((token = textParser.peekToken()) != FileParser::eof) {
       if (token == "o" || token == "v" || token == "vn" || token == "vt" || token == "f") {
-        GeometryResource *object = parseObject(textParser, vertices, normals, textCoords, materials);
+        GeometryResource *object = parseObject(textParser, vertices, normals, textCoords, materialLibraryName);
         object->setUri(Paths::add(request.getFilePath(), object->getName()));
 
         response.push_back(object);
-
-        objects->addObject(object);
       } else if (token == "mtllib") {
         textParser.takeToken();
         String materialLibraryName = textParser.takeLine();
 
-        materials = (MaterialCollection*) this->getResourceManager().load(request.newRequest(materialLibraryName).acceptMimeType(MimeTypes::MATERIALCOLLECTION));
+        //materials = (MaterialCollection*) this->getResourceManager().load(request.newRequest(materialLibraryName).acceptMimeType(MimeTypes::MATERIALCOLLECTION));
       } else {
         String line = textParser.takeLine().c_str();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());
@@ -57,8 +52,6 @@ protected:
 
 //        logger->info("Parsed [%s] file, converting to geometry...", request.getFilePath().c_str());
 
-    response.push_back(objects);
-
     return response;
   }
 
@@ -66,7 +59,7 @@ protected:
       std::vector<vector> &vertices,
       std::vector<vector> &normals,
       std::vector<vector2> &textCoords,
-      MaterialCollection *materials) const {
+      const String &materialLibraryName) const {
 
     GeometryResource *geometry = new GeometryResource(0);
     geometry->setUri(textParser.getFilename());
@@ -105,10 +98,11 @@ protected:
           delete geometry;
           return null;
         }
-      } else if (token == "usemtl" && materials != null) {
+      } else if (token == "usemtl" && !materialLibraryName.empty()) {
         String materialName = textParser.takeLine();
         StringUtils::trim(materialName);
-        geometry->setMaterial(materials->getMaterial(materialName));
+//        geometry->setMaterial(
+//            (MaterialResource *)this->getResourceManager().load(request.newRequest(materialLibraryName + "/" + materialName).acceptMimeType(MimeTypes::MATERIAL)));
       } else {
         String line = textParser.takeLine();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());

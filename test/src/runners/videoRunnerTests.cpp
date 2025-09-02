@@ -98,9 +98,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     auto response = resourceAdapter->load(request);
     REQUIRE(response.size() > 0);
 
-    GeometryCollection *resources = (GeometryCollection *)response.back();
-    REQUIRE(resources != null);
-    GeometryResource *resource = resources->getObject("geometry.json");
+    GeometryResource *resource = (GeometryResource *)response.back();
     REQUIRE(resource != null);
     CHECK(MimeTypes::GEOMETRY == resource->getMimeType());
     CHECK(11 == resource->getVertices().size());
@@ -115,9 +113,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests (No resourceManager.load())")
     auto response = resourceAdapter->load(request);
     REQUIRE(response.size() > 0);
 
-    GeometryCollection *resources = (GeometryCollection *)response.back();
-    REQUIRE(resources != null);
-    GeometryResource *resource = resources->getObject("Axes");
+    GeometryResource *resource = (GeometryResource *)response.back();
     REQUIRE(resource != null);
   }
 }

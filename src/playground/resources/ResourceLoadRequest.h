@@ -158,6 +158,14 @@ public:
     return Paths::getActualPath(Paths::add(this->rootFolder, asRelativePath(uri)));
   }
 
+  const String getFqdn() const {
+    if(fileParser) {
+      return fileParser->getFilename();
+    }
+
+    return Paths::add(this->rootFolder, asRelativePath(uri));
+  }
+
   const String& getInputMimeType() {
     if (this->inputMimeType.empty()) {
       this->inputMimeType = MimeTypes::guessMimeType(getFilePath());

@@ -10,7 +10,6 @@
 #include "JsonParser.h"
 #include "ResourceAdapter.h"
 #include "NormalGenerator.h"
-#include "GeometryCollection.h"
 #include "GeometryResource.h"
 
 
@@ -18,7 +17,7 @@ class GeometryResourceAdapter: public ResourceAdapter {
 public:
 	GeometryResourceAdapter() {
 		logger = LoggerFactory::getLogger("video/GeometryResourceAdapter");
-		this->produces(MimeTypes::GEOMETRYCOLLECTION);
+		this->produces(MimeTypes::GEOMETRY);
 		this->accepts(MimeTypes::JSON);
 	}
 
@@ -27,10 +26,7 @@ protected:
 	  std::vector<Resource *> response;
 
 		JsonParser parser(request.getFileParser());
-		GeometryCollection *geometryCollection = new GeometryCollection;
 		GeometryResource *resource = new GeometryResource(0);
-		resource->setName(Paths::getBasename(request.getFilePath()));
-		resource->setUri(request.getFilePath());
 
 		bool generateNormals = false;
 		bool generateIndexes = false;
@@ -96,9 +92,6 @@ protected:
 		log("textureCoordinates ", resource->getTextureCoordinates());
 
 		response.push_back(resource);
-		geometryCollection->addObject(resource);
-
-		response.push_back(geometryCollection);
 
 		return response;
 	}

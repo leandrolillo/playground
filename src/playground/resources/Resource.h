@@ -10,6 +10,7 @@
 #include "JavaLike.h"
 #include "Logger.h"
 #include "MimeTypes.h"
+#include "Paths.h"
 
 class Resource {
 protected:
@@ -18,6 +19,7 @@ protected:
 private:
 	unsigned long id; // id makes sense to business only - thus can be repeated. It is not a sequential primary key for all resources
 	String uri;
+	String name;
 	String mimeType;
 	std::set<String> labels;
 
@@ -51,21 +53,38 @@ public:
 		return id;
 	}
 
-	void setId(unsigned long id) {
+  const String& getUri() const {
+    return uri;
+  }
+
+  const String &getName() const {
+    return name;
+  }
+
+  const String getFqdn() const {
+    String fqdn = Paths::add(this->uri, this->name);
+    return Paths::add(this->uri, this->name);
+  }
+
+  const String& getMimeType() const {
+    return mimeType;
+  }
+
+
+	Resource &setId(unsigned long id) {
 		this->id = id;
+		return *this;
 	}
 
-	const String& getMimeType() const {
-		return mimeType;
+	Resource &setName(const String &name) {
+	  this->name = name;
+	  return *this;
 	}
 
 	void setMimeType(const String & mimeType) {
 		this->mimeType = mimeType;
 	}
 
-	const String& getUri() const {
-		return uri;
-	}
 
 	void setUri(const String & fileName) {
 		this->uri = fileName;

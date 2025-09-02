@@ -5,6 +5,15 @@
 TEST_CASE("ResourceLoadRequest tests") {
   ResourceManagerMock resourceManager("resources");
 
+  SECTION("Resource") {
+    Resource resource(0, "test/mimetype");
+    resource.setUri(resourceManager.getRootFolder() + "chidlren/fileToParse.json");
+    CHECK(resource.getFqdn() == resourceManager.getRootFolder() + "chidlren/fileToParse.json");
+
+    resource.setName("objectName");
+    CHECK(resource.getFqdn() == resourceManager.getRootFolder() + "chidlren/fileToParse.json/objectName");
+  }
+
   SECTION("ToString") {
     String actual = resourceManager.newRequest("/test/filename.json").acceptMimeType("test/mimetype").withAdditionalLabels(std::set<String> {"additionalLabel"}).toString();
     CHECK("[test/mimetype]<-[application/json] [/test/filename.json]" == actual);
@@ -102,20 +111,6 @@ TEST_CASE("ResourceLoadRequest tests") {
   }
 }
 
-TEST_CASE("ResourceLoadResponse tests")
-{
-
-  SECTION("issueWithRootPathsBeingRelative") {
-    String rootFolder("./target/../../media");
-    ResourceManagerMock resourceManager(rootFolder);
-
-//    String actual = resourceManager.getFullPath("geometry/basketball.json", "~/images/basketball.png");
-//    actual = Paths::normalize(actual, rootFolder);
-//    CHECK((String)std::__fs::filesystem::absolute(rootFolder) + "/images/basketball.png" == actual);
-//    //CHECK(rootFolder + "/images/basketball.png" == actual); // this is the failure before the fix in resource manager constructor.
-  }
-}
-
 TEST_CASE("ResourceManagerTests") {
   ResourceManagerMock resourceManager("resources");
 
@@ -134,51 +129,50 @@ TEST_CASE("ResourceManagerTests") {
     ResourceAdapterMock *resourceAdapter = (ResourceAdapterMock *)resourceManager.addAdapter(
         std::make_unique<ResourceAdapterMock>(std::set<String> {"test/outputMimeType", "test/anotherOutputMimeType"}, "test/inputMimeType"));
 
-//    /* Should populate default values */
-//    resourceAdapter->withLoadResult(null);
-//    resourceAdapter->withLoadResult(new Resource(1, ""));
-//    resourceAdapter->withLoadResult(null);
-//    Resource *actual = resourceManager.load(resourceManager.newRequest("/test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"}));
-//    REQUIRE(actual != null);
-//    CHECK("test/outputMimeType" == actual->getMimeType());
-//    CHECK("/test/filename" == actual->getUri());
-//    CHECK(1 == actual->getLabels().size());
-//    CHECK(1 == resourceManager.getResourcesCount());
-//
-//    /* unless already set */
-//    Resource *mockResult = new Resource(1, "test/outputMimeType");
-//    mockResult->setUri("/test/anotherFilename");
-//    resourceAdapter->withLoadResult(mockResult);
-//    actual = resourceManager.load(resourceManager.newRequest("/test/anotherFilename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType"));
-//    REQUIRE(actual != null);
-//    CHECK("test/outputMimeType" == actual->getMimeType());
-//    CHECK("/test/anotherFilename" == actual->getUri());
-//    CHECK(0 == actual->getLabels().size());
-//    CHECK(2 == resourceManager.getResourcesCount());
-//
-//    /* Make sure we get the proper mimetype or null*/
-//    actual = resourceManager.load(resourceManager.newRequest("test/filename").withParent(resourceManager.getRootFolder()).acceptMimeType("test/anotherOutputMimeType").withInputMimeType("test/inputMimeType"));
-//    REQUIRE(actual == null);
-//    CHECK(2 ==resourceManager.getResourcesCount());
+    /* Should populate default values */
+    resourceAdapter->withLoadResult(null).withLoadResult(new Resource(1, "")).withLoadResult(null);
+    ResourceLoadRequest request = resourceManager.newRequest("/test/filename").acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType").withLabels(std::set<String> {"test"});
+    Resource *actual = resourceManager.load(request);
+    REQUIRE(actual != null);
+    CHECK("test/outputMimeType" == actual->getMimeType());
+    CHECK(resourceManager.getRootFolder() + "/test/filename" == actual->getUri());
+    CHECK(1 == actual->getLabels().size());
+    CHECK(1 == resourceManager.getResourcesCount());
+    CHECK(request.getFqdn() == actual->getFqdn());
+
+    /* unless already set */
+    Resource *mockResult = new Resource(1, "test/outputMimeType");
+    resourceAdapter->clearResults().withLoadResult(mockResult);
+    actual = resourceManager.load(resourceManager.newRequest("/test/anotherFilename").acceptMimeType("test/outputMimeType").withInputMimeType("test/inputMimeType"));
+    REQUIRE(actual != null);
+    CHECK("test/outputMimeType" == actual->getMimeType());
+    CHECK(resourceManager.getRootFolder() +  "/test/anotherFilename" == actual->getUri());
+    CHECK(0 == actual->getLabels().size());
+    CHECK(2 == resourceManager.getResourcesCount());
+
+    /* Make sure we get the proper mimetype or null*/
+    actual = resourceManager.load(resourceManager.newRequest("test/filename").acceptMimeType("test/anotherOutputMimeType").withInputMimeType("test/inputMimeType"));
+    REQUIRE(actual == null);
+    CHECK(2 ==resourceManager.getResourcesCount());
 
   }
 
-  SECTION ("AddResource") {
+  SECTION ("AddResource / Load") {
     Resource *resource = new Resource(1, "test/mimetype");
-    resource->setUri("/test/filename");
+    resource->setUri(resourceManager.getRootFolder() + "/test/filename"); //TODO: Review if this logic should be in resource manager - currently it is in resourceLoadAdapter
     resourceManager.addResource(resource);
     resource->toString(); //any better way to try to trigger illegal access?
     CHECK(1 == resourceManager.getResourcesCount());
 
     resource = new Resource(2, "test/mimetype");
-    resource->setUri("/test/filename2");
+    resource->setUri(resourceManager.getRootFolder() + "/test/filename2");
     resourceManager.addResource(resource);
     resource->toString();//any better way to try to trigger illegal access?
     CHECK(2 == resourceManager.getResourcesCount());
 
     resource = resourceManager.load("/test/filename", "test/mimetype");
     REQUIRE(resource != null);
-    CHECK("/test/filename" == resource->getUri());
+    CHECK(resourceManager.getRootFolder() + "/test/filename" == resource->getUri());
     CHECK("test/mimetype" == resource->getMimeType());
 
     /**
@@ -288,13 +282,15 @@ TEST_CASE("ResourceAdapterTest") {
 
   resourceAdapter->withLoadResult(new Resource(1, "test/outputMimeType"));
   resourceAdapter->withLoadResult(null);
-  resourceAdapter->withLoadResult(new Resource(2, "test/outputMimeType"));
+  resourceAdapter->withLoadResult(new Resource(2, "test/anotherOutputMimeType"));
 
 
-  auto response = resourceAdapter->load(resourceManager.newRequest("basketball.json"));
+  ResourceLoadRequest request = resourceManager.newRequest("basketball.json");
+  auto response = resourceAdapter->load(request);
 
   CHECK(response.size() == 2);
   for(auto item : response) {
     CHECK(item != null);
+    CHECK(item->getFqdn() == request.getFqdn());
   }
 }

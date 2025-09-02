@@ -148,17 +148,15 @@ public:
    * Resource methods
    *****************/
   Resource* addResource(Resource *resource) {
-    if (resource != null) {
-      if (resource->getUri().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
-        logger->error("ResourceManager: Could not add [%s] - uri and mimeType are required", resource->toString().c_str());
-      } else {
-        String key = getCacheKey(*resource);
-        if (!key.empty()) {
-          if (resources.find(resource) == resources.end()) {
-            resources.insert(std::unique_ptr < Resource > (resource));
-          }
-          resourcesCache[key] = resource;
+    if (resource == null || resource->getFqdn().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
+      logger->error("ResourceManager: Could not add [%s] - uri and mimeType are required", resource->toString().c_str());
+    } else {
+      String key = getCacheKey(*resource);
+      if (!key.empty()) {
+        if (resources.find(resource) == resources.end()) {
+          resources.insert(std::unique_ptr < Resource > (resource));
         }
+        resourcesCache[key] = resource;
       }
     }
 
@@ -291,11 +289,12 @@ private:
   }
 
   const String getCacheKey(const Resource &resource) {
-    return getCacheKey(resource.getUri(), resource.getMimeType());
+    String key = getCacheKey(resource.getFqdn(), resource.getMimeType());
+    return key;
   }
 
   const String getCacheKey(const ResourceLoadRequest &resourceLoadRequest) {
-    return getCacheKey(resourceLoadRequest.getUri(), resourceLoadRequest.getOutputMimeType());
+    return getCacheKey(resourceLoadRequest.getFqdn(), resourceLoadRequest.getOutputMimeType());
   }
 
 
