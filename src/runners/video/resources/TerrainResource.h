@@ -1,12 +1,4 @@
-/*
- * TerrainResource.h
- *
- *  Created on: Mar 26, 2021
- *      Author: leandro
- */
-
-#ifndef SRC_RUNNERS_VIDEO_RESOURCES_TERRAINRESOURCE_H_
-#define SRC_RUNNERS_VIDEO_RESOURCES_TERRAINRESOURCE_H_
+#pragma once
 
 #include "Resource.h"
 #include "HeightMapResource.h"
@@ -86,5 +78,3 @@ public:
 	    this->heightmap = heightmap;
 	}
 };
-
-#endif /* SRC_RUNNERS_VIDEO_RESOURCES_TERRAINRESOURCE_H_ */

@@ -5,8 +5,7 @@
  *      Author: Lean
  */
 
-#ifndef GEOMETRYRESOURCE_H_
-#define GEOMETRYRESOURCE_H_
+#pragma once
 
 #include <Math3d.h>
 #include <vector>
@@ -135,5 +134,3 @@ public:
 		this->material = material;
 	}
 };
-
-#endif /* GEOMETRYRESOURCE_H_ */

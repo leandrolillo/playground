@@ -1,13 +1,4 @@
-/*
- * ShaderResource.h
- *
- *  Created on: 23/02/2013
- *      Author: Lean
- */
-
-#ifndef SHADERRESOURCE_H_
-#define SHADERRESOURCE_H_
-
+#pragma once
 
 #include "Resource.h"
 
@@ -19,4 +10,3 @@ class ShaderResource : public Resource
 
 		}
 };
-#endif /* SHADERRESOURCE_H_ */

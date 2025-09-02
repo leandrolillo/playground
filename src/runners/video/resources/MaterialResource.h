@@ -1,5 +1,4 @@
-#ifndef MATERIALRESOURCE_H_
-#define MATERIALRESOURCE_H_
+#pragma once
 
 #include <Math3d.h>
 #include "Resource.h"
@@ -124,4 +123,3 @@ public:
 		this->specularTexture = specularTexture;
 	}
 };
-#endif

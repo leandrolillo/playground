@@ -1,12 +1,4 @@
-/*
- * TextureResource.h
- *
- *  Created on: 28/01/2013
- *      Author: Lean
- */
-
-#ifndef TEXTURERESOURCE_H_
-#define TEXTURERESOURCE_H_
+#pragma once
 
 #include "Resource.h"
 
@@ -23,6 +15,3 @@ class TextureResource : public Resource
 
 		}
 };
-
-
-#endif /* TEXTURERESOURCE_H_ */

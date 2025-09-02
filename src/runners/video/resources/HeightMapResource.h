@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RESOURCES_HEIGHTMAPRESOURCE_H_
-#define SRC_RUNNERS_VIDEO_RESOURCES_HEIGHTMAPRESOURCE_H_
+#pragma once
 
 #include <Math3d.h>
 #include "Logger.h"
@@ -16,7 +15,7 @@
 
 constexpr real one_over_max_color = 0.000000059604645; // 1.0 / (256.0 * 256.0 * 256.0)
 
-class HeightMapResource: public Resource, HeightMap {
+class HeightMapResource: public Resource, public HeightMap {
 private:
     Logger *logger = LoggerFactory::getLogger("video/HeightMapResource");
     vector voxelSize;
@@ -196,5 +195,3 @@ private:
     	return maxHeight;
     }
 };
-
-#endif /* SRC_RUNNERS_VIDEO_RESOURCES_HEIGHTMAPRESOURCE_H_ */

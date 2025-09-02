@@ -16,12 +16,11 @@ target_link_libraries(${TESTS} PUBLIC Catch2::Catch2WithMain)
 #sources
 add_subdirectory(src)
 
-#resources - clean and copy fro scratch
+#resources - clean and copy from scratch
 add_custom_command( 
     TARGET ${TESTS} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -rf
             resources)
-
 add_custom_command( 
     TARGET ${TESTS} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
