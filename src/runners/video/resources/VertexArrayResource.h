@@ -1,12 +1,4 @@
-/*
- * BufferResource.h
- *
- *  Created on: 07/02/2013
- *      Author: Lean
- */
-
-#ifndef VERTEXBUFFERRESOURCE_H_
-#define VERTEXBUFFERRESOURCE_H_
+#pragma once
 
 #include "Resource.h"
 
@@ -138,7 +130,3 @@ class VertexArrayResource : public Resource
 			return result;
 		}
 };
-
-
-
-#endif /* BUFFERRESOURCE_H_ */

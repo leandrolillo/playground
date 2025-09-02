@@ -5,95 +5,18 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_GEOMETRYRENDERER_H_
-#define SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_GEOMETRYRENDERER_H_
+#pragma once
 
-//#include <ParticleManager.h>
 #include <Geometry.h>
 #include "DefaultRenderer.h"
 
 class GeometryRenderer {
-public:
-//    const MaterialResource red = MaterialResource(vector(1, 0, 0), vector(1, 0, 0), vector(1, 0, 0), 1.0, 0.5);
-//    const MaterialResource green = MaterialResource(vector(0, 1, 0), vector(0, 1, 0), vector(0, 1, 0), 0.5);
-//    const MaterialResource blue = MaterialResource(vector(0, 0, 1), vector(0, 0, 1), vector(0, 0, 1), 0.5);
-//    const MaterialResource black {vector(0, 0, 0), vector(0, 0, 0), vector(0, 0, 0), 1.0, 0.2 };
-//    const MaterialResource white {vector(1, 1, 1), vector(1, 1, 1), vector(1, 1, 1), 1.0, 0.2 };
-private:
+protected:
     DefaultRenderer &renderer;
-//    MaterialResource const *particleMaterial=&black;
-//    MaterialResource const *collidingParticleAMaterial=&red;
-//    MaterialResource const *collidingParticleBMaterial=&red;
-//    MaterialResource const *sceneryMaterial=&white;
-//    MaterialResource const *contactMaterial=&green;
-
     Logger *logger = LoggerFactory::getLogger("GeometryRenderer");
 
 public:
 	GeometryRenderer(DefaultRenderer &renderer) : renderer(renderer) {		}
-
-//	void setParticleMaterial(MaterialResource *material) {
-//		this->particleMaterial = material;
-//	}
-//
-//	void setCollidingParticleMaterial(MaterialResource *material) {
-//		this->collidingParticleAMaterial = material;
-//		this->collidingParticleBMaterial = material;
-//	}
-//
-//	void setCollidingParticleAMaterial(MaterialResource *material) {
-//		this->collidingParticleAMaterial = material;
-//	}
-//
-//	void setCollidingParticleBMaterial(MaterialResource *material) {
-//		this->collidingParticleBMaterial = material;
-//	}
-//
-//	void setSceneryMaterial(MaterialResource *material) {
-//		this->sceneryMaterial = material;
-//	}
-//
-//	void setContactMaterial(MaterialResource *material) {
-//		this->contactMaterial = material;
-//	}
-//
-//	void render(const ParticleManager *particleManager) const {
-//        renderer.setMaterial(contactMaterial);
-//		for(auto &contact : particleManager->getContacts()) {
-//			this->renderContact(contact);
-//		}
-//
-//		renderer.setMaterial(sceneryMaterial);
-//		for(auto scenery : particleManager->getScenery()) {
-//			this->render(scenery);
-//		}
-//
-//		for(auto particle : particleManager->getParticles()) {
-//			if(particle->getStatus()) {
-//				renderer.setMaterial(particleMaterial);
-//				bool isColliding = false;
-//				for(auto &contact : particleManager->getContacts()) {
-//					if(contact.getParticleA() == particle) {
-//						renderer.setMaterial(collidingParticleAMaterial);
-//						break;
-//
-//					} else if (contact.getParticleB() ==  particle) {
-//						renderer.setMaterial(collidingParticleBMaterial);
-//						break;
-//					}
-//				}
-//
-//
-//				this->render(particle->getBoundingVolume(), isColliding);
-//			}
-//		}
-//	}
-//
-//  void renderContact(const ParticleContact &contact) const {
-//        vector start = contact.getIntersection(); //contact.getParticleA()->getPosition();
-//        vector end = start + contact.getNormal() * contact.getPenetration();
-//        renderer.drawLine(matriz_4x4::identidad, start, end);
-//  }
 
 	void render(const Geometry *geometry, bool isColliding = false) const {
 		if(geometry != null) {
@@ -178,7 +101,3 @@ public:
 		}
 	}
 };
-
-
-
-#endif /* SRC_RUNNERS_VIDEO_RENDERERS_GEOMETRY_GEOMETRYRENDERER_H_ */

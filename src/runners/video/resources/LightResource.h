@@ -1,5 +1,4 @@
-#ifndef LIGHTRESOURCE_H_
-#define LIGHTRESOURCE_H_
+#pragma once
 
 #include <Math3d.h>
 #include "MaterialResource.h"
@@ -23,9 +22,4 @@ public:
 	void setPosition(const vector &position) {
 		this->position = position;
 	}
-
-
-
-
 };
-#endif

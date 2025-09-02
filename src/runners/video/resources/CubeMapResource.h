@@ -5,11 +5,9 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RESOURCES_CUBEMAPRESOURCE_H_
-#define SRC_RUNNERS_VIDEO_RESOURCES_CUBEMAPRESOURCE_H_
+#pragma once
 
 #include "TextureResource.h"
-
 
 class CubeMapResource : public TextureResource {
 public:
@@ -18,8 +16,3 @@ public:
 
 	}
 };
-
-
-
-
-#endif /* SRC_RUNNERS_VIDEO_RESOURCES_CUBEMAPRESOURCE_H_ */
