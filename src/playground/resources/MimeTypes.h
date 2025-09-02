@@ -7,6 +7,7 @@
 
 #pragma once
 #include "JavaLike.h"
+#include "StringUtils.h"
 
 class MimeTypes {
 public:
@@ -46,12 +47,14 @@ public:
   inline static const String TESELLATIONSHADER = "video/tesellation-shader";
 
   static String guessMimeType(const String &fileName) {
+    return defaultInputMimeType(fileName);
+  }
+
+  static String defaultInputMimeType(const String &fileName) {
     int position = fileName.find_last_of(".");
     if (position > 0) {
-      String extension = fileName.substr(position + 1,
-          fileName.length() - position - 1);
-      std::transform(extension.begin(), extension.end(),
-          extension.begin(), ::tolower);
+      String extension = StringUtils::trim(fileName.substr(position + 1,
+          fileName.length() - position - 1));
       if (extension == "ogg") {
         return OGG;
       } else if (extension == "wav") {
@@ -77,4 +80,29 @@ public:
 
     return "";
   }
+  static String defaultOutputMimeType(const String &fileName) {
+    int position = fileName.find_last_of(".");
+    if (position > 0) {
+      String extension = StringUtils::trim(fileName.substr(position + 1,
+          fileName.length() - position - 1));
+      if (extension == "ogg") {
+        return AUDIO;
+      } else if (extension == "wav") {
+        return AUDIO;
+      } else if (extension == "jpeg" || extension == "jpg") {
+        return IMAGE;
+      } else if (extension == "png") {
+        return IMAGE;
+      } else if (extension == "tga") {
+        return IMAGE;
+      } else if (extension == "obj") {
+        return GEOMETRY;
+      } else if (extension == "mtl") {
+        return MATERIAL;
+      }
+    }
+
+    return "";
+  }
+
 };

@@ -79,37 +79,39 @@ public:
    * End of Rule of five and copy-and-swap
    */
 
-  ResourceLoadRequest newRequest(String uri) {
+  ResourceLoadRequest newRequest(String uri) const{
     ResourceLoadRequest clone(*this);
     clone.fileParser = null;
+    clone.inputMimeType.clear();
     clone.withUri(relativeUri(uri));
     return clone;
   }
 
-  String relativeUri(const String &uri) {
+  String relativeUri(const String &uri) const {
     return Paths::add(uriOnly(Paths::getDirname(getFilePath())), uri);
   }
 
 
   ResourceLoadRequest& withUri(const String &uri) {
     this->uri = StringUtils::trim(uri);
-    this->inputMimeType = ""; //Let it guess the mimetype
+    this->inputMimeType = this->inputMimeType.empty() ? MimeTypes::defaultInputMimeType(getFilePath()): this->inputMimeType;
+    this->outputMimeType = this->outputMimeType.empty() ? MimeTypes::defaultOutputMimeType(getFilePath()) : this->outputMimeType;
     return *this;
   }
 
   //TODO: review if it would be better to return new objects - would be safer and shorter syntax while giving up performance
   ResourceLoadRequest& acceptMimeType(const String &mimeType) {
-    this->outputMimeType = mimeType;
+    this->outputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
   ResourceLoadRequest& produceMimeType(const String &mimeType) {
-    this->outputMimeType = mimeType;
+    this->outputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
   ResourceLoadRequest& withInputMimeType(const String &mimeType) {
-    this->inputMimeType = mimeType;
+    this->inputMimeType = StringUtils::trim(mimeType);
     return *this;
   }
 
@@ -135,7 +137,10 @@ public:
   }
 
   ResourceLoadRequest& withRootFolder(const String &rootFolder) {
-    this->rootFolder = rootFolder;
+    this->rootFolder = StringUtils::trim(rootFolder);
+    this->inputMimeType = this->inputMimeType.empty() ? MimeTypes::defaultInputMimeType(getFilePath()): this->inputMimeType;
+    this->outputMimeType = this->outputMimeType.empty() ? MimeTypes::defaultOutputMimeType(getFilePath()) : this->outputMimeType;
+
     return *this;
   }
 
@@ -162,11 +167,7 @@ public:
     return Paths::add(this->rootFolder, asRelativePath(uri));
   }
 
-  const String& getInputMimeType() {
-    if (this->inputMimeType.empty()) {
-      this->inputMimeType = MimeTypes::guessMimeType(getFilePath());
-    }
-
+  const String& getInputMimeType() const {
     return inputMimeType;
   }
 
@@ -195,7 +196,7 @@ public:
     return outputMimeType;
   }
 
-  String errors() {
+  String errors() const {
     String errors;
 
     if (uri.empty()) {
@@ -213,7 +214,7 @@ public:
     return errors;
   }
 
-  bool isValid() {
+  bool isValid() const {
     return errors().empty();
   }
 
@@ -238,7 +239,7 @@ private:
   String uriOnly(const String &uri) const{
     String uriOnly = uri;
     if(uriOnly.find(rootFolder) == 0) {
-      return uriOnly.erase(0, rootFolder.size());
+      uriOnly.erase(0, rootFolder.size());
     }
 
     return uriOnly;

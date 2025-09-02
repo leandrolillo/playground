@@ -26,10 +26,7 @@ protected:
     String token;
     while ((token = textParser.takeToken()) != FileParser::eof) {
       if (token == "newmtl") {
-        MaterialResource *material = parseMaterial(textParser, textParser.takeLine(), request);
-        material->setUri(Paths::add(request.getFilePath(), material->getName()));
-
-        response.push_back(material);
+        response.push_back(parseMaterial(textParser, textParser.takeLine(), request));
       } else {
         String line = textParser.takeLine().c_str();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());

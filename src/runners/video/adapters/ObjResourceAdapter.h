@@ -30,18 +30,17 @@ protected:
     std::vector<vector> normals;
     std::vector<vector2> textCoords;
 
-    String materialLibraryName;
+    std::unique_ptr<ResourceLoadRequest> materialsRequest;
 
     String token;
     while ((token = textParser.peekToken()) != FileParser::eof) {
       if (token == "o" || token == "v" || token == "vn" || token == "vt" || token == "f") {
-        GeometryResource *object = parseObject(textParser, vertices, normals, textCoords, materialLibraryName);
-        object->setUri(Paths::add(request.getFilePath(), object->getName()));
+        GeometryResource *object = parseObject(textParser, vertices, normals, textCoords, materialsRequest.get());
 
         response.push_back(object);
       } else if (token == "mtllib") {
         textParser.takeToken();
-        String materialLibraryName = textParser.takeLine();
+        materialsRequest = std::make_unique<ResourceLoadRequest>(request.newRequest(textParser.takeLine()).acceptMimeType(MimeTypes::MATERIAL));
 
         //materials = (MaterialCollection*) this->getResourceManager().load(request.newRequest(materialLibraryName).acceptMimeType(MimeTypes::MATERIALCOLLECTION));
       } else {
@@ -59,7 +58,7 @@ protected:
       std::vector<vector> &vertices,
       std::vector<vector> &normals,
       std::vector<vector2> &textCoords,
-      const String &materialLibraryName) const {
+      const ResourceLoadRequest *materialsRequest) const {
 
     GeometryResource *geometry = new GeometryResource(0);
     geometry->setUri(textParser.getFilename());
@@ -98,11 +97,10 @@ protected:
           delete geometry;
           return null;
         }
-      } else if (token == "usemtl" && !materialLibraryName.empty()) {
-        String materialName = textParser.takeLine();
-        StringUtils::trim(materialName);
-//        geometry->setMaterial(
-//            (MaterialResource *)this->getResourceManager().load(request.newRequest(materialLibraryName + "/" + materialName).acceptMimeType(MimeTypes::MATERIAL)));
+      } else if (token == "usemtl" && materialsRequest) {
+        String materialName = StringUtils::trim(textParser.takeLine());
+        geometry->setMaterial((MaterialResource *)this->getResourceManager().load(
+            materialsRequest->newRequest(Paths::add(materialsRequest->getUri(), materialName))));
       } else {
         String line = textParser.takeLine();
         logger->warn("skipping [%s] [%s]", token.c_str(), line.c_str());
