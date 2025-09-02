@@ -33,25 +33,25 @@ public:
 
       if (token == "r") {
         resource->setR(
-            (TextureResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::TEXTURE));
+            (TextureResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::TEXTURE)));
       } else if (token == "g") {
         resource->setG(
-            (TextureResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::TEXTURE));
+            (TextureResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::TEXTURE)));
       } else if (token == "b") {
         resource->setB(
-            (TextureResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::TEXTURE));
+            (TextureResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::TEXTURE)));
       } else if (token == "a") {
         resource->setA(
-            (TextureResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::TEXTURE));
+            (TextureResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::TEXTURE)));
       } else if (token == "map") {
         resource->setMap(
-            (TextureResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::TEXTURE));
+            (TextureResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::TEXTURE)));
       } else if (token == "model") {
         resource->setModel(
-            (VertexArrayResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::VERTEXARRAY));
+            (VertexArrayResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::VERTEXARRAY)));
       } else if (token == "heightmap") {
         resource->setHeightmap(
-            (HeightMapResource*) this->getResourceManager().load(request.getFilePath(), jsonParser.readString(), MimeTypes::HEIGHTMAP));
+            (HeightMapResource*) this->getResourceManager().load(request.newRequest(jsonParser.readString()).acceptMimeType(MimeTypes::HEIGHTMAP)));
         resource->setModel(buildModel(resource->getHeightMap()));
         response.push_back(resource->getModel());
       } else {

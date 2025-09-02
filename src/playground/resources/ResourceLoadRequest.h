@@ -29,8 +29,7 @@ private:
 
   std::set<String> labels;
   std::map<String, String> options;
-  const Resource *parent = null;
-  std::vector<String> parents;
+  String rootFolder;
 
   ResourceLoadRequest(const String &uri) {
     withUri(uri);
@@ -55,19 +54,17 @@ public:
     swap(left.outputMimeType, right.outputMimeType);
     swap(left.labels, right.labels);
     swap(left.options, right.options);
-    swap(left.parents, right.parents);
-    swap(left.parent, right.parent);
+    swap(left.rootFolder, right.rootFolder);
   }
 
   ResourceLoadRequest(const ResourceLoadRequest &right) {
     fileParser = right.fileParser;
     uri = right.uri;
+    rootFolder = right.rootFolder;
     inputMimeType = right.inputMimeType;
     outputMimeType = right.outputMimeType;
     labels = right.labels;
     options = right.options;
-    parents = right.parents;
-    parent = right.parent;
   }
 
   ResourceLoadRequest(ResourceLoadRequest &&right) {
@@ -82,8 +79,21 @@ public:
    * End of Rule of five and copy-and-swap
    */
 
+  ResourceLoadRequest newRequest(String uri) {
+    ResourceLoadRequest clone(*this);
+    clone.fileParser = null;
+    clone.withUri(relativeUri(uri));
+    return clone;
+  }
+
+  String relativeUri(const String &uri) {
+    return Paths::add(uriOnly(Paths::getDirname(getFilePath())), uri);
+  }
+
+
   ResourceLoadRequest& withUri(const String &uri) {
-    this->uri = uri;
+    this->uri = StringUtils::trim(uri);
+    this->inputMimeType = ""; //Let it guess the mimetype
     return *this;
   }
 
@@ -124,15 +134,8 @@ public:
     return *this;
   }
 
-  ResourceLoadRequest& withParent(const Resource *resource) {
-    if (resource != null) {
-      this->parents.push_back(Paths::getActualPath(resource->getUri()));
-    }
-    return *this;
-  }
-
-  ResourceLoadRequest& withParent(const String &parent) {
-    this->parents.push_back(parent);
+  ResourceLoadRequest& withRootFolder(const String &rootFolder) {
+    this->rootFolder = rootFolder;
     return *this;
   }
 
@@ -148,12 +151,15 @@ public:
   }
 
   const String getFilePath() const {
-    String path = "";
-    for (auto &parent : parents) {
-      path = Paths::relative(path, parent);
+    if(fileParser) {
+      return fileParser->getFilename();
     }
 
-    return Paths::getActualPath(Paths::relative(path, this->uri));
+    return Paths::getActualPath(Paths::add(this->rootFolder, asRelativePath(uri)));
+  }
+
+  const String getFqdn() const {
+    return Paths::add(this->rootFolder, asRelativePath(uri));
   }
 
   const String& getInputMimeType() {
@@ -213,5 +219,28 @@ public:
 
   String toString() {
     return StringFormatter::format("[%s]<-[%s] [%s]", getOutputMimeType().c_str(), getInputMimeType().c_str(), getUri().c_str());
+  }
+private:
+  //Remove leading / or ~/ so that we can make this a relative path from rootFolder.
+  String asRelativePath(const String &path) const {
+    String relativeUri = StringUtils::trim(path);
+    if(relativeUri.find("~") == 0) {
+      relativeUri.erase(0, 1);
+    }
+
+    if(relativeUri.find("/") == 0) {
+      relativeUri.erase(0, 1);
+    }
+
+    return relativeUri;
+  }
+
+  String uriOnly(const String &uri) const{
+    String uriOnly = uri;
+    if(uriOnly.find(rootFolder) == 0) {
+      return uriOnly.erase(0, rootFolder.size());
+    }
+
+    return uriOnly;
   }
 };

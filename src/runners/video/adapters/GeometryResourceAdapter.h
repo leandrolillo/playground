@@ -10,7 +10,6 @@
 #include "JsonParser.h"
 #include "ResourceAdapter.h"
 #include "NormalGenerator.h"
-#include "GeometryCollection.h"
 #include "GeometryResource.h"
 
 
@@ -18,7 +17,7 @@ class GeometryResourceAdapter: public ResourceAdapter {
 public:
 	GeometryResourceAdapter() {
 		logger = LoggerFactory::getLogger("video/GeometryResourceAdapter");
-		this->produces(MimeTypes::GEOMETRYCOLLECTION);
+		this->produces(MimeTypes::GEOMETRY);
 		this->accepts(MimeTypes::JSON);
 	}
 
@@ -27,10 +26,7 @@ protected:
 	  std::vector<Resource *> response;
 
 		JsonParser parser(request.getFileParser());
-		GeometryCollection *geometryCollection = new GeometryCollection;
 		GeometryResource *resource = new GeometryResource(0);
-		resource->setName(Paths::getBasename(request.getFilePath()));
-		resource->setUri(request.getFilePath());
 
 		bool generateNormals = false;
 		bool generateIndexes = false;
@@ -45,7 +41,7 @@ protected:
 			} else if (token == "vertices") {
 				resource->setVertices(parser.readVector3Array());
 			} else if (token == "material") {
-			  MaterialResource *material = parseMaterial(parser, request.getFilePath());
+			  MaterialResource *material = parseMaterial(parser, request);
 			  response.push_back(material);
 				resource->setMaterial(material);
 			} else if (token == "textureCoordinates") {
@@ -96,9 +92,6 @@ protected:
 		log("textureCoordinates ", resource->getTextureCoordinates());
 
 		response.push_back(resource);
-		geometryCollection->addObject(resource);
-
-		response.push_back(geometryCollection);
 
 		return response;
 	}
@@ -167,7 +160,7 @@ private:
 		}
 	}
 
-	MaterialResource *parseMaterial(JsonParser &parser, String parentPath) const {
+	MaterialResource *parseMaterial(JsonParser &parser, ResourceLoadRequest &request) const {
 		String token;
 		parser.readStartObject();
 		MaterialResource *material = new MaterialResource(vector(0.8, 0.8, 0.8), vector(0.8, 0.8, 0.8), vector(0.8, 0.8, 0.8), 1.0);
@@ -192,15 +185,15 @@ private:
         	} else if (token == "d") {
         		material->setAlpha(1.0 - parser.readReal());
         	} else if (token == "ambientTexture") {
-        		material->setAmbientTexture(getResourceManager().getFullPath(parentPath, parser.readString()));
+        		material->setAmbientTexture(request.relativeUri(parser.readString()));
         	} else if (token == "diffuseTexture") {
-        		material->setDiffuseTexture(getResourceManager().getFullPath(parentPath,parser.readString()));
+        		material->setDiffuseTexture(request.relativeUri(parser.readString()));
         	} else if (token == "specularTexture") {
-        		material->setSpecularTexture(getResourceManager().getFullPath(parentPath,parser.readString()));
+        		material->setSpecularTexture(request.relativeUri(parser.readString()));
         	} else if (token == "alphaTexture") {
         		material->setAlphaTexture(parser.readString());
         	} else if (token == "bumpTexture" ) {
-        		material->setBumpTexture(getResourceManager().getFullPath(parentPath,parser.readString()));
+        		material->setBumpTexture(request.relativeUri(parser.readString()));
 			} else {
 				logger->error("Unexpected token: [%s] at (%d, %d)",
 						token.c_str(), parser.getLine(), parser.getColumn());

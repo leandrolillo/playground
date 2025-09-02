@@ -113,7 +113,7 @@ public:
   }
 
   ResourceLoadRequest newRequest(const String &fileName) {
-    return ResourceLoadRequest(normalize(fileName));
+    return ResourceLoadRequest(fileName).withRootFolder(rootFolder);
   }
 
   /*************************************
@@ -138,15 +138,6 @@ public:
     return load(newRequest(fileName).acceptMimeType(outputMimeType).withLabels(labels).withOptions(options));
   }
 
-  /**
-   * Loads a file using the parent file path as base for relative paths - TODO: Replace by load with parent resource
-   */
-  Resource* load(const String &parentFilePath, const String &fileName, const String &outputMimeType) {
-    logger->debug("Load [%s] [%s] relative to [%s]", outputMimeType.c_str(), fileName.c_str(), parentFilePath.c_str());
-
-    return load(newRequest(Paths::relative(parentFilePath, fileName, this->rootFolder)).acceptMimeType(outputMimeType));
-  }
-
   Resource* load(ResourceLoadRequest &resourceLoadRequest);
   Resource* load(ResourceLoadRequest &&rvalue) {
     ResourceLoadRequest resourceLoadRequest(rvalue);
@@ -157,17 +148,15 @@ public:
    * Resource methods
    *****************/
   Resource* addResource(Resource *resource) {
-    if (resource != null) {
-      if (resource->getUri().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
-        logger->error("ResourceManager: Could not add [%s] - uri and mimeType are required", resource->toString().c_str());
-      } else {
-        String key = getCacheKey(*resource);
-        if (!key.empty()) {
-          if (resources.find(resource) == resources.end()) {
-            resources.insert(std::unique_ptr < Resource > (resource));
-          }
-          resourcesCache[key] = resource;
+    if (resource == null || resource->getFqdn().empty() || resource->getMimeType().empty()) { //Todo: review this validation and getKey exceptions
+      logger->error("ResourceManager: Could not add [%s] - uri and mimeType are required", resource->toString().c_str());
+    } else {
+      String key = getCacheKey(*resource);
+      if (!key.empty()) {
+        if (resources.find(resource) == resources.end()) {
+          resources.insert(std::unique_ptr < Resource > (resource));
         }
+        resourcesCache[key] = resource;
       }
     }
 
@@ -243,14 +232,6 @@ public:
     logger->debug("Resource adapters: %d", resourceAdapters.size());
   }
 
-  String normalize(const String &filePath) const {
-    return Paths::normalize(filePath, this->rootFolder);
-  }
-
-  String getFullPath(const String parentPath, const String &path) const {
-    return Paths::relative(parentPath, path, this->rootFolder);
-  }
-
   String toString() const {
     return "ResourceManager[" + this->rootFolder + "] / [ " + std::to_string(resourceAdapters.size()) + "] adapters";
   }
@@ -304,15 +285,16 @@ private:
       throw std::invalid_argument("Can not get cache key from empty values - filename: [" + filename + "] mimeType[ " + mimeType + "]");
     }
 
-    return normalize(filename) + "|" + mimeType;
+    return filename + "|" + mimeType;
   }
 
   const String getCacheKey(const Resource &resource) {
-    return getCacheKey(resource.getUri(), resource.getMimeType());
+    String key = getCacheKey(resource.getFqdn(), resource.getMimeType());
+    return key;
   }
 
   const String getCacheKey(const ResourceLoadRequest &resourceLoadRequest) {
-    return getCacheKey(resourceLoadRequest.getUri(), resourceLoadRequest.getOutputMimeType());
+    return getCacheKey(resourceLoadRequest.getFqdn(), resourceLoadRequest.getOutputMimeType());
   }
 
 

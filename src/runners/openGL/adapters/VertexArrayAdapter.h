@@ -10,7 +10,6 @@
 
 #include "OpenGLResourceAdapter.h"
 #include "OpenGLUtilities.h"
-#include "GeometryCollection.h"
 
 class VertexArrayResourceAdapter: public OpenGLResourceAdapter {
 public:
@@ -30,21 +29,16 @@ protected:
   virtual std::vector<Resource*> doLoad(ResourceLoadRequest &request) const override {
     std::vector<Resource*> response;
 
-    GeometryCollection *geometryCollection = (GeometryCollection*) this->getResourceManager().load(
-        ResourceLoadRequest(request).acceptMimeType(MimeTypes::GEOMETRYCOLLECTION).withAdditionalLabels(std::set<String> {
+    GeometryResource *geometry= (GeometryResource *) this->getResourceManager().load(
+        ResourceLoadRequest(request).acceptMimeType(MimeTypes::GEOMETRY).withAdditionalLabels(std::set<String> {
             ResourceManager::EphemeralLabel })
             );
-    if (geometryCollection == null || geometryCollection->getObjects().empty()) {
-      logger->error("Could not load geometry from %s with mimetype %s", request.getFilePath().c_str(),
-          MimeTypes::GEOMETRYCOLLECTION.c_str());
-      return response;
-    }
-
-    for (auto &geometry : geometryCollection->getObjects()) {
-      response.push_back(OpenGLUtilites::generateVertexBuffer(geometry.second)); //make sure we add it to resource manager to avoid leaks
+    if (geometry == null) {
+      logger->error("Could not load geometry [%s] with mimetype [%s]", request.getFilePath().c_str(), MimeTypes::GEOMETRY.c_str());
+    } else {
+        response.push_back(OpenGLUtilites::generateVertexBuffer(geometry)); //make sure we add it to resource manager to avoid leaks
     }
 
     return response;
   }
-
 };

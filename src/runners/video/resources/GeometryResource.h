@@ -21,7 +21,6 @@
 class GeometryResource: public Resource {
 private:
 	Logger *logger = LoggerFactory::getLogger("video/GeometryResource");
-	std::string name;
 
 	std::vector<vector3> vertices;
 	std::vector<unsigned int> indices;
@@ -80,7 +79,7 @@ public:
 			min = vector(std::min(min.x, vertice.x), std::min(min.y, vertice.y), std::min(min.z, vertice.z));
 		}
 		this->size = max - min;
-		logger->info("[%s] size is: %s", this->name.c_str(), size.toString().c_str());
+		logger->info("[%s] size is: %s", getName().c_str(), size.toString().c_str());
 	}
 
 	void addVertex(const vector3 &vertex) {
@@ -126,14 +125,6 @@ public:
 
 	const vector3 &getSize() const {
 		return size;
-	}
-
-	const std::string& getName() const {
-		return name;
-	}
-
-	void setName(const std::string &name) {
-		this->name = name;
 	}
 
 	MaterialResource* getMaterial() const {

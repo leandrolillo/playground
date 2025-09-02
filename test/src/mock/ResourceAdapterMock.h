@@ -21,6 +21,11 @@ public:
 	    return *this;
 	  }
 
+  ResourceAdapterMock &clearResults() {
+    this->mockedLoadResult.clear();
+    return *this;
+  }
+
 	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
 		return mockedLoadResult;
 	}

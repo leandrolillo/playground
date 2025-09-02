@@ -10,7 +10,6 @@
  */
 class MaterialResource: public Resource {
 private:
-	String name;
 	vector3 ambient;
 	vector3 diffuse;
 	vector3 specular;
@@ -25,7 +24,7 @@ private:
 	String bumpTexture = "";
 
 public:
-	MaterialResource(const vector &ambient, const vector &diffuse, const vector &specular, real shininess, real alpha = 1.0) : Resource(0, MimeTypes::WAVEFRONT_MATERIAL) {
+	MaterialResource(const vector &ambient, const vector &diffuse, const vector &specular, real shininess, real alpha = 1.0) : Resource(0, MimeTypes::MATERIAL) {
 		this->ambient = ambient;
 		this->diffuse = diffuse;
 		this->specular = specular;
@@ -71,15 +70,6 @@ public:
 
 	void setShininess(real shininess) {
 		this->shininess = shininess;
-	}
-
-	const String& getName() const {
-		return name;
-	}
-
-	void setName(const String &name) {
-		this->name = name;
-		StringUtils::trim(this->name);
 	}
 
 	void setAlpha(real alpha = 1.0) {
