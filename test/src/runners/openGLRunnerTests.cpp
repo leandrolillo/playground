@@ -8,7 +8,7 @@ TEST_CASE("OpenGLRunner Test case")
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   Playground playground("resources");
-  OpenGLRunner *runner = (OpenGLRunner *)playground.addRunner(new OpenGLRunner());
+  PlaygroundRunner *runner = playground.addRunner(std::make_unique<OpenGLRunner>());
   runner->initialize();
   ResourceManager &resourceManager = runner->getResourceManager();
 

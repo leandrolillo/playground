@@ -73,7 +73,6 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(!resource->getData().empty());
     CHECK(MimeTypes::AUDIO == resource->getMimeType());
   }
-
 }
 
 TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
@@ -82,7 +81,7 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
 
   Playground playground("resources");
   ResourceManager &resourceManager = playground.getResourceManager();
-  AudioRunner *runner = (AudioRunner *)playground.addRunner(new AudioRunner());
+  PlaygroundRunner *runner = playground.addRunner(std::make_unique<AudioRunner>());
   runner->initialize();
 
   SECTION("AudioBufferResourceAdapter (No resource manager) test") { //requires initialized audio runner

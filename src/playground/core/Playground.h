@@ -76,7 +76,7 @@ public:
 
   Chronometer& getStopWatch() const;
 
-  ResourceManager &getResourceManager() const;
+  ResourceManager& getResourceManager() const;
 
   virtual unsigned char getId() const = 0;
 
@@ -146,12 +146,12 @@ public:
       resourceManager(rootFolder) {
   }
 
-  Playground* withName(const String name) {
+  Playground &withName(const String name) {
     this->name = name;
-    return this;
+    return *this;
   }
 
-  virtual ResourceManager &getResourceManager() {
+  virtual ResourceManager& getResourceManager() {
     return resourceManager;
   }
 
@@ -175,13 +175,13 @@ public:
     return *this->stopWatch;
   }
 
-  PlaygroundRunner* getRequiredRunner(const unsigned char id) const {
+  PlaygroundRunner &getRequiredRunner(const unsigned char id) const {
     auto pair = runners_by_id.find(id);
     if (pair == runners_by_id.end()) {
       throw std::invalid_argument("Could not find required playground runner");
     }
 
-    return pair->second;
+    return *pair->second;
   }
 
   PlaygroundRunner* getRunner(const unsigned char id) const {
@@ -193,37 +193,40 @@ public:
     return pair->second;
   }
 
-  PlaygroundRunner *addRunner(PlaygroundRunner *runner) {
-    logger->debug("Adding runner with id [%d]", runner->getId());
+  PlaygroundRunner *addRunner(std::unique_ptr<PlaygroundRunner> runner) {
+    PlaygroundRunner *result = runner.get();
+    if (runner) {
+      logger->debug("Adding runner with id [%d]", runner->getId());
 
-    /**
-     * Check for duplicates
-     */
-    for (auto &currentRunner : runners) {
-      if (currentRunner->getId() == runner->getId()) {
-        logger->error("Runner with id [%d] already added - skipping",
-            runner->getId());
-        return runner;
-      } else {
-        logger->debug("Added runner with id [%d]", runner->getId());
+      /**
+       * Check for duplicates
+       */
+      for (auto &currentRunner : runners) {
+        if (currentRunner->getId() == runner->getId()) {
+          logger->error("Runner with id [%d] already added - skipping",
+              runner->getId());
+          return runner.get();
+        } else {
+          logger->debug("Added runner with id [%d]", runner->getId());
+        }
       }
+
+      /**
+       * Insert ordered by id
+       */
+      std::vector<std::unique_ptr<PlaygroundRunner>>::iterator currentRunnerIterator =
+          runners.begin();
+      while (currentRunnerIterator != runners.end()
+          && (*currentRunnerIterator)->getId() < runner->getId()) {
+        currentRunnerIterator++;
+      }
+
+      runner->setContainer(*this);
+      runners_by_id[runner->getId()] = runner.get();
+      runners.insert(currentRunnerIterator, std::move(runner));
     }
 
-    /**
-     * Insert ordered by id
-     */
-    std::vector<std::unique_ptr<PlaygroundRunner>>::iterator currentRunnerIterator =
-        runners.begin();
-    while (currentRunnerIterator != runners.end()
-        && (*currentRunnerIterator)->getId() < runner->getId()) {
-      currentRunnerIterator++;
-    }
-
-    runner->setContainer(*this);
-    runners.insert(currentRunnerIterator, std::unique_ptr < PlaygroundRunner > (runner));
-    runners_by_id[runner->getId()] = runner;
-
-    return runner;
+    return result;
   }
 
   void initialize() {
@@ -394,7 +397,7 @@ protected:
 private:
   // "thread" creation
   bool initializeRunners() {
-    if(status < PlaygroundStatus::RUNNERS_INITIALIZED) {
+    if (status < PlaygroundStatus::RUNNERS_INITIALIZED) {
       logger->debug("initializing runners:");
 
       for (auto &currentRunner : runners) {

@@ -28,8 +28,6 @@ protected:
   }
 
   void setVideoRunner(VideoRunner &videoRunner) {
-
-    //This logic tries to make sure the video runner is valid. Maybe it would be better to use a reference here.
     if (videoRunner.getContainer() != null) {
       this->videoRunner = &videoRunner;
       this->resourceManager = &videoRunner.getContainer()->getResourceManager();
