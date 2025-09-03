@@ -2,7 +2,7 @@
 FetchContent_Declare(
     math
     GIT_REPOSITORY https://github.com/leandrolillo/math.git
-    GIT_TAG master
+    GIT_TAG ${MATH_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(math)
 

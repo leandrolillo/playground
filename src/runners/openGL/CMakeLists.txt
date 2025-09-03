@@ -18,7 +18,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE ${OPENGL_LIBRARIES})
 FetchContent_Declare(
     SDL
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-3.2.20
+    GIT_TAG ${SDL_VERSION}
     GIT_SHALLOW TRUE
     OVERRIDE_FIND_PACKAGE)    
     
