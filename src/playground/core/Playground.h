@@ -175,13 +175,13 @@ public:
     return *this->stopWatch;
   }
 
-  PlaygroundRunner &getRequiredRunner(const unsigned char id) const {
+  PlaygroundRunner *getRequiredRunner(const unsigned char id) const {
     auto pair = runners_by_id.find(id);
     if (pair == runners_by_id.end()) {
       throw std::invalid_argument("Could not find required playground runner");
     }
 
-    return *pair->second;
+    return pair->second;
   }
 
   PlaygroundRunner* getRunner(const unsigned char id) const {
