@@ -73,7 +73,7 @@ if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
   echo "| Checking dependencies"
   for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
     #echo "|   Reviewing dependency ${dependency}"
-    brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" &{dependency}"
+    brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" ${dependency}"
   done
   
   if [[ "${missingDependencies}" != "" ]] ; then
