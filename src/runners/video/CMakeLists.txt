@@ -25,7 +25,7 @@ target_link_libraries(${LIBRARY_NAME} PUBLIC ${PNG_LIBRARY})
 FetchContent_Declare(
     geometry
     GIT_REPOSITORY https://github.com/leandrolillo/geometry.git
-    GIT_TAG master
+    GIT_TAG ${GEOMETRY_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(geometry)
 

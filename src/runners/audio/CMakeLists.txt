@@ -14,7 +14,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 FetchContent_Declare(
     Ogg
     GIT_REPOSITORY https://github.com/xiph/ogg.git
-    GIT_TAG v1.3.6
+    GIT_TAG ${OGG_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Ogg)
 target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
@@ -23,7 +23,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
 FetchContent_Declare(
     Vorbis
     GIT_REPOSITORY https://github.com/xiph/vorbis.git
-    GIT_TAG v1.3.7
+    GIT_TAG ${VORBIS_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Vorbis)
 target_link_libraries(${LIBRARY_NAME} INTERFACE vorbis vorbisfile)

@@ -1,8 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "OpenGLRunner.h"
+#include "SkyboxRenderer.h"
 
-TEST_CASE("OpenGLRunner Test case")
+TEST_CASE("OpenGLRunner Test case", "[opengl]")
 {
   LoggerFactory::doNotLogToFile();
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
@@ -157,5 +158,9 @@ TEST_CASE("OpenGLRunner Test case")
     CHECK(resource->getId() != 0);
     CHECK(MimeTypes::SHADERPROGRAM == resource->getMimeType());
   }
+}
 
+TEST_CASE("OpenGL Renderers", "[opengl]") {
+  //TODO: implement test cases
+  SkyboxRenderer skyboxRenderer();
 }

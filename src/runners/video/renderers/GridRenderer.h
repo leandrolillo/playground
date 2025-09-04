@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RENDERERS_GRIDRENDERER_H_
-#define SRC_RUNNERS_VIDEO_RENDERERS_GRIDRENDERER_H_
+#pragma once
 
 #include "ShaderProgramResource.h"
 #include "Renderer.h"
@@ -54,7 +53,3 @@ public:
     }
 
 };
-
-
-
-#endif /* SRC_RUNNERS_VIDEO_RENDERERS_GRIDRENDERER_H_ */

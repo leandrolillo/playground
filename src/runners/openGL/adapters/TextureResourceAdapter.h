@@ -42,6 +42,12 @@ protected:
       unsigned int textureHandler = 0;
       glGetError();
       glGenTextures(1, &textureHandler);
+      GLenum glError = glGetError();
+      if (glError != GL_NO_ERROR) {
+          logger->error("Error creating texture 0x[%x]: [%s]", glError, gluErrorString(glError));
+          return response;
+      }
+
       resource = new TextureResource(textureHandler);
       glBindTexture(GL_TEXTURE_2D, textureHandler);
       if (imageResource->getBpp() == 32)

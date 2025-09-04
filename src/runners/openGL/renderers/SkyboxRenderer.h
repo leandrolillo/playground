@@ -1,17 +1,11 @@
-/*
- * SkyboxRenderer.h
- *
- *  Created on: Mar 31, 2021
- *      Author: leandro
- */
+#pragma once
 
-#ifndef SRC_RUNNERS_VIDEO_RENDERERS_SKYBOXRENDERER_H_
-#define SRC_RUNNERS_VIDEO_RENDERERS_SKYBOXRENDERER_H_
-
+#include <OpenGL/gl3.h>
 #include "CubeMapResource.h"
 #include "ShaderProgramResource.h"
 #include "VideoRunner.h"
 #include "Renderer.h"
+
 
 class SkyboxRenderer: public Renderer {
 private:
@@ -68,5 +62,3 @@ public:
     	return Renderer::isEnabled() && this->box != null && this->cubeMap != null;
     }
 };
-
-#endif /* SRC_RUNNERS_VIDEO_RENDERERS_SKYBOXRENDERER_H_ */

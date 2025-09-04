@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RENDERERS_TERRAINRENDERER_H_
-#define SRC_RUNNERS_VIDEO_RENDERERS_TERRAINRENDERER_H_
+#pragma once
 
 #include "LightResource.h"
 #include "ShaderProgramResource.h"
@@ -95,7 +94,3 @@ public:
 	    }
 	}
 };
-
-
-
-#endif /* SRC_RUNNERS_VIDEO_RENDERERS_TERRAINRENDERER_H_ */

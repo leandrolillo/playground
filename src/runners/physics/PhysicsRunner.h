@@ -33,8 +33,8 @@ public:
 		return ID;
 	}
 
-	ParticleManager *getParticleManager() {
-		return &this->particleManager;
+	ParticleManager &getParticleManager() {
+		return this->particleManager;
 	}
 
 	void setPlaybackSpeed(real playbackspeed) {

@@ -36,6 +36,11 @@ public:
         //Create vertex Array
         unsigned int vertexArray;
         glGenVertexArrays(1, &vertexArray);
+        GLenum glError = glGetError();
+        if (glError != GL_NO_ERROR) {
+            getLogger()->error("Error creating vertex array  0x[%x]: [%s]", glError, gluErrorString(glError));
+            return null;
+        }
 
         resource = new VertexArrayResource(vertexArray);
         resource->setPrimitiveType(geometry->getType());
@@ -44,9 +49,9 @@ public:
         resource->setName(geometry->getName());
 
         glBindVertexArray(resource->getId());
-        GLenum glError = glGetError();
+        glError = glGetError();
         if (glError != GL_NO_ERROR) {
-            getLogger()->error("Error creating vertex array  0x[%x]", glError);
+            getLogger()->error("Error creating vertex array  0x[%x]: [%s]", glError, gluErrorString(glError));
             disposeVertexArray(resource);
             return null;
         }
@@ -168,7 +173,7 @@ protected:
 
 			GLenum glError = glGetError();
 			if (glError != GL_NO_ERROR) {
-				getLogger()->error("Error loading vertex buffer: 0x[%x]", glError);
+				getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
 				return false;
 			}
 
@@ -184,8 +189,8 @@ protected:
 			glError = glGetError();
 			if (glError != GL_NO_ERROR) {
 				getLogger()->error(
-						"Error binding buffer [%d] to attribute Location [%d]: 0x[%x]",
-						attributeLocation, buffer, glError);
+						"Error binding buffer [%d] to attribute Location [%d]: 0x[%x]: [%s]",
+						attributeLocation, buffer, glError, gluErrorString(glError));
 				return false;
 			}
 		}
@@ -208,7 +213,7 @@ protected:
 
 		GLenum glError = glGetError();
 		if (glError != GL_NO_ERROR) {
-			getLogger()->error("Error loading vertex buffer: 0x[%x]", glError);
+			getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
 			return false;
 		}
 
@@ -223,8 +228,8 @@ protected:
 		glError = glGetError();
 		if (glError != GL_NO_ERROR) {
 			getLogger()->error(
-					"Error binding buffer [%d] to attribute location [%d]: 0x[%x]",
-					attributeLocation, buffer, glError);
+					"Error binding buffer [%d] to attribute location [%d]: 0x[%x]: [%s]",
+					attributeLocation, buffer, glError, gluErrorString(glError));
 			return false;
 		}
 
@@ -245,7 +250,7 @@ protected:
 
 		GLenum glError = glGetError();
 		if (glError != GL_NO_ERROR) {
-			getLogger()->error("Error loading vertex buffer: 0x[%x]", glError);
+			getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
 			return false;
 		}
 
@@ -259,8 +264,8 @@ protected:
 
 		glError = glGetError();
 		if (glError != GL_NO_ERROR) {
-			getLogger()->error("Error binding buffer [%d] to location [%d]: 0x[%x]",
-					buffer, attributeLocation, glError);
+			getLogger()->error("Error binding buffer [%d] to location [%d]: 0x[%x]: [%s]",
+					buffer, attributeLocation, glError, gluErrorString(glError));
 			return false;
 		}
 

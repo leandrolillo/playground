@@ -9,7 +9,7 @@ target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
 FetchContent_Declare(
     physics
     GIT_REPOSITORY https://github.com/leandrolillo/physics.git
-    GIT_TAG master
+    GIT_TAG ${PHYSICS_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(physics)
 

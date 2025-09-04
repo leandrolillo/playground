@@ -7,6 +7,7 @@
 
 #pragma once
 #include <OpenGL/gl3.h>
+#include <OpenGL/glu.h>
 #include "ResourceAdapter.h"
 
 class OpenGLResourceAdapter : public ResourceAdapter {
