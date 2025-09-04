@@ -1,0 +1,16 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, master]
+  pull_request:
+    branches: [ main, master]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: building and testing
+      run: |
+        ./cmakew -t .
