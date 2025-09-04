@@ -5,8 +5,7 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_VIDEO_RENDERERS_DEFAULTRENDERER_H_
-#define SRC_RUNNERS_VIDEO_RENDERERS_DEFAULTRENDERER_H_
+#pragma once
 
 #include<vector>
 #include "Camera.h"
@@ -250,6 +249,3 @@ public:
     }
     virtual void draw(DefaultRenderer &renderer) const = 0;
 };
-
-
-#endif /* SRC_RUNNERS_VIDEO_RENDERERS_DEFAULTRENDERER_H_ */

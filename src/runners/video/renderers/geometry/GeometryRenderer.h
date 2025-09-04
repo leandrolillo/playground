@@ -21,7 +21,6 @@ public:
 
 	//TODO: how to do this without subclassing geometry
 	void render(const Geometry &geometry, bool isColliding = false) const {
-		if(geometry != null) {
 			switch(geometry.getType()) {
 				case GeometryType::SPHERE:
 					render((const Sphere &)geometry);
@@ -44,7 +43,6 @@ public:
 				case GeometryType::FRUSTUM:
 					render((const Frustum &)geometry);
 				break;
-			}
 		}
 	}
 
@@ -83,11 +81,11 @@ public:
 
 	void render(const HierarchicalGeometry &hierarchy, bool isColliding) const {
 		if(isColliding) {
-			for(auto &child : hierarch.getChildren()) {
+			for(auto &child : hierarchy.getChildren()) {
 				this->render(*child);
 			}
 		} else {
-			this->render(&hierarchy.getBoundingVolume());
+			this->render(hierarchy.getBoundingVolume());
 		}
 	}
 
@@ -99,7 +97,7 @@ public:
 			logger->info("	Rendering plane %s", plane.toString().c_str());
 
 			renderer.drawLine(matriz_4x4::identidad, plane.getOrigin(), plane.getOrigin() + plane.getNormal() * 10);
-			render(&plane, 1, 0.01, 1);
+			render(plane, 1, 0.01, 1);
 		}
 	}
 };

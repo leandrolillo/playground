@@ -67,6 +67,21 @@ parseInputs "$@"
 
 #set +e
 
+thisScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
+  echo "| Checking dependencies"
+  for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
+    echo "|   Reviewing dependency ${dependency}"
+    brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" &dependency"
+  done
+  
+  if [[ "${missingDependencies}" != "" ]] ; then
+      echo "|   Installing missing dependencies ${missingDependencies}"
+    brew install ${missingDependencies}
+  fi
+fi
+
 pushd ${inputs_parameters_path} > /dev/null
 if [[ "${inputs_parameters_clean}" == "true" ]]; then
   rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}

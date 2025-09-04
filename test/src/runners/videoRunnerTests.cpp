@@ -1,4 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
+
+#include "../../../src/runners/openGL/renderers/SkyboxRenderer.h"
 #include "ResourceManagerMock.h"
 #include "ImageResource.h"
 #include "PngResourceAdapter.h"
@@ -8,6 +10,9 @@
 #include "ObjResourceAdapter.h"
 
 #include "DefaultRenderer.h"
+#include "GeometryRenderer.h"
+#include "TerrainRenderer.h"
+#include "GridRenderer.h"
 #include "Camera.h"
 
 TEST_CASE("Video Runner Test case")
@@ -256,8 +261,13 @@ TEST_CASE("MousePicking tests") {
   CHECK(vector(0, 0, -1) == rayDirection);
 }
 
-TEST_CASE("DefaultRenderer") {
+TEST_CASE("Video Renderers") {
+  //TODO: implement test cases
   DefaultRenderer renderer;
+  GridRenderer gridRenderer;
+  TerrainRenderer terrainRenderer;
+
+  GeometryRenderer geometryRenderer(renderer);
 }
 
 
