@@ -36,6 +36,11 @@ public:
         //Create vertex Array
         unsigned int vertexArray;
         glGenVertexArrays(1, &vertexArray);
+        GLenum glError = glGetError();
+        if (glError != GL_NO_ERROR) {
+            getLogger()->error("Error creating vertex array  0x[%x]", glError);
+            return null;
+        }
 
         resource = new VertexArrayResource(vertexArray);
         resource->setPrimitiveType(geometry->getType());
@@ -44,7 +49,7 @@ public:
         resource->setName(geometry->getName());
 
         glBindVertexArray(resource->getId());
-        GLenum glError = glGetError();
+        glError = glGetError();
         if (glError != GL_NO_ERROR) {
             getLogger()->error("Error creating vertex array  0x[%x]", glError);
             disposeVertexArray(resource);

@@ -72,7 +72,7 @@ thisScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && 
 if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
   echo "| Checking dependencies"
   for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
-    echo "|   Reviewing dependency ${dependency}"
+    #echo "|   Reviewing dependency ${dependency}"
     brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" &dependency"
   done
   
