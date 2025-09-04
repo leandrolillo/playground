@@ -45,7 +45,7 @@ protected:
       GLenum glError = glGetError();
       if (glError != GL_NO_ERROR) {
           logger->error("Error creating texture 0x[%x]: [%s]", glError, gluErrorString(glError));
-          return null;
+          return response;
       }
 
       resource = new TextureResource(textureHandler);

@@ -118,7 +118,10 @@ public:
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-        glcontext = SDL_GL_CreateContext(window);
+        if((glcontext = SDL_GL_CreateContext(window)) == null) {
+          logger->error("SDL_GL_CreateContext Error: %s", SDL_GetError());
+          return false;
+        }
 
         int majorVersion;
         int minorVersion;

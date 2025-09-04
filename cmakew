@@ -67,8 +67,8 @@ parseInputs "$@"
 
 #set +e
 
+## Check dependencies
 thisScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
 if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
   echo "| Checking dependencies"
   for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
@@ -82,6 +82,8 @@ if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
   fi
 fi
 
+
+## clean if required
 pushd ${inputs_parameters_path} > /dev/null
 if [[ "${inputs_parameters_clean}" == "true" ]]; then
   rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
@@ -90,12 +92,13 @@ fi
 options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug " || echo "")
 options=${options}$([[ "${inputs_parameters_offline}" == "true" ]] && echo "-DFETCHCONTENT_UPDATES_DISCONNECTED=ON" || echo "")
 
+## build
 mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cmake ${options} ..
 make 
 
-#todo: maybe add a target as parameter
+## test
 if [[ "${inputs_parameters_test}" == "true" ]]; then
   ctest --output-on-failure
 fi

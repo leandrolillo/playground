@@ -3,7 +3,7 @@
 #include "OpenGLRunner.h"
 #include "SkyboxRenderer.h"
 
-TEST_CASE("OpenGLRunner Test case")
+TEST_CASE("OpenGLRunner Test case", "[opengl]")
 {
   LoggerFactory::doNotLogToFile();
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
