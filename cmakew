@@ -100,7 +100,7 @@ make
 
 ## test
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-  ctest --output-on-failure
+  ctest ${cmake_tests} --output-on-failure
 fi
 
 popd > /dev/null

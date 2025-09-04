@@ -13,4 +13,4 @@ jobs:
     - uses: actions/checkout@v2
     - name: building and testing
       run: |
-        ./cmakew -t .
+        cmake_tests="-E "".*OpenGL.*" ./cmakew -t . #exclude opengl tests since it does not initialize properly

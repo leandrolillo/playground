@@ -160,7 +160,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 }
 
-TEST_CASE("OpenGL Renderers") {
+TEST_CASE("OpenGL Renderers", "[opengl]") {
   //TODO: implement test cases
   SkyboxRenderer skyboxRenderer();
 }
