@@ -11,6 +11,9 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
+    - name: install dependencies
+      run: |
+        brew install libjpeg libpng libogg libvorbis
     - name: building and testing
       run: |
         ./cmakew -t .
