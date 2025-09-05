@@ -63,25 +63,27 @@ parseInputs() {
   echo "| offline [${inputs_parameters_offline}]" >&2  
 }
 
+checkDependencies() {
+  ## Check dependencies
+  if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
+    echo "| Checking dependencies"
+    for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
+      #echo "|   Reviewing dependency ${dependency}"
+      brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" ${dependency}"
+    done
+    
+    if [[ "${missingDependencies}" != "" ]] ; then
+        echo "|   Installing missing dependencies ${missingDependencies}"
+      brew install ${missingDependencies}
+    fi
+  fi
+}
+
 parseInputs "$@"
 
-#set +e
-
-## Check dependencies
 thisScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-if [ -f ${thisScriptFolder}/cmakew.dependencies ] ; then
-  echo "| Checking dependencies"
-  for dependency in $(cat ${thisScriptFolder}/cmakew.dependencies) ; do
-    #echo "|   Reviewing dependency ${dependency}"
-    brew list ${dependency} > /dev/null 2>&1 || missingDependencies=${missingDependencies}" ${dependency}"
-  done
-  
-  if [[ "${missingDependencies}" != "" ]] ; then
-      echo "|   Installing missing dependencies ${missingDependencies}"
-    brew install ${missingDependencies}
-  fi
-fi
 
+#set +e
 
 ## clean if required
 pushd ${inputs_parameters_path} > /dev/null
@@ -95,12 +97,17 @@ options=${options}$([[ "${inputs_parameters_offline}" == "true" ]] && echo "-DFE
 ## build
 mkdir -p ${inputs_parameters_path}/${inputs_parameters_working_folder}
 cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
-cmake ${options} ..
-make 
+
+if [ ! -f CMakeCache.txt ] ; then
+  checkDependencies
+  cmake ${options} ..
+fi
+
+cmake --build .
 
 ## test
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-  ctest ${cmake_tests} --output-on-failure
+  ctest --output-on-failure
 fi
 
 popd > /dev/null

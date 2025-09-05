@@ -569,35 +569,35 @@ protected:
     }
 
     String getGlError() const {
-        String errorMessage;
+        return String((const char *)gluErrorString(glGetError()));
 
-        GLenum glError;
-        while ((glError = glGetError()) != GL_NO_ERROR) {
-            if (errorMessage.size() != 0) {
-                errorMessage += ", ";
-            }
-            if (glError == GL_INVALID_ENUM) {
-                errorMessage += "GL_INVALID_ENUM";
-            } else if (glError == GL_INVALID_VALUE) {
-                errorMessage += "GL_INVALID_VALUE";
-            } else if (glError == GL_INVALID_OPERATION) {
-                errorMessage += "GL_INVALID_OPERATION";
-            } else if (glError == 0x0503) {
-                errorMessage += "GL_STACK_OVERFLOW";
-            } else if (glError == 0x0504) {
-                errorMessage += "GL_STACK_UNDERFLOW";
-            } else if (glError == GL_OUT_OF_MEMORY) {
-                errorMessage += "GL_OUT_OF_MEMORY";
-            } else if (glError == GL_INVALID_FRAMEBUFFER_OPERATION) {
-                errorMessage += "GL_INVALID_FRAMEBUFFER_OPERATION";
-            } else if (glError == 0x8031) {
-                errorMessage += "GL_TABLE_TOO_LARGE";
-            } else {
-                errorMessage += std::to_string(glError);
-            }
-        }
-
-        return errorMessage;
+//        GLenum glError;
+//        while ((glError = glGetError()) != GL_NO_ERROR) {
+//            if (errorMessage.size() != 0) {
+//                errorMessage += ", ";
+//            }
+//            if (glError == GL_INVALID_ENUM) {
+//                errorMessage += "GL_INVALID_ENUM";
+//            } else if (glError == GL_INVALID_VALUE) {
+//                errorMessage += "GL_INVALID_VALUE";
+//            } else if (glError == GL_INVALID_OPERATION) {
+//                errorMessage += "GL_INVALID_OPERATION";
+//            } else if (glError == 0x0503) {
+//                errorMessage += "GL_STACK_OVERFLOW";
+//            } else if (glError == 0x0504) {
+//                errorMessage += "GL_STACK_UNDERFLOW";
+//            } else if (glError == GL_OUT_OF_MEMORY) {
+//                errorMessage += "GL_OUT_OF_MEMORY";
+//            } else if (glError == GL_INVALID_FRAMEBUFFER_OPERATION) {
+//                errorMessage += "GL_INVALID_FRAMEBUFFER_OPERATION";
+//            } else if (glError == 0x8031) {
+//                errorMessage += "GL_TABLE_TOO_LARGE";
+//            } else {
+//                errorMessage += std::to_string(glError);
+//            }
+//        }
+//
+//        return errorMessage;
     }
     unsigned int asGlPrimitive(const String &typeString) const {
         if (typeString == "points")
