@@ -100,14 +100,14 @@ cd ${inputs_parameters_path}/${inputs_parameters_working_folder}
 
 if [ ! -f CMakeCache.txt ] ; then
   checkDependencies
-  cmake ${options} ..
+  #cmake ${options} ..
 fi
-
+cmake ${cmake_options} ${options} ..
 cmake --build .
 
 ## test
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-  ctest --output-on-failure
+  ctest ${cmake_test_options} --output-on-failure
 fi
 
 popd > /dev/null
