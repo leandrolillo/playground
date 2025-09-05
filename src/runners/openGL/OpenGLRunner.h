@@ -569,7 +569,15 @@ protected:
     }
 
     String getGlError() const {
-        return String((const char *)gluErrorString(glGetError()));
+      String errorMessage;
+      GLenum glError;
+      while ((glError = glGetError()) != GL_NO_ERROR) {
+        if (errorMessage.size() != 0) {
+            errorMessage += ", ";
+        }
+
+        return errorMessage += (const char *)gluErrorString(glGetError());
+      }
 
 //        GLenum glError;
 //        while ((glError = glGetError()) != GL_NO_ERROR) {
