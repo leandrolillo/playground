@@ -53,8 +53,8 @@ public:
   static String defaultInputMimeType(const String &fileName) {
     int position = fileName.find_last_of(".");
     if (position > 0) {
-      String extension = StringUtils::trim(fileName.substr(position + 1,
-          fileName.length() - position - 1));
+      String extension = StringUtils::toLowercase(StringUtils::trim(fileName.substr(position + 1,
+          fileName.length() - position - 1)));
       if (extension == "ogg") {
         return OGG;
       } else if (extension == "wav") {
