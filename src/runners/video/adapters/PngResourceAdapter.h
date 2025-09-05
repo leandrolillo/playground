@@ -37,7 +37,7 @@ protected:
     request.getFileParser().read(sig, 1, 8);
 
     if (!png_check_sig(sig, 8)) {
-      logger->error("Not a valid png file");
+      logger->error("Not a valid png file: [%s]", request.getFilePath().c_str());
       return response; /* bad signature */
     }
 
