@@ -576,8 +576,10 @@ protected:
             errorMessage += ", ";
         }
 
-        return errorMessage += (const char *)gluErrorString(glGetError());
+        errorMessage += (const char *)gluErrorString(glGetError());
       }
+
+      return errorMessage;
 
 //        GLenum glError;
 //        while ((glError = glGetError()) != GL_NO_ERROR) {
