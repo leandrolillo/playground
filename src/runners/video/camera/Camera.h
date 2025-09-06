@@ -226,4 +226,8 @@ public:
     // vector3 worldCoordinates = ((vector3)(viewMatrix.inversa() * cameraCoordinates)).normalizado();
     return ((vector3) (viewMatrix.inversa() * cameraCoordinates)).normalizado();
   }
+
+  String toString() {
+    return "position [" + this->getPosition().toString() + "], front[" + this->getOrientation().columna(2).toString() + "]";
+  }
 };
