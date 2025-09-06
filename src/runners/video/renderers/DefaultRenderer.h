@@ -88,8 +88,10 @@ public:
         this->light = light;
     }
 
-    void setTexture(const TextureResource *texture) {
+    const TextureResource *setTexture(const TextureResource *texture) {
+        const TextureResource *previous = this->currentTexture;
         this->currentTexture = texture;
+        return previous;
     }
 
     bool init() override {
