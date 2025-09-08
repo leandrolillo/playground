@@ -1,12 +1,4 @@
-/*
- * PhysicsPlaygroundRunner.h
- *
- *  Created on: Mar 22, 2021
- *      Author: leandro
- */
-
-#ifndef SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_
-#define SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_
+#pragma once
 
 #include<ParticleManager.h>
 #include "Playground.h"
@@ -102,6 +94,3 @@ public:
 };
 
 const unsigned char PhysicsRunner::ID = 4;
-
-
-#endif /* SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_ */
