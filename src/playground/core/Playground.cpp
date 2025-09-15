@@ -16,3 +16,7 @@ ResourceManager &PlaygroundRunner::getResourceManager() const {
   }
 	return this->container->getResourceManager();
 }
+
+Chronometer &PlaygroundRunner::getStopWatch() const {
+	return this->container->getStopWatch();
+}
