@@ -7,48 +7,46 @@
 
 #pragma once
 #include<Math3d.h>
+#include<chrono>
+
+using namespace std::chrono;
+
+typedef std::chrono::duration<real> floatSeconds;
 
 /**
  * Performance counter and performance frequency are platform specific - thus have to be provided by some runner
  */
 class Chronometer {
-	real invPerformanceFreq = -1.0f;
-	real dt = 0;
-	unsigned long to = 0;
-	unsigned long initialTime = 0;
+  floatSeconds dt{0s};
+	steady_clock::time_point to;
+	steady_clock::time_point initialTime { steady_clock::time_point::min()};
 public:
-	virtual unsigned long getPerformanceCounter() const = 0;
-	virtual unsigned long getPerformanceFreq() const = 0;
 
 
 	void start() {
-		this->to = getPerformanceCounter();
+		this->to = steady_clock::now();
 
-		if(invPerformanceFreq < 0.0) {
-			invPerformanceFreq = (real)1 / (real)getPerformanceFreq();
-		}
-
-		if(initialTime == 0) {
+		if(initialTime == steady_clock::time_point::min()) {
 			initialTime = this->to;
 		}
 	}
 
 	real getElapsedTime() {
-		return dt;
+		return dt.count();
 	}
 
 	real update() {
-		unsigned long tf = getPerformanceCounter();
-		this->dt = (real)(tf - to) * invPerformanceFreq;
+		auto tf = steady_clock::now();
+		this->dt = duration_cast<floatSeconds>(tf - to);
 		to = tf;
 
-		return dt;
+		return dt.count();
 
 	}
 
 	real getTotalTime() {
-		unsigned long tf = getPerformanceCounter();
-		return (real)(tf - initialTime) * invPerformanceFreq;
+		auto tf = steady_clock::now();
+		return duration_cast<floatSeconds>(tf - initialTime).count();
 	}
 
 	virtual ~Chronometer() {

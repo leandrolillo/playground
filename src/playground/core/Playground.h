@@ -9,7 +9,6 @@
 
 #include <vector>
 #include <unordered_map>
-#include "Chronometer.h"
 #include "JavaLike.h"
 #include "Logger.h"
 #include "ResourceManager.h"
@@ -74,8 +73,6 @@ public:
     return this->container;
   }
 
-  Chronometer& getStopWatch() const;
-
   ResourceManager& getResourceManager() const;
 
   virtual unsigned char getId() const = 0;
@@ -137,7 +134,6 @@ private:
   std::vector<PlaygroundRunner*> mouseButtonDownObservers;
   std::vector<PlaygroundRunner*> mouseButtonUpObservers;
   std::vector<PlaygroundRunner*> mouseWheelObservers;
-  Chronometer *stopWatch = null;
 
   ResourceManager resourceManager; //MUST be defined after runners so that it is initialized after them and deleted before them.
 
@@ -163,22 +159,10 @@ public:
     this->status = status;
   }
 
-  void setStopWatch(Chronometer *stopWatch) {
-    this->stopWatch = stopWatch;
-  }
-
-  Chronometer& getStopWatch() {
-    if (this->stopWatch == null) {
-      throw std::domain_error(
-          "StopWatch not registered - you need to include at least one playground runner that provides a stopwatch");
-    }
-    return *this->stopWatch;
-  }
-
   PlaygroundRunner *getRequiredRunner(const unsigned char id) const {
     auto pair = runners_by_id.find(id);
     if (pair == runners_by_id.end()) {
-      throw std::invalid_argument("Could not find required playground runner");
+      throw std::invalid_argument("Could not find required playground runner [" + std::to_string(id) + "]");
     }
 
     return pair->second;
@@ -279,10 +263,6 @@ public:
 
   virtual void loop() {
     try {
-      if (this->stopWatch != null) {
-        this->stopWatch->update();
-      }
-
       logger->verbose("Calling enabled runners beforeLoop");
       for (auto &currentRunner : runners) {
         if (currentRunner->getEnabled()) {

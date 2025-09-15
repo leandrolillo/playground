@@ -148,9 +148,6 @@ public:
             return false;
         }
 
-        //start stopWatch();
-        this->start();
-
         return true;
     }
 
@@ -229,14 +226,6 @@ public:
         }
 
         return false;
-    }
-
-    unsigned long getPerformanceCounter() const override {
-        return SDL_GetPerformanceCounter();
-    }
-
-    unsigned long getPerformanceFreq() const override {
-        return SDL_GetPerformanceFrequency();
     }
 
     virtual void onResize(unsigned int height, unsigned int width) override {

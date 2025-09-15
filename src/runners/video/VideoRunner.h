@@ -22,7 +22,7 @@
 #include "TextureResource.h"
 
 
-class VideoRunner : public PlaygroundRunner, public Chronometer {
+class VideoRunner : public PlaygroundRunner {
 public:
 	static const unsigned char ID;
 protected:
@@ -76,9 +76,6 @@ public:
 		this->getResourceManager().addAdapter(std::make_unique<ObjResourceAdapter>());
 		this->getResourceManager().addAdapter(std::make_unique<MtlResourceAdapter>());
     this->getResourceManager().addAdapter(std::make_unique<HeightMapResourceAdapter>());
-
-
-		this->getContainer()->setStopWatch(this);
 
 		return true;
 	}
