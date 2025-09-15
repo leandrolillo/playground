@@ -15,37 +15,36 @@ typedef std::chrono::duration<real> floatSeconds;
 
 class Chronometer {
   floatSeconds dt{0s};
-	steady_clock::time_point to;
-	steady_clock::time_point initialTime { steady_clock::time_point::min()};
+  steady_clock::time_point to;
+  steady_clock::time_point initialTime { steady_clock::time_point::min()};
 public:
 
 
-	void start() {
-		update();
+  void start() {
+    this->to = steady_clock::now();
 
-		if(initialTime == steady_clock::time_point::min()) {
-			initialTime = this->to;
-		}
-	}
+    if(initialTime == steady_clock::time_point::min()) {
+      initialTime = this->to;
+    }
+  }
 
-	real getElapsedTime() {
+  real getElapsedTime() {
+    return dt.count();
+  }
+
+  real update() {
     auto tf = steady_clock::now();
     this->dt = duration_cast<floatSeconds>(tf - to);
+    to = tf;
 
-	  return dt.count();
-	}
+    return dt.count();
+  }
 
-	steady_clock::time_point update() {
-		to = steady_clock::now();
+  real getTotalTime() {
+    auto tf = steady_clock::now();
+    return duration_cast<floatSeconds>(tf - initialTime).count();
+  }
 
-		return to;
-	}
-
-	real getTotalTime() {
-		auto tf = steady_clock::now();
-		return duration_cast<floatSeconds>(tf - initialTime).count();
-	}
-
-	virtual ~Chronometer() {
-	}
+  virtual ~Chronometer() {
+  }
 };

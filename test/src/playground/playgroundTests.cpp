@@ -38,7 +38,11 @@ TEST_CASE("StringUtils") {
 TEST_CASE("Chronometer") {
   Chronometer stopwatch;
 
+  real elapsed = 0;
   stopwatch.start();
-  stopwatch.update();
-  CHECK(stopwatch.getElapsedTime() > 0.0f);
+  do {
+    elapsed += stopwatch.update();
+  } while (stopwatch.getTotalTime() < 10.0f);
+
+  CHECK(stopwatch.getTotalTime() == elapsed);
 }
