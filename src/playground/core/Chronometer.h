@@ -35,8 +35,10 @@ public:
 	  return dt.count();
 	}
 
-	void update() {
+	steady_clock::time_point update() {
 		to = steady_clock::now();
+
+		return to;
 	}
 
 	real getTotalTime() {

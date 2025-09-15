@@ -33,5 +33,12 @@ TEST_CASE("StringUtils") {
 
   actual = StringUtils::split("/grand-parent/parent/children", '/'); //starting separator causes a "" in the result.
   CHECK(actual == std::vector<String> { "", "grand-parent", "parent", "children"});
+}
 
+TEST_CASE("Chronometer") {
+  Chronometer stopwatch;
+
+  stopwatch.start();
+  stopwatch.update();
+  CHECK(stopwatch.getElapsedTime() > 0.0f);
 }
