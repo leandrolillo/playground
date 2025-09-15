@@ -2,14 +2,12 @@
 
 #include<ParticleManager.h>
 #include "Playground.h"
-#include "Chronometer.h"
 
 class PhysicsRunner: public PlaygroundRunner {
 	Logger *logger = LoggerFactory::getLogger("physics/PhysicsRunner");
 
 	ParticleManager particleManager;
 
-	Chronometer stopWatch;
 	real playbackSpeed = 1.0f;
 
 	/**
@@ -46,16 +44,13 @@ public:
 	}
 
 	void start() {
-		logger->info("starting physics runner");
-		if(!this->getEnabled()) {
-			this->stopWatch.start();
-		}
+		logger->info("Starting physics runner");
 		this->setEnabled(true);
 
 	}
 
 	void stop() {
-		logger->info("Starting physics runner");
+		logger->info("Stopping physics runner");
 		this->setEnabled(false);
 	}
 
@@ -67,7 +62,7 @@ public:
 	}
 
 	LoopResult doLoop() override {
-		real dt = this->stopWatch.getElapsedTime();
+		real dt = getStopWatch().getElapsedTime();
 
 		this->particleManager.step(dt * playbackSpeed);
 
