@@ -13,9 +13,6 @@ using namespace std::chrono;
 
 typedef std::chrono::duration<real> floatSeconds;
 
-/**
- * Performance counter and performance frequency are platform specific - thus have to be provided by some runner
- */
 class Chronometer {
   floatSeconds dt{0s};
 	steady_clock::time_point to;
@@ -24,7 +21,7 @@ public:
 
 
 	void start() {
-		this->to = steady_clock::now();
+		update();
 
 		if(initialTime == steady_clock::time_point::min()) {
 			initialTime = this->to;
@@ -32,16 +29,14 @@ public:
 	}
 
 	real getElapsedTime() {
-		return dt.count();
+    auto tf = steady_clock::now();
+    this->dt = duration_cast<floatSeconds>(tf - to);
+
+	  return dt.count();
 	}
 
-	real update() {
-		auto tf = steady_clock::now();
-		this->dt = duration_cast<floatSeconds>(tf - to);
-		to = tf;
-
-		return dt.count();
-
+	void update() {
+		to = steady_clock::now();
 	}
 
 	real getTotalTime() {
