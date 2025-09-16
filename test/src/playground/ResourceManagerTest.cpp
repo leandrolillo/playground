@@ -111,6 +111,55 @@ TEST_CASE("ResourceLoadRequest tests") {
   }
 }
 
+TEST_CASE("MimeTypes") {
+  SECTION("Input (file format) mimetypes") {
+    //some generic test cases
+    CHECK(MimeTypes::defaultInputMimeType("filename.txt") == MimeTypes::TXT);
+    CHECK(MimeTypes::defaultInputMimeType("filename.TXT") == MimeTypes::TXT);
+
+    CHECK(MimeTypes::defaultInputMimeType("folder/filename.txt") == MimeTypes::TXT);
+    CHECK(MimeTypes::defaultInputMimeType("folder/filename.TXT") == MimeTypes::TXT);
+    CHECK(MimeTypes::defaultInputMimeType("folder/filename") == "");
+
+    //check object name bug fix
+    CHECK(MimeTypes::defaultInputMimeType("roadFighter/corvette.obj/chevrolet_corvete") == MimeTypes::WAVEFRONT_OBJ);
+
+    //Check current mimetypes
+    CHECK(MimeTypes::defaultInputMimeType("filename.ogg") == MimeTypes::OGG);
+    CHECK(MimeTypes::defaultInputMimeType("filename.wav") == MimeTypes::WAVE);
+    CHECK(MimeTypes::defaultInputMimeType("filename.jpeg") == MimeTypes::JPEG);
+    CHECK(MimeTypes::defaultInputMimeType("filename.jpg") == MimeTypes::JPEG);
+    CHECK(MimeTypes::defaultInputMimeType("filename.png") == MimeTypes::PNG);
+    CHECK(MimeTypes::defaultInputMimeType("filename.tga") == MimeTypes::TGA);
+    CHECK(MimeTypes::defaultInputMimeType("filename.json") == MimeTypes::JSON);
+    CHECK(MimeTypes::defaultInputMimeType("filename.glsl") == MimeTypes::GLSL);
+    CHECK(MimeTypes::defaultInputMimeType("filename.obj") == MimeTypes::WAVEFRONT_OBJ);
+    CHECK(MimeTypes::defaultInputMimeType("filename.mtl") == MimeTypes::WAVEFRONT_MATERIAL);
+  }
+  SECTION("Output (what you expect to get) mimetypes") {
+    //some generic test cases
+    CHECK(MimeTypes::defaultOutputMimeType("filename.ogg") == MimeTypes::AUDIO);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.OGG") == MimeTypes::AUDIO);
+
+    CHECK(MimeTypes::defaultOutputMimeType("folder/filename.ogg") == MimeTypes::AUDIO);
+    CHECK(MimeTypes::defaultOutputMimeType("folder/filename.OGG") == MimeTypes::AUDIO);
+    CHECK(MimeTypes::defaultOutputMimeType("folder/filename") == "");
+
+    //check object name bug fix
+    CHECK(MimeTypes::defaultOutputMimeType("roadFighter/corvette.obj/chevrolet_corvete") == MimeTypes::GEOMETRY);
+
+    //Check current mimetypes
+    CHECK(MimeTypes::defaultOutputMimeType("filename.ogg") == MimeTypes::AUDIO);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.wav") == MimeTypes::AUDIO);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.jpeg") == MimeTypes::IMAGE);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.jpg") == MimeTypes::IMAGE);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.png") == MimeTypes::IMAGE);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.tga") == MimeTypes::IMAGE);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.obj") == MimeTypes::GEOMETRY);
+    CHECK(MimeTypes::defaultOutputMimeType("filename.mtl") == MimeTypes::MATERIAL);
+  }
+}
+
 TEST_CASE("ResourceManagerTests") {
   ResourceManagerMock resourceManager("resources");
 

@@ -68,6 +68,5 @@ TEST_CASE("Chronometer") {
     } while (duration_cast<seconds>(end - start) < 3s);
 
     CHECK((unsigned int)stopwatch.getTotalTime() == 3);
-
   }
 }
