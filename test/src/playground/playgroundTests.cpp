@@ -8,6 +8,8 @@ TEST_CASE("Playground Test case")
 {
   Playground playground("");
   REQUIRE(1 == 1);
+
+  CHECK(playground.toString() != "");
 }
 
 TEST_CASE("StringUtils") {

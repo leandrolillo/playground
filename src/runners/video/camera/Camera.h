@@ -228,6 +228,6 @@ public:
   }
 
   String toString() {
-    return "position [" + this->getPosition().toString() + "], front[" + this->getOrientation().columna(2).toString() + "]";
+    return "Camera([" + this->getPosition().toString() + "], front[" + this->getOrientation().columna(2).toString() + "])";
   }
 };

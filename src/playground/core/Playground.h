@@ -299,8 +299,7 @@ public:
       runnersToString += "  *" + runner->toString() + "\n";
     }
 
-    return "Playground" + (this->name.empty() ? "" : " [" + this->name + "]") + "\n"
-        + resourceManager.toString() + "\n"
+    return "Playground(" + (this->name.empty() ? "" : " [" + this->name + "], ") + resourceManager.toString() + "\n"
         + (runnersToString.empty() ? "" : ":\n" + runnersToString);
   }
 
@@ -368,9 +367,9 @@ protected:
         }
 
         logger->verbose("Calling enabled runners afterLoop");
-        for (auto &currentRunner : runners) {
-          if (currentRunner->getEnabled()) {
-            currentRunner->afterLoop();
+        for (auto currentRunner = runners.rbegin(); currentRunner != runners.rend(); currentRunner++) { //Reverse iterate so that first runner opens first before loop and closes last afterLoop
+          if ((*currentRunner)->getEnabled()) {
+            (*currentRunner)->afterLoop();
           }
         }
 
