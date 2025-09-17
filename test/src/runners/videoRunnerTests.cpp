@@ -20,6 +20,7 @@ TEST_CASE("Video Runner Test case")
   Camera camera;
   REQUIRE(1 == 1);
 
+  CHECK(camera.toString() != "");
 }
 
 //---

@@ -9,10 +9,10 @@
 
 #include <vector>
 #include <unordered_map>
-#include "Chronometer.h"
 #include "JavaLike.h"
 #include "Logger.h"
 #include "ResourceManager.h"
+#include "Chronometer.h"
 
 enum class PlaygroundStatus {
   CREATED,
@@ -74,7 +74,7 @@ public:
     return this->container;
   }
 
-  Chronometer& getStopWatch() const;
+  Chronometer &getStopWatch() const;
 
   ResourceManager& getResourceManager() const;
 
@@ -137,9 +137,9 @@ private:
   std::vector<PlaygroundRunner*> mouseButtonDownObservers;
   std::vector<PlaygroundRunner*> mouseButtonUpObservers;
   std::vector<PlaygroundRunner*> mouseWheelObservers;
-  Chronometer *stopWatch = null;
 
   ResourceManager resourceManager; //MUST be defined after runners so that it is initialized after them and deleted before them.
+  Chronometer stopWatch;
 
 public:
   Playground(const String &rootFolder) :
@@ -163,22 +163,10 @@ public:
     this->status = status;
   }
 
-  void setStopWatch(Chronometer *stopWatch) {
-    this->stopWatch = stopWatch;
-  }
-
-  Chronometer& getStopWatch() {
-    if (this->stopWatch == null) {
-      throw std::domain_error(
-          "StopWatch not registered - you need to include at least one playground runner that provides a stopwatch");
-    }
-    return *this->stopWatch;
-  }
-
   PlaygroundRunner *getRequiredRunner(const unsigned char id) const {
     auto pair = runners_by_id.find(id);
     if (pair == runners_by_id.end()) {
-      throw std::invalid_argument("Could not find required playground runner");
+      throw std::invalid_argument("Could not find required playground runner [" + std::to_string(id) + "]");
     }
 
     return pair->second;
@@ -191,6 +179,10 @@ public:
     }
 
     return pair->second;
+  }
+
+  Chronometer &getStopWatch() {
+    return this->stopWatch;
   }
 
   PlaygroundRunner *addRunner(std::unique_ptr<PlaygroundRunner> runner) {
@@ -229,24 +221,6 @@ public:
     return result;
   }
 
-  void initialize() {
-    if (status == PlaygroundStatus::CREATED) {
-      logger->debug("Initializing playground");
-      initializePlayground();
-      status = PlaygroundStatus::INITIALIZED;
-    }
-
-    if (status == PlaygroundStatus::INITIALIZED) {
-      if (initializeRunners()) {
-        status = PlaygroundStatus::RUNNERS_INITIALIZED;
-        logger->info("Initialization completed");
-      } else {
-        status = PlaygroundStatus::RUNNERS_BROKEN;
-        logger->error("Runners initialization failed");
-      }
-    }
-  }
-
   virtual void run() {
     logger->debug("Playground - run");
     logger->info("\n -------------------\n| Running %s\n -------------------",
@@ -277,75 +251,19 @@ public:
     status = PlaygroundStatus::STOPPED;
   }
 
-  virtual void loop() {
-    try {
-      if (this->stopWatch != null) {
-        this->stopWatch->update();
-      }
-
-      logger->verbose("Calling enabled runners beforeLoop");
-      for (auto &currentRunner : runners) {
-        if (currentRunner->getEnabled()) {
-          currentRunner->beforeLoop();
-        }
-      }
-
-      logger->verbose("Calling enabled runners doLoop");
-      unsigned int activeRunners = 0;
-      for (std::vector<std::unique_ptr<PlaygroundRunner>>::iterator currentRunnerIterator =
-          runners.begin(); currentRunnerIterator != runners.end();
-          currentRunnerIterator++) {
-        if ((*currentRunnerIterator)->getEnabled()) {
-          logger->verbose("Running Loop of %d",
-              (*currentRunnerIterator)->getId());
-          LoopResult result = (*currentRunnerIterator)->doLoop();
-
-          if (result != LoopResult::CONTINUE) {
-            if (result == LoopResult::STOP) {
-              this->status = PlaygroundStatus::STOPPED;
-            } else if (result == LoopResult::FINISHED) {
-              runners.erase(currentRunnerIterator);
-            } else
-              // result == SKIP
-              activeRunners++;
-
-            break;
-          } else
-            activeRunners++;
-        }
-      }
-
-      logger->verbose("Calling enabled runners afterLoop");
-      for (auto &currentRunner : runners) {
-        if (currentRunner->getEnabled()) {
-          currentRunner->afterLoop();
-        }
-      }
-
-      if (activeRunners == 0) {
-        this->status = PlaygroundStatus::STOPPED;
-        logger->debug("There're no more runners active... stopping");
-      }
-
-    } catch (std::exception &exception) {
-      logger->error("Loop broken: [%s]", exception.what());
-      this->status = PlaygroundStatus::ERROR;
-    }
-  }
-
-  void onResize(unsigned int height, unsigned width) {
+  void onResize(unsigned int height, unsigned width) const {
     for (auto currentRunner : resizeObservers) {
       currentRunner->onResize(height, width);
     }
   }
 
-  void onKeyDown(unsigned int key, unsigned int keyModifier) {
+  void onKeyDown(unsigned int key, unsigned int keyModifier) const {
     for (auto currentRunner : keyDownObservers) {
       currentRunner->onKeyDown(key, keyModifier);
     }
   }
 
-  void onKeyUp(unsigned int key, unsigned int keyModifier) {
+  void onKeyUp(unsigned int key, unsigned int keyModifier) const {
     for (auto currentRunner : keyUpObservers) {
       currentRunner->onKeyUp(key, keyModifier);
     }
@@ -357,19 +275,19 @@ public:
     }
   }
 
-  void onMouseButtonDown(unsigned char button, int x, int y) {
+  void onMouseButtonDown(unsigned char button, int x, int y) const {
     for (auto currentRunner : mouseButtonDownObservers) {
       currentRunner->onMouseButtonDown(button, x, y);
     }
   }
 
-  void onMouseButtonUp(unsigned char button, int x, int y) {
+  void onMouseButtonUp(unsigned char button, int x, int y) const {
     for (auto currentRunner : mouseButtonUpObservers) {
       currentRunner->onMouseButtonUp(button, x, y);
     }
   }
 
-  void onMouseWheel(int wheel) {
+  void onMouseWheel(int wheel) const {
     for (auto currentRunner : mouseWheelObservers) {
       currentRunner->onMouseWheel(wheel);
     }
@@ -381,8 +299,7 @@ public:
       runnersToString += "  *" + runner->toString() + "\n";
     }
 
-    return "Playground" + (this->name.empty() ? "" : " [" + this->name + "]") + "\n"
-        + resourceManager.toString() + "\n"
+    return "Playground(" + (this->name.empty() ? "" : " [" + this->name + "], ") + resourceManager.toString() + "\n"
         + (runnersToString.empty() ? "" : ":\n" + runnersToString);
   }
 
@@ -391,8 +308,81 @@ public:
 
 protected:
   virtual void initializePlayground() {
+    stopWatch.start();
     logger->debug("framework initialized");
   }
+
+  void initialize() {
+      if (status == PlaygroundStatus::CREATED) {
+        logger->debug("Initializing playground");
+        initializePlayground();
+        status = PlaygroundStatus::INITIALIZED;
+      }
+
+      if (status == PlaygroundStatus::INITIALIZED) {
+        if (initializeRunners()) {
+          status = PlaygroundStatus::RUNNERS_INITIALIZED;
+          logger->info("Initialization completed");
+        } else {
+          status = PlaygroundStatus::RUNNERS_BROKEN;
+          logger->error("Runners initialization failed");
+        }
+      }
+    }
+
+    virtual void loop() {
+      try {
+        stopWatch.update();
+
+        logger->verbose("Calling enabled runners beforeLoop");
+        for (auto &currentRunner : runners) {
+          if (currentRunner->getEnabled()) {
+            currentRunner->beforeLoop();
+          }
+        }
+
+        logger->verbose("Calling enabled runners doLoop");
+        unsigned int activeRunners = 0;
+        for (std::vector<std::unique_ptr<PlaygroundRunner>>::iterator currentRunnerIterator =
+            runners.begin(); currentRunnerIterator != runners.end();
+            currentRunnerIterator++) {
+          if ((*currentRunnerIterator)->getEnabled()) {
+            logger->verbose("Running Loop of %d",
+                (*currentRunnerIterator)->getId());
+            LoopResult result = (*currentRunnerIterator)->doLoop();
+
+            if (result != LoopResult::CONTINUE) {
+              if (result == LoopResult::STOP) {
+                this->status = PlaygroundStatus::STOPPED;
+              } else if (result == LoopResult::FINISHED) {
+                runners.erase(currentRunnerIterator);
+              } else
+                // result == SKIP
+                activeRunners++;
+
+              break;
+            } else
+              activeRunners++;
+          }
+        }
+
+        logger->verbose("Calling enabled runners afterLoop");
+        for (auto currentRunner = runners.rbegin(); currentRunner != runners.rend(); currentRunner++) { //Reverse iterate so that first runner opens first before loop and closes last afterLoop
+          if ((*currentRunner)->getEnabled()) {
+            (*currentRunner)->afterLoop();
+          }
+        }
+
+        if (activeRunners == 0) {
+          this->status = PlaygroundStatus::STOPPED;
+          logger->debug("There're no more runners active... stopping");
+        }
+
+      } catch (std::exception &exception) {
+        logger->error("Loop broken: [%s]", exception.what());
+        this->status = PlaygroundStatus::ERROR;
+      }
+    }
 
 private:
   // "thread" creation

@@ -1,12 +1,4 @@
-/*
- * PhysicsPlaygroundRunner.h
- *
- *  Created on: Mar 22, 2021
- *      Author: leandro
- */
-
-#ifndef SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_
-#define SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_
+#pragma once
 
 #include<ParticleManager.h>
 #include "Playground.h"
@@ -16,7 +8,6 @@ class PhysicsRunner: public PlaygroundRunner {
 
 	ParticleManager particleManager;
 
-	Chronometer *stopWatch = null;
 	real playbackSpeed = 1.0f;
 
 	/**
@@ -42,8 +33,6 @@ public:
 	}
 
 	virtual bool afterInitialize() override {
-		this->stopWatch = &this->getContainer()->getStopWatch();
-
 		this->start();
 
 		return true;
@@ -55,16 +44,13 @@ public:
 	}
 
 	void start() {
-		logger->info("starting physics runner");
-		if(!this->getEnabled()) {
-			this->stopWatch->start();
-		}
+		logger->info("Starting physics runner");
 		this->setEnabled(true);
 
 	}
 
 	void stop() {
-		logger->info("Starting physics runner");
+		logger->info("Stopping physics runner");
 		this->setEnabled(false);
 	}
 
@@ -76,7 +62,7 @@ public:
 	}
 
 	LoopResult doLoop() override {
-		real dt = this->stopWatch->getElapsedTime();
+		real dt = getStopWatch().getElapsedTime();
 
 		this->particleManager.step(dt * playbackSpeed);
 
@@ -102,6 +88,3 @@ public:
 };
 
 const unsigned char PhysicsRunner::ID = 4;
-
-
-#endif /* SRC_RUNNERS_PHYSICS_PHYSICSRUNNER_H_ */
