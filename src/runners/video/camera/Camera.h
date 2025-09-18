@@ -211,19 +211,27 @@ public:
 
   /**
    * from https://antongerdelan.net/opengl/raycasting.html
+   * Basically pipeline is modelMatrix * viewMatrix * projectionMatrix -> normalised Device Space -> viewport, then we do the opposite process:
+   *
+   *   viewMatrix-1 * projectionMatrix-1 * (normalized device coordinates <- viewport(x, y))
    */
   vector4 getRayDirection(unsigned int x, unsigned int y, unsigned int width, unsigned int height) const {
-    vector4 homogeneousClipCoordinates = vector4(
+    //Viewport to normalized device coordinates - result should be in range [-1:1, -1:1, -1:1, -1:1]
+    vector3 normalizedDeviceCoordinates = vector3(
         (real) 2 * (real) x / (real) width - (real) 1,
         (real) 1 - (real) 2 * (real) y / (real) height,
-        -1,
-        0);
+        -1);
+
+    vector4 homogeneousClipCoordinates(
+        normalizedDeviceCoordinates.x,
+        normalizedDeviceCoordinates.y,
+        normalizedDeviceCoordinates.z,
+        1);
 
     vector4 cameraCoordinates = projectionMatrix.inversa() * homogeneousClipCoordinates;
     cameraCoordinates.z = (real) -1;
     cameraCoordinates.w = (real) 0;
 
-    // vector3 worldCoordinates = ((vector3)(viewMatrix.inversa() * cameraCoordinates)).normalizado();
     return ((vector3) (viewMatrix.inversa() * cameraCoordinates)).normalizado();
   }
 
