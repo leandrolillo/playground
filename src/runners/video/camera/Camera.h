@@ -126,7 +126,7 @@ public:
     updateFrustrumNormals(height, width, near, far);
   }
 
-  void setOrthographicProjection(real height, real width, real near, real far) {
+  void setOrthographicProjection(real width, real height, real near, real far) {
     real top = height * 0.5;
     real bottom = height * -0.5;
     real right = width * 0.5;

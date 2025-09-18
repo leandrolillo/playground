@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include "mathMatchers.h"
 
 #include "../../../src/runners/openGL/renderers/SkyboxRenderer.h"
 #include "ResourceManagerMock.h"
@@ -242,6 +243,15 @@ TEST_CASE("MousePicking tests") {
 
   vector rayDirection = camera.unproject(320, 240, width, height).normalizado();
   CHECK(vector(0, 0, -1) == rayDirection);
+
+  camera.setOrthographicProjection(640, 480, -100, 100);
+  camera.setViewMatrix(matriz_4x4::identidad);
+
+  vector unprojected = camera.unproject(320, 240, width, height);
+  CHECK_THAT(rayDirection, EqualsVector(vector(0, 0, -1)));
+
+  unprojected = camera.unproject(0, 0, width, height);
+  CHECK_THAT(rayDirection, EqualsVector(vector(-320, 240, -1)));
 }
 
 TEST_CASE("Video Renderers") {
