@@ -233,8 +233,6 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
 //---
 
 TEST_CASE("MousePicking tests") {
-  vector4 point(0, 0, -1, 0);
-
   unsigned int width = 640;
   unsigned int height = 480;
 
@@ -242,23 +240,7 @@ TEST_CASE("MousePicking tests") {
   camera.setPerspectiveProjectionFov(45.0, (real) width / (real) height, 0.1, 300.0);
   camera.setViewMatrix(matriz_4x4::identidad);
 
-  vector rayDirection = camera.getRayDirection(320, 240, width, height);
-
-//        vector4 eyePoint = camera.getViewMatrix() * point;
-//        vector4 projectedPoint = camera.getProjectionMatrix() * point;
-//        vector2 ndcPoint = (vector2(projectedPoint.x, projectedPoint.y) + vector2(1, 1)) * (real)0.5;// ((vector)projectedPoint) * ((real)1 / projectedPoint.w);
-//            vector2 renderedPoint = ndcPoint;
-//
-//        renderedPoint.x *= (real)width;
-//        renderedPoint.y *= (real)height;
-//
-//        printf("Transformed point point: %s\n->Eye point: %s\n->Projected point: %s\n->NDC point: %s\n->ViewPort point: %s\n",
-//                point.toString("%.2f").c_str(),
-//                eyePoint.toString("%.2f").c_str(),
-//                projectedPoint.toString("%.2f").c_str(),
-//                ndcPoint.toString("%.2f").c_str(),
-//                renderedPoint.toString("%.2f").c_str());
-
+  vector rayDirection = camera.unproject(320, 240, width, height).normalizado();
   CHECK(vector(0, 0, -1) == rayDirection);
 }
 

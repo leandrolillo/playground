@@ -192,6 +192,10 @@ public:
     this->frustumUpdated = false;
   }
 
+  vector getForward() const {
+    return this->getOrientation().columna(2);
+  }
+
   real getZNear() const {
     return this->near;
   }
@@ -209,13 +213,15 @@ public:
     return frustum;
   }
 
+
   /**
-   * from https://antongerdelan.net/opengl/raycasting.html
+   * From https://antongerdelan.net/opengl/raycasting.html
    * Basically pipeline is modelMatrix * viewMatrix * projectionMatrix -> normalised Device Space -> viewport, then we do the opposite process:
    *
    *   viewMatrix-1 * projectionMatrix-1 * (normalized device coordinates <- viewport(x, y))
    */
-  vector4 getRayDirection(unsigned int x, unsigned int y, unsigned int width, unsigned int height) const {
+
+  vector unproject(unsigned int x, unsigned int y, unsigned int width, unsigned int height) const {
     //Viewport to normalized device coordinates - result should be in range [-1:1, -1:1, -1:1, -1:1]
     vector3 normalizedDeviceCoordinates = vector3(
         (real) 2 * (real) x / (real) width - (real) 1,
@@ -232,7 +238,7 @@ public:
     cameraCoordinates.z = (real) -1;
     cameraCoordinates.w = (real) 0;
 
-    return ((vector3) (viewMatrix.inversa() * cameraCoordinates)).normalizado();
+    return (vector3) (viewMatrix.inversa() * cameraCoordinates);
   }
 
   String toString() {
