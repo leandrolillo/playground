@@ -60,9 +60,8 @@ private:
 
 public:
 
-  OpenGLRunner(Playground &container) : VideoRunner(container) {
+  using VideoRunner::VideoRunner;
 
-  }
   virtual unsigned char getInterests() const override {
     return RESIZE | KEY_DOWN;
   }

@@ -30,8 +30,9 @@ protected:
 	unsigned int height = 0;
 	unsigned int width = 0;
 public:
-	VideoRunner(Playground &container) : PlaygroundRunner(container) {
-	}
+
+	using PlaygroundRunner::PlaygroundRunner; //inherit constructors
+
 	virtual unsigned char getId() const override {
 		return ID;
 	}

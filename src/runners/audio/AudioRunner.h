@@ -18,18 +18,14 @@
 
 class AudioRunner: public PlaygroundRunner {
 	private:
-		Logger *logger;
-		ALCdevice *device;
-		ALCcontext *context;
+		Logger *logger = LoggerFactory::getLogger("audio/AudioRunner.h");
+		ALCdevice *device = null;
+		ALCcontext *context = null;
 	public:
 		static const unsigned char ID;
 	public:
-		AudioRunner(Playground &container) : PlaygroundRunner(container)
-		{
-			device = null;
-			context = null;
-			logger = LoggerFactory::getLogger("audio/AudioRunner.h");
-		}
+		using PlaygroundRunner::PlaygroundRunner; //inherit constructors
+
 		virtual unsigned char getId() const override {
 			return ID;
 		}
