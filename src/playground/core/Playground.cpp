@@ -9,10 +9,9 @@
 #include "Playground.h"
 
 
-
-ResourceManager &PlaygroundRunner::getResourceManager() const {
-	return this->container.getResourceManager();
+PlaygroundRunner::PlaygroundRunner(Playground &container) : container(container), resourceManager(container.getResourceManager()) {
 }
+
 
 Chronometer &PlaygroundRunner::getStopWatch() const {
 	return this->container.getStopWatch();

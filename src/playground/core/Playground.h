@@ -42,13 +42,13 @@ enum Interests {
 class Playground;
 
 class PlaygroundRunner {
-private:
+protected:
   Playground &container;
+  ResourceManager &resourceManager;
   bool _enabled = true;
 
 public:
-  PlaygroundRunner(Playground &container) : container(container) {
-  }
+  PlaygroundRunner(Playground &container);
 
   virtual ~PlaygroundRunner() {
   }
@@ -73,7 +73,9 @@ public:
 
   Chronometer &getStopWatch() const;
 
-  ResourceManager& getResourceManager() const;
+  ResourceManager& getResourceManager() const {
+    return this->resourceManager;
+  }
 
   virtual unsigned char getId() const = 0;
 
