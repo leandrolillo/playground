@@ -1,15 +1,32 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include "Playground.h"
+#include "PlaygroundMock.h"
 #include "chrono"
 #include "thread"
 
+class TestPlaygroundRunner : public PlaygroundRunner {
+public:
+  TestPlaygroundRunner(Playground &container) : PlaygroundRunner(container) {
+
+  }
+
+  unsigned char getId() const override {
+    return 0;
+  }
+};
+
 TEST_CASE("Playground Test case")
 {
-  Playground playground("");
+  PlaygroundMock playground("");
+  playground.withName("TestPlayground");
   REQUIRE(1 == 1);
 
   CHECK(playground.toString() != "");
+
+  TestPlaygroundRunner &runner = playground.addRunner<TestPlaygroundRunner>();
+  CHECK(playground.getRunnersCount() == 1);
+  TestPlaygroundRunner &theSameRunner = playground.addRunner<TestPlaygroundRunner>();
+  CHECK(playground.getRunnersCount() == 1);
 }
 
 TEST_CASE("StringUtils") {

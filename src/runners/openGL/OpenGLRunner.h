@@ -57,8 +57,12 @@ private:
   TextureResource *defaultTexture = null;
   const ShaderProgramResource *currentShaderProgram = null;
   std::map<unsigned int, unsigned int> boundTextures;
-  public:
 
+public:
+
+  OpenGLRunner(Playground &container) : VideoRunner(container) {
+
+  }
   virtual unsigned char getInterests() const override {
     return RESIZE | KEY_DOWN;
   }
@@ -138,7 +142,7 @@ private:
      */
     defaultTexture = new TextureResource(this->generateDefaultTexture());
     defaultTexture->setUri("OpenGLRunner::defaultTextureResource");
-    this->getContainer()->getResourceManager().addResource(defaultTexture);
+    this->getContainer().getResourceManager().addResource(defaultTexture);
 
     if (!SDL_Init(SDL_INIT_GAMEPAD)) {
       logger->error("SDL_Init Error: %s", SDL_GetError());
@@ -153,7 +157,7 @@ private:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer()->onResize(height, width);
+    this->getContainer().onResize(height, width);
 
     SDL_WarpMouseInWindow(window, width >> 1, height >> 1);
 
@@ -187,38 +191,38 @@ private:
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
       SDL_SetWindowMouseGrab(this->window, false);
       logger->debug("WINDOW RESIZED to [%d, %d]", event->window.data2, event->window.data1);
-      this->getContainer()->onResize(event->window.data2, event->window.data1);
+      this->getContainer().onResize(event->window.data2, event->window.data1);
       SDL_SetWindowMouseGrab(this->window, true);
       return true;
     case SDL_EVENT_KEY_DOWN:
       //SDL_Log("SDL_KEYDOWN %d", event->key.keysym.sym);
       logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.key);
-      this->getContainer()->onKeyDown(event->key.key, event->key.key);
+      this->getContainer().onKeyDown(event->key.key, event->key.key);
       return true;
     case SDL_EVENT_KEY_UP:
       //SDL_Log("SDL_KEYUP %d", event->key.keysym.sym);
       logger->verbose("KEYUP: %d, %d", event->key.key, event->key.mod);
-      this->getContainer()->onKeyUp(event->key.key, event->key.mod);
+      this->getContainer().onKeyUp(event->key.key, event->key.mod);
       return true;
     case SDL_EVENT_MOUSE_MOTION:
       //SDL_Log("SDL_MOUSEMOTION (%d,%d) delta=(%d,%d)", event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel);
-      this->getContainer()->onMouseMove(event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel, event->motion.state);
+      this->getContainer().onMouseMove(event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel, event->motion.state);
       logger->verbose("MOUSEMOVE: (%d, %d)", event->motion.xrel, event->motion.yrel);
       return true;
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
       //SDL_Log("SDL_MOUSEBUTTONDOWN %d", event->button.button);
       logger->verbose("MOUSEBUTTONDOWN: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
-      this->getContainer()->onMouseButtonDown(event->button.button, event->button.x, event->button.y);
+      this->getContainer().onMouseButtonDown(event->button.button, event->button.x, event->button.y);
       return true;
     case SDL_EVENT_MOUSE_BUTTON_UP:
       //SDL_Log("SDL_MOUSEBUTTONUP %d", event->button.button);
       logger->verbose("MOUSEBUTTONUP: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
-      this->getContainer()->onMouseButtonUp(event->button.button, event->button.x, event->button.y);
+      this->getContainer().onMouseButtonUp(event->button.button, event->button.x, event->button.y);
       return true;
     case SDL_EVENT_MOUSE_WHEEL:
       //SDL_Log("SDL_MOUSEWHEEL %d %d", event->wheel.direction, event->wheel.y);
       logger->verbose("MOUSEWHEEL: %d", event->wheel.y);
-      this->getContainer()->onMouseWheel(event->wheel.y);
+      this->getContainer().onMouseWheel(event->wheel.y);
       return true;
     }
 
@@ -241,18 +245,18 @@ private:
 
     switch (key) {
     case SDLK_ESCAPE:
-      this->getContainer()->stop();
+      this->getContainer().stop();
       break;
     case SDLK_F4:
       if (keyModifier & SDL_KMOD_GUI) {
-        this->getContainer()->stop();
+        this->getContainer().stop();
       }
       break;
     case 'Q':
       case 'q':
 
       if (keyModifier & SDL_KMOD_ALT) {
-        this->getContainer()->stop();
+        this->getContainer().stop();
       }
       break;
 
@@ -271,7 +275,7 @@ private:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer()->onResize(height, width);
+    this->getContainer().onResize(height, width);
 
     return this->getFullscreen();
   }

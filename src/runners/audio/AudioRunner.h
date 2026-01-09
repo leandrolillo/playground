@@ -24,7 +24,7 @@ class AudioRunner: public PlaygroundRunner {
 	public:
 		static const unsigned char ID;
 	public:
-		AudioRunner()
+		AudioRunner(Playground &container) : PlaygroundRunner(container)
 		{
 			device = null;
 			context = null;

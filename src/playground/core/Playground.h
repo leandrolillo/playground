@@ -43,11 +43,11 @@ class Playground;
 
 class PlaygroundRunner {
 private:
-  Playground *container = null;
+  Playground &container;
   bool _enabled = true;
 
 public:
-  PlaygroundRunner() {
+  PlaygroundRunner(Playground &container) : container(container) {
   }
 
   virtual ~PlaygroundRunner() {
@@ -67,10 +67,7 @@ public:
   virtual void afterLoop() {
   }
 
-  void setContainer(Playground &container) {
-    this->container = &container;
-  }
-  Playground* getContainer() const {
+  Playground &getContainer() const {
     return this->container;
   }
 
@@ -122,7 +119,7 @@ public:
 };
 
 class Playground {
-private:
+protected:
   Logger *logger = LoggerFactory::getLogger("core/Playground.h");
   String name;
   String resourcesRootFolder;
@@ -185,8 +182,11 @@ public:
     return this->stopWatch;
   }
 
-  PlaygroundRunner *addRunner(std::unique_ptr<PlaygroundRunner> runner) {
-    PlaygroundRunner *result = runner.get();
+  template<typename Runner>
+  Runner &addRunner() {
+    auto runner { std::make_unique<Runner>(*this)};
+
+    Runner &result = *runner.get(); //save instance to return in case we have to move the ptr;
     if (runner) {
       logger->debug("Adding runner with id [%d]", runner->getId());
 
@@ -197,7 +197,7 @@ public:
         if (currentRunner->getId() == runner->getId()) {
           logger->error("Runner with id [%d] already added - skipping",
               runner->getId());
-          return runner.get();
+          return *runner.get();
         } else {
           logger->debug("Added runner with id [%d]", runner->getId());
         }
@@ -213,7 +213,6 @@ public:
         currentRunnerIterator++;
       }
 
-      runner->setContainer(*this);
       runners_by_id[runner->getId()] = runner.get();
       runners.insert(currentRunnerIterator, std::move(runner));
     }

@@ -26,10 +26,12 @@ class VideoRunner : public PlaygroundRunner {
 public:
 	static const unsigned char ID;
 protected:
-	bool fullScreen;
-	unsigned int height;
-	unsigned int width;
+	bool fullScreen = false;
+	unsigned int height = 0;
+	unsigned int width = 0;
 public:
+	VideoRunner(Playground &container) : PlaygroundRunner(container) {
+	}
 	virtual unsigned char getId() const override {
 		return ID;
 	}

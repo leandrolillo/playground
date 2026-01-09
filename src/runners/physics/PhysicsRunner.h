@@ -17,7 +17,7 @@ class PhysicsRunner: public PlaygroundRunner {
 public:
 	static const unsigned char ID;
 public:
-	PhysicsRunner() {
+	PhysicsRunner(Playground &container) : PlaygroundRunner(container) {
 	}
 
 	unsigned char getId() const override {

@@ -9,9 +9,9 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   Playground playground("resources");
-  PlaygroundRunner *runner = playground.addRunner(std::make_unique<OpenGLRunner>());
-  runner->initialize();
-  ResourceManager &resourceManager = runner->getResourceManager();
+  OpenGLRunner &runner = playground.addRunner<OpenGLRunner>();
+  runner.initialize();
+  ResourceManager &resourceManager = runner.getResourceManager();
 
   SECTION("TextureResourceAdapter (No resource manager) test") {
     ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TextureResourceAdapter>());

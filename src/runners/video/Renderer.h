@@ -28,11 +28,9 @@ protected:
   }
 
   void setVideoRunner(VideoRunner &videoRunner) {
-    if (videoRunner.getContainer() != null) {
       this->videoRunner = &videoRunner;
-      this->resourceManager = &videoRunner.getContainer()->getResourceManager();
+      this->resourceManager = &videoRunner.getResourceManager();
       this->init();
-    }
   }
 
   void setShaderProgram(const ShaderProgramResource *shaderProgramResource) {

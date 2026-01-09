@@ -11,12 +11,9 @@
 
 
 ResourceManager &PlaygroundRunner::getResourceManager() const {
-  if(this->container == null) {
-    throw std::domain_error("Playground Runner [" + this->toString() + "] container is null");
-  }
-	return this->container->getResourceManager();
+	return this->container.getResourceManager();
 }
 
 Chronometer &PlaygroundRunner::getStopWatch() const {
-	return this->container->getStopWatch();
+	return this->container.getStopWatch();
 }
