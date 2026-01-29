@@ -31,6 +31,10 @@ public:
       return true;
     }
 
+    bool isEnabled() const override {
+      return Renderer::isEnabled() && this->plane != null;
+    }
+
 
     void render(const Camera &camera) override {
         if(isEnabled()) {
@@ -47,11 +51,9 @@ public:
             videoRunner.drawVertexArray(plane);
 
             videoRunner.useProgramResource(null);
+        } else {
+          logger->error("Not rendering! Shader or plane not set.");
+          this->initialize();
         }
     }
-
-    bool isEnabled() const override {
-    	return Renderer::isEnabled() && this->plane != null;
-    }
-
 };

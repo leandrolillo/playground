@@ -47,13 +47,22 @@ public:
     return true;
   }
 
+  bool isEnabled() const override {
+    return Renderer::isEnabled() && this->rectangle != null;
+  }
+
   void render(const Camera &camera) override {
+    if(isEnabled()) {
     videoRunner.useProgramResource(this->shader);
 //    videoRunner.setTexture(0, "image", &texture);
 //    videoRunner.sendMatrix("projection", null);
 //    videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, rotation)) * matriz_4x4::traslacion(vector3(position + size * 0.5, 0.0)) * matriz_4x4::zoom(vector3(size, 1.0)));
 //
 //    videoRunner.drawVertexArray(rectangle);
+    } else {
+      logger->error("Not rendering! Shader or rectangle not set.");
+      this->initialize();
+    }
 
   }
 

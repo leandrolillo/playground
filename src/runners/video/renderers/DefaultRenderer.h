@@ -162,7 +162,8 @@ public:
             videoRunner.setTexture(0, null);
             videoRunner.useProgramResource(null);
         } else {
-            logger->error("Not rendering! VideoRunner or Shader not set.");
+          logger->error("Not rendering! Shader not set.");
+          this->initialize();
         }
     }
 
