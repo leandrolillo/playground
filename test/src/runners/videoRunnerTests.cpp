@@ -15,6 +15,7 @@
 #include "GeometryRenderer.h"
 #include "TerrainRenderer.h"
 #include "GridRenderer.h"
+#include "SpriteRenderer.h"
 #include "Camera.h"
 
 TEST_CASE("Video Runner Test case")
@@ -263,6 +264,7 @@ TEST_CASE("Video Renderers") {
   DefaultRenderer renderer(videoRunnerMock);
   GridRenderer gridRenderer(videoRunnerMock);
   TerrainRenderer terrainRenderer(videoRunnerMock);
+  SpriteRenderer spriteRenderer(videoRunnerMock);
 
   GeometryRenderer geometryRenderer(renderer);
 }
