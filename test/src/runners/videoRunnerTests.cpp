@@ -63,10 +63,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    *****/
   SECTION("PngResourceAdapter (No resource manager) test")
   {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<PngResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.png");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -77,7 +77,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
 
   SECTION("PngResourceAdapter with ResourceManager test")
     {
-      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
+      ResourceAdapter &resourceAdapter = resourceManager.addAdapter<PngResourceAdapter>();
 
       ResourceLoadRequest request = resourceManager.newRequest("images/image.png").acceptMimeType(MimeTypes::IMAGE);
       ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -91,10 +91,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    *****/
 
   SECTION("JpegResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<JpegResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -106,7 +106,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("JpegResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<JpegResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
     ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -121,10 +121,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * TGA
    *****/
   SECTION("TgaResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TgaResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.tga");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -136,7 +136,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("TgaResourceAdapter with ResourceManager test") {
-      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
+      ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TgaResourceAdapter>();
 
       ResourceLoadRequest request = resourceManager.newRequest("images/image.tga").acceptMimeType(MimeTypes::IMAGE);
       ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -151,10 +151,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * GEOMETRY
    **********/
   SECTION("GeometryResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
 
     GeometryResource *resource = (GeometryResource *)response.back();
@@ -174,7 +174,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("GeometryResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::GEOMETRY);
     GeometryResource *resource = (GeometryResource *)resourceManager.load(request);
@@ -197,11 +197,11 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * OBJ
    *****/
   SECTION("ObjResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
-    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ObjResourceAdapter>();
+    resourceManager.addAdapter<MtlResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
 
     GeometryResource *resource = (GeometryResource *)response.back();
@@ -212,8 +212,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("ObjResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
-    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ObjResourceAdapter>();
+    resourceManager.addAdapter<MtlResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::GEOMETRY);
     GeometryResource *resource = (GeometryResource *)resourceManager.load(request);

@@ -11,7 +11,7 @@
 
 class FragmentShaderResourceAdapter : public ShaderResourceAdapter {
 public:
-	FragmentShaderResourceAdapter() {
+	FragmentShaderResourceAdapter(ResourceManager &resourceManager) : ShaderResourceAdapter(resourceManager) {
 		logger = LoggerFactory::getLogger("video/FragmentShaderResourceAdapter");
 		this->produces(MimeTypes::FRAGMENTSHADER);
 	}

@@ -14,7 +14,7 @@
 
 class HeightMapResourceAdapter: public ResourceAdapter {
 public:
-  HeightMapResourceAdapter() {
+  HeightMapResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/HeightMapResourceAdapter");
     this->produces(MimeTypes::HEIGHTMAP);
   }

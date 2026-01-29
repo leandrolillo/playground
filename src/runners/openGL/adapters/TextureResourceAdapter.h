@@ -15,7 +15,7 @@
 
 class TextureResourceAdapter: public OpenGLResourceAdapter {
 public:
-  TextureResourceAdapter() {
+  TextureResourceAdapter(ResourceManager &resourceManager) : OpenGLResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/TextureResourceAdapter");
     this->produces(MimeTypes::TEXTURE);
     //this->setInputMimeType(MimeTypes::IMAGE); //TODO: if at some point use a tree search of chained adapters the input mimetype should be image. In the meantime leave it blank as a wildcard.

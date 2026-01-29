@@ -13,7 +13,7 @@ constexpr unsigned int WAV_BUFFER_SIZE = 4096 * 4;
 
 class WavResourceAdapter: public ResourceAdapter {
 public:
-  WavResourceAdapter() {
+  WavResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("audio/WavResourceAdapter");
     this->accepts(MimeTypes::WAVE);
     this->produces(MimeTypes::AUDIO);

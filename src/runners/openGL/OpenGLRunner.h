@@ -86,14 +86,14 @@ public:
   virtual bool initialize() override {
     //logger->setLogLevel(LogLevel::DEBUG);
     VideoRunner::initialize();
-    this->getResourceManager().addAdapter(std::make_unique<TextureResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<CubeMapResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<VertexArrayResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<MeshResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<VertexShaderResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<FragmentShaderResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<ShaderProgramResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<TerrainResourceAdapter>());
+    this->getResourceManager().addAdapter<TextureResourceAdapter>();
+    this->getResourceManager().addAdapter<CubeMapResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexArrayResourceAdapter>();
+    this->getResourceManager().addAdapter<MeshResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<FragmentShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<ShaderProgramResourceAdapter>();
+    this->getResourceManager().addAdapter<TerrainResourceAdapter>();
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
       logger->error("SDL_Init Error: %s", SDL_GetError() == null ? "" : SDL_GetError());

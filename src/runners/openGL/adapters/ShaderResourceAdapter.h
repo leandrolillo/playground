@@ -12,7 +12,7 @@
 
 class ShaderResourceAdapter: public OpenGLResourceAdapter {
 public:
-  ShaderResourceAdapter() {
+  ShaderResourceAdapter(ResourceManager &resourceManager) : OpenGLResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/ShaderResourceAdapter");
     this->accepts(MimeTypes::GLSL);
     setOutputMimeTypes(std::set<String> { MimeTypes::VERTEXSHADER, MimeTypes::FRAGMENTSHADER, MimeTypes::GEOMETRYSHADER, MimeTypes::TESELLATIONSHADER});

@@ -73,3 +73,10 @@ stl
 C++:
 	- objects are constructed in the order that are declared and destructed in the opposite order. This is important for knowing what goes out of scope before.
 	- polymorphism is no good in destructors: base class destructor is called after children class destructor. This means child data has already been destroyed when running base destructor and any attempts to trigger polymorfism with cause errors. 
+	
+---
+lecciones aprendidas
+---
+
+* std::vector<Object> and lambdas: 
+    std::vector needs to move/copy objects around as part of its normal element addition operation. This might cause lambdas in the contained objects to get corrupted if they are using [this] reference! Solution: use std::vector<unique_ptr<>> instead or delete copy constructor and equals operator

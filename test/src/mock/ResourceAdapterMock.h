@@ -5,7 +5,7 @@
 class ResourceAdapterMock : public ResourceAdapter {
 	std::vector<Resource *>mockedLoadResult;
 public:
-	ResourceAdapterMock(const std::set<String> &outputMimeTypes, String inputMimeType) {
+	ResourceAdapterMock(ResourceManager &resourceManager, const std::set<String> &outputMimeTypes, String inputMimeType) : ResourceAdapter(resourceManager) {
 	  logger = LoggerFactory::getLogger("tests/ResourceAdapterMock.h");
 		this->setOutputMimeTypes(outputMimeTypes);
 		this->accepts(inputMimeType);

@@ -18,7 +18,7 @@ private:
     return bytes[0] | ((char) bytes[1] << 8);
   }
 public:
-  TgaResourceAdapter() {
+  TgaResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/TgaResourceAdapter");
     this->accepts(MimeTypes::TGA);
     this->produces(MimeTypes::IMAGE);

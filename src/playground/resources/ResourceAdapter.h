@@ -21,7 +21,7 @@ class ResourceManager;
  */
 class ResourceAdapter {
 private:
-  ResourceManager *resourceManager = null;
+  ResourceManager &resourceManager;
   String inputMimeType = "";
   std::set<String> outputMimeTypes;
 
@@ -31,6 +31,9 @@ protected:
   virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const = 0;
 
 public:
+  ResourceAdapter(ResourceManager &resourceManager) : resourceManager(resourceManager){
+
+  }
   virtual ~ResourceAdapter() {
     if (logger != null) {
       logger->debug("Destroying resource adapter %s", this->toString().c_str());
@@ -38,11 +41,7 @@ public:
   }
 
   ResourceManager &getResourceManager() const {
-    return *resourceManager;
-  }
-
-  void setResourceManager(ResourceManager &resourceManager) {
-    this->resourceManager = &resourceManager;
+    return resourceManager;
   }
 
   //TODO: Maybe this should be expanded for handling logic here instead of in resource manager - for example checking request has mimetype and matches the output of the adapter, there's a uri, etc.
@@ -82,10 +81,6 @@ public:
 
   String errors() const {
     String errors;
-
-    if(resourceManager == null) {
-      errors.append("ResourceManager is required");
-    }
 
     if (outputMimeTypes.empty()) {
       errors.append("Output mimetypes are required");

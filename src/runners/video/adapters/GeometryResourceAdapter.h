@@ -15,8 +15,8 @@
 
 class GeometryResourceAdapter: public ResourceAdapter {
 public:
-	GeometryResourceAdapter() {
-		logger = LoggerFactory::getLogger("video/GeometryResourceAdapter");
+  GeometryResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
+    logger = LoggerFactory::getLogger("video/GeometryResourceAdapter");
 		this->produces(MimeTypes::GEOMETRY);
 		this->accepts(MimeTypes::JSON);
 	}

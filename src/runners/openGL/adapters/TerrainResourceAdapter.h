@@ -14,7 +14,7 @@
 
 class TerrainResourceAdapter: public ResourceAdapter {
 public:
-  TerrainResourceAdapter() {
+  TerrainResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/TerrainResourceAdapter");
     this->produces(MimeTypes::TERRAIN);
   }

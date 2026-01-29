@@ -13,7 +13,7 @@
 
 class CubeMapResourceAdapter: public TextureResourceAdapter {
 public:
-  CubeMapResourceAdapter() : TextureResourceAdapter() {
+  CubeMapResourceAdapter(ResourceManager &resourceManager) : TextureResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/CubeMapResourceAdapter");
 
     this->setOutputMimeTypes(std::set<String> { MimeTypes::CUBEMAP }); // override texture resource adapter mimetypes.
