@@ -35,7 +35,7 @@ private:
 public:
   using Renderer::Renderer;
 
-  virtual bool init() override {
+  virtual bool initialize() override {
     if(this->shader == null) {
       this->shader = (ShaderProgramResource*) this->resourceManager.load("core/sprite.program.json", MimeTypes::SHADERPROGRAM);
     }

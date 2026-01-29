@@ -48,7 +48,7 @@ public:
     }
   }
 
-  virtual bool init() {
+  virtual bool initialize() {
     return true;
   }
 

@@ -98,7 +98,7 @@ public:
         return previous;
     }
 
-    virtual bool init() override {
+    virtual bool initialize() override {
       if(this->shader == null) {
         this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
       }

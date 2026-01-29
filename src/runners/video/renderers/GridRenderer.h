@@ -19,7 +19,7 @@ private:
 public:
     using Renderer::Renderer;
 
-    virtual bool init() override {
+    virtual bool initialize() override {
       if(this->shader == null) {
           this->shader = (ShaderProgramResource *)resourceManager.load("shaders/grid/grid.program.json", MimeTypes::SHADERPROGRAM);
       }

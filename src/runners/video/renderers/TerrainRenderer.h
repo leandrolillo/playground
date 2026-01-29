@@ -43,7 +43,7 @@ public:
 
   using Renderer::Renderer;
 
-  virtual bool init() override {
+  virtual bool initialize() override {
     if(this->shader == null) {
         this->shader = (ShaderProgramResource *)resourceManager.load("shaders/terrain/terrain.program.json", MimeTypes::SHADERPROGRAM);
     }
