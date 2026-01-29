@@ -8,50 +8,6 @@
 
 const String ResourceManager::EphemeralLabel = { "ephemeral" };
 
-ResourceAdapter* ResourceManager::addAdapter(std::unique_ptr<ResourceAdapter> adapterUniquePtr) {
-  logger->debug("Adding adapter");
-  if (adapterUniquePtr) {
-    adapterUniquePtr->setResourceManager(*this);
-
-    if (adapterUniquePtr->isValid()) {
-      logger->debug("Adapter [%s] is valid - proceeding to add it", adapterUniquePtr->toString().c_str());
-
-      ResourceAdapter *adapter = adapterUniquePtr.get();
-      if (resourceAdapters.find(adapter) == resourceAdapters.end()) {
-        /* std::move makes this an l-value so it behaves like it is a temporary variable - it makes adapterUniquePtr variable point to null so it should not be referenced after this. */
-        resourceAdapters.insert(std::move(adapterUniquePtr));
-
-        logger->debug("Adapter [%s] added to set", adapter->toString().c_str());
-
-        for (auto &outputMimeType : adapter->getOutputMimeTypes()) {
-          String key = adapter->getInputMimeType().empty() ? outputMimeType + "|" : outputMimeType + "|" + adapter->getInputMimeType();
-          adaptersCache[key] = adapter;
-
-          logger->debug("Adapter [%s] added to manage [%s] with key [%s]", adapter->toString().c_str(), outputMimeType.c_str(),
-              key.c_str());
-        }
-      } else {
-        logger->warn("Skipping adapter [%s] - already managed", adapter->toString().c_str());
-
-        //TODO: should return previous adapter?
-      }
-
-      return adapter;
-    } else {
-      String errorMessage = StringFormatter::format("NOT adding invalid adapter [%s]: [%s] ",
-          adapterUniquePtr->toString().c_str(),
-          adapterUniquePtr->errors().c_str());
-      logger->error(errorMessage);
-      throw std::invalid_argument(errorMessage);
-
-    }
-  } else {
-    logger->error("NOT adding invalid adapter - null pointer");
-    throw std::invalid_argument("NOT adding invalid adapter - null pointer");
-
-  }
-}
-
 Resource* ResourceManager::load(ResourceLoadRequest &resourceLoadRequest) {
   Resource *result = null;
   try {

@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include "mathMatchers.h"
 
 #include "../../../src/runners/openGL/renderers/SkyboxRenderer.h"
 #include "ResourceManagerMock.h"
@@ -62,10 +63,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    *****/
   SECTION("PngResourceAdapter (No resource manager) test")
   {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<PngResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.png");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -76,7 +77,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
 
   SECTION("PngResourceAdapter with ResourceManager test")
     {
-      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<PngResourceAdapter>());
+      ResourceAdapter &resourceAdapter = resourceManager.addAdapter<PngResourceAdapter>();
 
       ResourceLoadRequest request = resourceManager.newRequest("images/image.png").acceptMimeType(MimeTypes::IMAGE);
       ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -90,10 +91,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    *****/
 
   SECTION("JpegResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<JpegResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -105,7 +106,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("JpegResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<JpegResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<JpegResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::IMAGE);
     ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -120,10 +121,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * TGA
    *****/
   SECTION("TgaResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TgaResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("images/image.tga");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(1 == response.size());
 
     ImageResource *resource = (ImageResource *)response.back();
@@ -135,7 +136,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("TgaResourceAdapter with ResourceManager test") {
-      ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TgaResourceAdapter>());
+      ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TgaResourceAdapter>();
 
       ResourceLoadRequest request = resourceManager.newRequest("images/image.tga").acceptMimeType(MimeTypes::IMAGE);
       ImageResource *resource = (ImageResource *)resourceManager.load(request);
@@ -150,10 +151,10 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * GEOMETRY
    **********/
   SECTION("GeometryResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
 
     GeometryResource *resource = (GeometryResource *)response.back();
@@ -173,7 +174,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("GeometryResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<GeometryResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::GEOMETRY);
     GeometryResource *resource = (GeometryResource *)resourceManager.load(request);
@@ -196,11 +197,11 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
    * OBJ
    *****/
   SECTION("ObjResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
-    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ObjResourceAdapter>();
+    resourceManager.addAdapter<MtlResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
 
     GeometryResource *resource = (GeometryResource *)response.back();
@@ -211,8 +212,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("ObjResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ObjResourceAdapter>());
-    resourceManager.addAdapter(std::make_unique<MtlResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ObjResourceAdapter>();
+    resourceManager.addAdapter<MtlResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::GEOMETRY);
     GeometryResource *resource = (GeometryResource *)resourceManager.load(request);
@@ -233,8 +234,6 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
 //---
 
 TEST_CASE("MousePicking tests") {
-  vector4 point(0, 0, -1, 0);
-
   unsigned int width = 640;
   unsigned int height = 480;
 
@@ -242,24 +241,17 @@ TEST_CASE("MousePicking tests") {
   camera.setPerspectiveProjectionFov(45.0, (real) width / (real) height, 0.1, 300.0);
   camera.setViewMatrix(matriz_4x4::identidad);
 
-  vector rayDirection = camera.getRayDirection(320, 240, width, height);
-
-//        vector4 eyePoint = camera.getViewMatrix() * point;
-//        vector4 projectedPoint = camera.getProjectionMatrix() * point;
-//        vector2 ndcPoint = (vector2(projectedPoint.x, projectedPoint.y) + vector2(1, 1)) * (real)0.5;// ((vector)projectedPoint) * ((real)1 / projectedPoint.w);
-//            vector2 renderedPoint = ndcPoint;
-//
-//        renderedPoint.x *= (real)width;
-//        renderedPoint.y *= (real)height;
-//
-//        printf("Transformed point point: %s\n->Eye point: %s\n->Projected point: %s\n->NDC point: %s\n->ViewPort point: %s\n",
-//                point.toString("%.2f").c_str(),
-//                eyePoint.toString("%.2f").c_str(),
-//                projectedPoint.toString("%.2f").c_str(),
-//                ndcPoint.toString("%.2f").c_str(),
-//                renderedPoint.toString("%.2f").c_str());
-
+  vector rayDirection = camera.unproject(320, 240, width, height).normalizado();
   CHECK(vector(0, 0, -1) == rayDirection);
+
+  camera.setOrthographicProjection(640, 480, -100, 100);
+  camera.setViewMatrix(matriz_4x4::identidad);
+
+  vector unprojected = camera.unproject(320, 240, width, height);
+  CHECK_THAT(rayDirection, EqualsVector(vector(0, 0, -1)));
+
+  unprojected = camera.unproject(0, 0, width, height);
+  CHECK_THAT(rayDirection, EqualsVector(vector(-320, 240, -1)));
 }
 
 TEST_CASE("Video Renderers") {

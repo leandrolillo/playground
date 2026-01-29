@@ -11,6 +11,9 @@
 #include "ResourceAdapter.h"
 
 class OpenGLResourceAdapter : public ResourceAdapter {
+public:
+  using ResourceAdapter::ResourceAdapter;
+
 protected:
     String getGlError() const {
         String errorMessage;

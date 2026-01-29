@@ -14,7 +14,7 @@
 
 class JpegResourceAdapter: public ResourceAdapter {
 public:
-	JpegResourceAdapter() {
+	JpegResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
 		logger = LoggerFactory::getLogger("video/JpegResourceAdapter");
 
 		this->accepts(MimeTypes::JPEG);

@@ -13,7 +13,7 @@
 
 class MtlResourceAdapter: public ResourceAdapter {
 public:
-  MtlResourceAdapter() {
+  MtlResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger(typeid(*this).name());
     this->produces(MimeTypes::MATERIAL);
     this->accepts(MimeTypes::WAVEFRONT_MATERIAL);

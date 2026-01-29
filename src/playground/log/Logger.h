@@ -141,10 +141,11 @@ protected:
                             perror(getFileName());
                         }
 
-                        if (remove(getFileName())) {
-                            printf("Error removing log file [%s]\n", getFileName());
-                            perror(getFileName());
-                        }
+//                        //No need to remove since it was renamed in previous step
+//                        if (remove(getFileName())) {
+//                            printf("Error removing log file [%s]\n", getFileName());
+//                            perror(getFileName());
+//                        }
 
                         printf("Opening new log file\n");
                         if ((fileHandler = fopen(getFileName(), "wt")) == null) {

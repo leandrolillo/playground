@@ -26,10 +26,13 @@ class VideoRunner : public PlaygroundRunner {
 public:
 	static const unsigned char ID;
 protected:
-	bool fullScreen;
-	unsigned int height;
-	unsigned int width;
+	bool fullScreen = false;
+	unsigned int height = 0;
+	unsigned int width = 0;
 public:
+
+	using PlaygroundRunner::PlaygroundRunner; //inherit constructors
+
 	virtual unsigned char getId() const override {
 		return ID;
 	}
@@ -69,13 +72,13 @@ public:
 	virtual void setMousePosition(unsigned int x, unsigned int y) = 0;
 
 	virtual bool initialize() override {
-		this->getResourceManager().addAdapter(std::make_unique<PngResourceAdapter>());
-		this->getResourceManager().addAdapter(std::make_unique<JpegResourceAdapter>());
-		this->getResourceManager().addAdapter(std::make_unique<TgaResourceAdapter>());
-		this->getResourceManager().addAdapter(std::make_unique<GeometryResourceAdapter>());
-		this->getResourceManager().addAdapter(std::make_unique<ObjResourceAdapter>());
-		this->getResourceManager().addAdapter(std::make_unique<MtlResourceAdapter>());
-    this->getResourceManager().addAdapter(std::make_unique<HeightMapResourceAdapter>());
+		this->getResourceManager().addAdapter<PngResourceAdapter>();
+		this->getResourceManager().addAdapter<JpegResourceAdapter>();
+		this->getResourceManager().addAdapter<TgaResourceAdapter>();
+		this->getResourceManager().addAdapter<GeometryResourceAdapter>();
+		this->getResourceManager().addAdapter<ObjResourceAdapter>();
+		this->getResourceManager().addAdapter<MtlResourceAdapter>();
+    this->getResourceManager().addAdapter<HeightMapResourceAdapter>();
 
 		return true;
 	}

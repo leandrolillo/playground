@@ -26,7 +26,7 @@ private:
   std::map<std::string, std::string> shadersMimeTypes;
   public:
 
-  ShaderProgramResourceAdapter() {
+  ShaderProgramResourceAdapter(ResourceManager &resourceManager) : OpenGLResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/ShaderProgramResourceAdapter");
     this->produces(MimeTypes::SHADERPROGRAM);
     this->accepts(MimeTypes::JSON);

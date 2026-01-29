@@ -11,7 +11,7 @@
 
 class VertexShaderResourceAdapter : public ShaderResourceAdapter {
 public:
-	VertexShaderResourceAdapter() {
+	VertexShaderResourceAdapter(ResourceManager &resourceManager) : ShaderResourceAdapter(resourceManager) {
 		logger = LoggerFactory::getLogger("video/VertexShaderResourceAdapter");
 		this->produces(MimeTypes::VERTEXSHADER);
 		this->accepts(MimeTypes::GLSL);

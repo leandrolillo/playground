@@ -9,16 +9,16 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   Playground playground("resources");
-  PlaygroundRunner *runner = playground.addRunner(std::make_unique<OpenGLRunner>());
-  runner->initialize();
-  ResourceManager &resourceManager = runner->getResourceManager();
+  OpenGLRunner &runner = playground.addRunner<OpenGLRunner>();
+  runner.initialize();
+  ResourceManager &resourceManager = runner.getResourceManager();
 
   SECTION("TextureResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TextureResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TextureResourceAdapter>();
 
     //From PNG
     ResourceLoadRequest pngRequest = resourceManager.newRequest("images/image.png").acceptMimeType(MimeTypes::TEXTURE);
-    auto response = resourceAdapter->load(pngRequest);
+    auto response = resourceAdapter.load(pngRequest);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);
@@ -27,7 +27,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
 
     //From JPG
     ResourceLoadRequest jpgRequest = resourceManager.newRequest("images/image.jpg").acceptMimeType(MimeTypes::TEXTURE);
-    response = resourceAdapter->load(jpgRequest);
+    response = resourceAdapter.load(jpgRequest);
     REQUIRE(response.size() > 0);
     resource = response.back();
     REQUIRE(resource != null);
@@ -36,7 +36,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
 
     //From TGA
     ResourceLoadRequest tgaRequest = resourceManager.newRequest("images/image.tga").acceptMimeType(MimeTypes::TEXTURE);
-    response = resourceAdapter->load(tgaRequest);
+    response = resourceAdapter.load(tgaRequest);
     REQUIRE(response.size() > 0);
     resource = response.back();
     REQUIRE(resource != null);
@@ -45,7 +45,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("TextureResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<TextureResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TextureResourceAdapter>();
 
     //From PNG
     ResourceLoadRequest pngRequest = resourceManager.newRequest("images/image.png").acceptMimeType(MimeTypes::TEXTURE);
@@ -70,10 +70,10 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("VertexArrayResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<VertexArrayResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<VertexArrayResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::VERTEXARRAY);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);
@@ -82,7 +82,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("VertexArrayResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<VertexArrayResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<VertexArrayResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::VERTEXARRAY);
     Resource *resource = resourceManager.load(request);
@@ -92,10 +92,10 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("MeshResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<MeshResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<MeshResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::MESH);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
     MeshResource *resource = (MeshResource *)response.back();
     REQUIRE(resource != null);
@@ -105,7 +105,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("MeshResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<MeshResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<MeshResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/axes.obj/Axes").acceptMimeType(MimeTypes::MESH);
     MeshResource *resource = (MeshResource *)resourceManager.load(request);
@@ -116,10 +116,10 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("ShaderResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ShaderResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ShaderResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("shader/vertexShader.glsl").acceptMimeType(MimeTypes::VERTEXSHADER);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);
@@ -128,7 +128,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("ShaderResourceAdapter with Resource Manager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ShaderResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ShaderResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("shader/vertexShader.glsl").acceptMimeType(MimeTypes::VERTEXSHADER);
     Resource *resource = resourceManager.load(request);
@@ -138,10 +138,10 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("ShaderProgramResourceAdapter (No resource manager) test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ShaderProgramResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ShaderProgramResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("shader/shaderProgram.json").acceptMimeType(MimeTypes::SHADERPROGRAM);
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
     REQUIRE(response.size() > 0);
     Resource *resource = response.back();
     REQUIRE(resource != null);
@@ -150,7 +150,7 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
   }
 
   SECTION("ShaderProgramResourceAdapter with ResourceManager test") {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<ShaderProgramResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<ShaderProgramResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("shader/shaderProgram.json").acceptMimeType(MimeTypes::SHADERPROGRAM);
     Resource *resource = resourceManager.load(request);

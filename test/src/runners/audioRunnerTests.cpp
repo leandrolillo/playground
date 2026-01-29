@@ -27,9 +27,9 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
   SECTION("OggResourceAdapter (No resource manager) test")
   {
     //AdapterFixture<OggResourceAdapter> resourceAdapter;
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<OggResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<OggResourceAdapter>();
 
-    auto response = resourceAdapter->load(resourceManager.newRequest("audio/audio.ogg"));
+    auto response = resourceAdapter.load(resourceManager.newRequest("audio/audio.ogg"));
 
     REQUIRE(response.size() == 1);
 
@@ -42,7 +42,7 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
   SECTION("OggResourceAdapter with ResourceManager test")
   {
     //AdapterFixture<OggResourceAdapter> resourceAdapter;
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<OggResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<OggResourceAdapter>();
     AudioResource *resource = (AudioResource *)resourceManager.load(resourceManager.newRequest("audio/audio.ogg"));
     REQUIRE(resource != null);
     CHECK(!resource->getData().empty());
@@ -51,9 +51,9 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
 
   SECTION("AudioResourceAdapter (No resource manager) test")
   {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<WavResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<WavResourceAdapter>();
     ResourceLoadRequest request = resourceManager.newRequest("audio/audio.wav");
-    auto response = resourceAdapter->load(request);
+    auto response = resourceAdapter.load(request);
 
     REQUIRE(response.size() == 1);
 
@@ -65,7 +65,7 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
 
   SECTION("AudioResourceAdapter with ResourceManager test")
   {
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<WavResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<WavResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("audio/audio.wav");
     AudioResource *resource = (AudioResource *)resourceManager.load(request);
@@ -81,13 +81,13 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
 
   Playground playground("resources");
   ResourceManager &resourceManager = playground.getResourceManager();
-  PlaygroundRunner *runner = playground.addRunner(std::make_unique<AudioRunner>());
-  runner->initialize();
+  AudioRunner &runner = playground.addRunner<AudioRunner>();
+  runner.initialize();
 
   SECTION("AudioBufferResourceAdapter (No resource manager) test") { //requires initialized audio runner
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<BufferResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<BufferResourceAdapter>();
 
-    auto response = resourceAdapter->load(resourceManager.newRequest("audio/audio.ogg").acceptMimeType(MimeTypes::AUDIOBUFFER));
+    auto response = resourceAdapter.load(resourceManager.newRequest("audio/audio.ogg").acceptMimeType(MimeTypes::AUDIOBUFFER));
     REQUIRE(response.size() == 1);
     BufferResource *resource = (BufferResource *)response.back();
     REQUIRE(resource != null);
@@ -95,7 +95,7 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
   }
 
   SECTION("AudioBufferResourceAdapter with ResourceManager test") { //requires initialized audio runner
-    ResourceAdapter *resourceAdapter = resourceManager.addAdapter(std::make_unique<BufferResourceAdapter>());
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<BufferResourceAdapter>();
     ResourceLoadRequest request = resourceManager.newRequest("audio/audio.ogg").acceptMimeType(MimeTypes::AUDIOBUFFER);
     BufferResource *resource = (BufferResource *)resourceManager.load(request);
     REQUIRE(resource != null);
@@ -103,7 +103,7 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
   }
 
 //  SECTION("AudioSourceResourceAdapter")   { //TODO: AudioSource should not be a resource or at least should not be cached.
-//    Source *resource = (Source *)this->getContainer()->getResourceManager()->load("tests/audio.ogg", MimeTypes::AUDIOSOURCE);
+//    Source *resource = (Source *)this->getContainer().getResourceManager()->load("tests/audio.ogg", MimeTypes::AUDIOSOURCE);
 //    CHECK(resource != null);
 //    CHECK(resource->getId() != 0);
 //    CHECK(MimeTypes::AUDIOSOURCE == resource->getMimeType());

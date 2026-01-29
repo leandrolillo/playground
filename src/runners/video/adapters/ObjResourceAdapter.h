@@ -11,7 +11,7 @@
 
 class ObjResourceAdapter: public ResourceAdapter {
 public:
-  ObjResourceAdapter() {
+  ObjResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/ObjResourceAdapter");
     this->produces(MimeTypes::GEOMETRY);
     this->accepts(MimeTypes::WAVEFRONT_OBJ);

@@ -17,7 +17,7 @@
 
 class OggResourceAdapter : public ResourceAdapter {
 	public:
-		OggResourceAdapter() {
+		OggResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
 			logger = LoggerFactory::getLogger("audio/OggResourceAdapter.h");
 			this->produces(MimeTypes::AUDIO);
 			this->accepts(MimeTypes::OGG);

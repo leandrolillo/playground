@@ -14,7 +14,7 @@
 
 class MeshResourceAdapter: public OpenGLResourceAdapter {
 public:
-  MeshResourceAdapter() {
+  MeshResourceAdapter(ResourceManager &resourceManager) : OpenGLResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/MeshResourceAdapter");
     this->produces(MimeTypes::MESH);
   }

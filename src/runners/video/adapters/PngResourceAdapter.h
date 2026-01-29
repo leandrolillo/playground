@@ -15,7 +15,7 @@
 
 class PngResourceAdapter: public ResourceAdapter {
 public:
-  PngResourceAdapter() {
+  PngResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/PngResourceAdapter");
     this->accepts(MimeTypes::PNG);
     this->produces(MimeTypes::IMAGE);

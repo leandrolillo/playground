@@ -16,7 +16,7 @@
 
 class SourceResourceAdapter: public ResourceAdapter {
 public:
-  SourceResourceAdapter() {
+  SourceResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("audio/SourceResourceAdapter");
     this->produces(MimeTypes::AUDIOSOURCE);
   }
