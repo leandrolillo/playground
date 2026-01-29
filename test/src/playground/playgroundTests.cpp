@@ -15,6 +15,14 @@ public:
   }
 };
 
+class NotValidPlaygroundRunner {
+public:
+  NotValidPlaygroundRunner(Playground &container) {
+
+  }
+
+};
+
 TEST_CASE("Playground Test case")
 {
   PlaygroundMock playground("");
@@ -27,6 +35,8 @@ TEST_CASE("Playground Test case")
   CHECK(playground.getRunnersCount() == 1);
   TestPlaygroundRunner &theSameRunner = playground.addRunner<TestPlaygroundRunner>();
   CHECK(playground.getRunnersCount() == 1);
+
+  //playground.addRunner<NotValidPlaygroundRunner>(); //this should fail at compile time.
 }
 
 TEST_CASE("StringUtils") {

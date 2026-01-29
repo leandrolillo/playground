@@ -186,6 +186,7 @@ public:
 
   template<typename Runner>
   Runner &addRunner() {
+    static_assert(std::is_base_of<PlaygroundRunner, Runner>::value, "Runner type parameter in addRunner must be derived from PlaygroundRunner");
     auto runner { std::make_unique<Runner>(*this)};
 
     Runner &result = *runner.get(); //save instance to return in case we have to move the ptr;

@@ -11,7 +11,7 @@
 #include "ResourceAdapter.h"
 
 /**
- * Comparator to enable sets of unique_ptr<ResourceAdapter>
+ * Comparator to enable sets of unique_ptr<ResourceAdapter> by comparing the raw pointers
  */
 struct resourceAdapterComparator
 {
@@ -31,7 +31,7 @@ struct resourceAdapterComparator
 };
 
 /**
- * Comparator to enable sets of unique_ptr<Resource>
+ * Comparator to enable sets of unique_ptr<Resource> by comparing the raw pointers
  */
 struct resourceComparator
 {
@@ -106,12 +106,14 @@ public:
   Adapter &addAdapter(Args&&... args) {
     logger->debug("Adding adapter");
 
+    static_assert(std::is_base_of<ResourceAdapter, Adapter>::value, "Adapter type parameter in addAdapter must be derived from ResourceAdapter");
     auto adapterUniquePtr { std::make_unique<Adapter>(*this, std::forward<Args>(args)...)};
 
     if (adapterUniquePtr) {
       if (adapterUniquePtr->isValid()) {
         logger->debug("Adapter [%s] is valid - proceeding to add it", adapterUniquePtr->toString().c_str());
 
+        //TODO: review this logic since it should compare classes or mimetypes instead of pointers
         Adapter *adapter = adapterUniquePtr.get();
         if (resourceAdapters.find(adapter) == resourceAdapters.end()) {
           /* std::move makes this an l-value so it behaves like it is a temporary variable - it makes adapterUniquePtr variable point to null so it should not be referenced after this. */
@@ -141,9 +143,8 @@ public:
         throw std::invalid_argument(errorMessage);
       }
     } else {
-      logger->error("NOT adding invalid adapter - null pointer");
-      throw std::invalid_argument("NOT adding invalid adapter - null pointer");
-
+      logger->error("Could not instantiate adapter");
+      throw std::invalid_argument("Could not instantiate adapter");
     }
   }
 
