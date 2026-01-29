@@ -14,23 +14,15 @@
 class Renderer {
 protected:
   const ShaderProgramResource *shader = null;
-  VideoRunner *videoRunner = null;
-  ResourceManager *resourceManager = null;
+  VideoRunner &videoRunner;
+  ResourceManager &resourceManager;
   bool enabled = true;
-  public:
+public:
 
-// 		This did not work for some reason
-//    Renderer(VideoRunner *videoRunner) {
-//        this->videoRunner = videoRunner;
-//    }
-
-  virtual ~Renderer() {
+  Renderer(VideoRunner &videoRunner) : videoRunner(videoRunner), resourceManager(videoRunner.getResourceManager()) {
   }
 
-  void setVideoRunner(VideoRunner &videoRunner) {
-      this->videoRunner = &videoRunner;
-      this->resourceManager = &videoRunner.getResourceManager();
-      this->init();
+  virtual ~Renderer() {
   }
 
   void setShaderProgram(const ShaderProgramResource *shaderProgramResource) {
@@ -39,32 +31,31 @@ protected:
 
   void sendMaterial(const MaterialResource *material) const {
     if (material != null) {
-      videoRunner->sendVector("material.ambient", material->getAmbient());
-      videoRunner->sendVector("material.diffuse", material->getDiffuse());
-      videoRunner->sendVector("material.specular", material->getSpecular());
-      videoRunner->sendReal("material.alpha", material->getAlpha());
-      videoRunner->sendReal("material.shininess", material->getShininess());
+      videoRunner.sendVector("material.ambient", material->getAmbient());
+      videoRunner.sendVector("material.diffuse", material->getDiffuse());
+      videoRunner.sendVector("material.specular", material->getSpecular());
+      videoRunner.sendReal("material.alpha", material->getAlpha());
+      videoRunner.sendReal("material.shininess", material->getShininess());
     }
   }
 
   void sendLight(const LightResource *light) const {
     if (light) {
-      videoRunner->sendVector("light.ambient", light->getAmbient() * light->getShininess());
-      videoRunner->sendVector("light.diffuse", light->getDiffuse() * light->getShininess());
-      videoRunner->sendVector("light.specular", light->getSpecular() * light->getShininess());
-      videoRunner->sendVector("light.position", light->getPosition());
+      videoRunner.sendVector("light.ambient", light->getAmbient() * light->getShininess());
+      videoRunner.sendVector("light.diffuse", light->getDiffuse() * light->getShininess());
+      videoRunner.sendVector("light.specular", light->getSpecular() * light->getShininess());
+      videoRunner.sendVector("light.position", light->getPosition());
     }
   }
 
   virtual bool init() {
     return true;
   }
-  ;
 
   virtual void render(const Camera &camera) = 0;
 
   virtual bool isEnabled() const {
-    return this->videoRunner != null && shader != null && this->enabled;
+    return this->shader != null && this->enabled;
   }
 
   void setEnabled(bool enabled) {

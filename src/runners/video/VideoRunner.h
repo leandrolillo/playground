@@ -83,12 +83,6 @@ public:
 		return true;
 	}
 
-//	/**
-//	 * Performance counters
-//	 */
-//	virtual unsigned long getPerformanceCounter() const = 0;
-//	virtual unsigned long getPerformanceFreq() const = 0;
-
 	/**
 	 * Shader methods - should this go to a shader class?
 	 */

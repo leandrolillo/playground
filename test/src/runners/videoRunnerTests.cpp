@@ -1,8 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include "mathMatchers.h"
 
-#include "../../../src/runners/openGL/renderers/SkyboxRenderer.h"
+#include "SkyboxRenderer.h"
 #include "ResourceManagerMock.h"
+#include "VideoRunnerMock.h"
 #include "ImageResource.h"
 #include "PngResourceAdapter.h"
 #include "JpegResourceAdapter.h"
@@ -255,10 +256,13 @@ TEST_CASE("MousePicking tests") {
 }
 
 TEST_CASE("Video Renderers") {
+  Playground playground("resources");
+  VideoRunnerMock videoRunnerMock(playground);
+
   //TODO: implement test cases
-  DefaultRenderer renderer;
-  GridRenderer gridRenderer;
-  TerrainRenderer terrainRenderer;
+  DefaultRenderer renderer(videoRunnerMock);
+  GridRenderer gridRenderer(videoRunnerMock);
+  TerrainRenderer terrainRenderer(videoRunnerMock);
 
   GeometryRenderer geometryRenderer(renderer);
 }

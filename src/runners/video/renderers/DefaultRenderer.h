@@ -76,6 +76,14 @@ private:
     const MaterialResource defaultMaterial = MaterialResource(vector(0.3, 0.3, 0.3), vector(0.3, 0.3, 0.3), vector(0.3, 0.3, 0.3), 32);
 
 public:
+    DefaultRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
+      if(this->shader == null) {
+          this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
+      }
+
+      this->setMaterial(null);
+    }
+
     void setMaterial(const MaterialResource *material) {
         this->currentMaterial = (material == null ? &defaultMaterial : material);
     }
@@ -94,20 +102,10 @@ public:
         return previous;
     }
 
-    bool init() override {
-        if(this->shader == null) {
-            this->shader = (ShaderProgramResource*) this->resourceManager->load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
-        }
-
-        this->setMaterial(null);
-
-        return true;
-    }
-
     void render(const Camera &camera) override {
         if(isEnabled()) {
-            videoRunner->useProgramResource(shader);
-            videoRunner->sendVector("viewPosition", camera.getPosition());
+            videoRunner.useProgramResource(shader);
+            videoRunner.sendVector("viewPosition", camera.getPosition());
             this->sendLight(light);
 
             const MaterialResource *lastMaterial = null;
@@ -116,21 +114,21 @@ public:
             	const MeshResource *mesh = iterator.first;
             	auto &bases = iterator.second;
             	if(bases.size() > 0) {
-            		videoRunner->setTexture(0, "textureUnit", mesh->getTexture() != null ? mesh->getTexture() : videoRunner->getDefaultTexture());
+            		videoRunner.setTexture(0, "textureUnit", mesh->getTexture() != null ? mesh->getTexture() : videoRunner.getDefaultTexture());
             		this->sendMaterial(mesh->getMaterial());
 
             		for (auto &base : bases) {
-                  videoRunner->sendMatrix("matrices.model", base);
-                  videoRunner->sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * base);
+                  videoRunner.sendMatrix("matrices.model", base);
+                  videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * base);
 
             			matriz_3x3 reducedModelMatrix = (matriz_3x3) base;
             			real determinante = reducedModelMatrix.determinante();
 
-                  videoRunner->sendMatrix("matrices.normal",
+                  videoRunner.sendMatrix("matrices.normal",
                       !equalsZeroAbsoluteMargin(determinante) ?
                           reducedModelMatrix.inversa(determinante).traspuesta() :
                           matriz_3x3::identidad);
-                  videoRunner->drawVertexArray(mesh->getVertexArray());
+                  videoRunner.drawVertexArray(mesh->getVertexArray());
             		}
             	}
             }
@@ -140,7 +138,7 @@ public:
             	const TextureResource *texture = iterator.first;
             	auto &worldObjects = iterator.second;
             	if(worldObjects.size() > 0) {
-                videoRunner->setTexture(0, "textureUnit", texture != null ? texture : videoRunner->getDefaultTexture());
+                videoRunner.setTexture(0, "textureUnit", texture != null ? texture : videoRunner.getDefaultTexture());
 
                 for (auto &object : worldObjects) {
                   if(lastMaterial != object.getMaterial()) {
@@ -149,16 +147,16 @@ public:
                       this->sendMaterial(lastMaterial);
                     }
                   }
-                  videoRunner->sendMatrix("matrices.model", object.getModelMatrix());
-                  videoRunner->sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * object.getModelMatrix());
-                  videoRunner->sendMatrix("matrices.normal", object.getNormalMatrix());
-                  videoRunner->drawVertexArray(object.getVertexArray());
+                  videoRunner.sendMatrix("matrices.model", object.getModelMatrix());
+                  videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * object.getModelMatrix());
+                  videoRunner.sendMatrix("matrices.normal", object.getNormalMatrix());
+                  videoRunner.drawVertexArray(object.getVertexArray());
                 }
             	}
             }
 
-            videoRunner->setTexture(0, null);
-            videoRunner->useProgramResource(null);
+            videoRunner.setTexture(0, null);
+            videoRunner.useProgramResource(null);
         } else {
             logger->error("Not rendering! VideoRunner or Shader not set.");
         }
@@ -204,39 +202,39 @@ public:
     }
 
     void clear() {
-    	this->setTexture(videoRunner != null ? videoRunner->getDefaultTexture() : null);
+    	this->setTexture(videoRunner.getDefaultTexture());
         this->setMaterial(&defaultMaterial);
         this->objectsByTexture.clear();
         this->objectsByMesh.clear();
     }
 private:
     const VertexArrayResource *getSphere() {
-        if(this->sphere == null && resourceManager != null) {
-            this->sphere = (VertexArrayResource*) this->resourceManager->load("core/sphere.json", MimeTypes::VERTEXARRAY);
+        if(this->sphere == null) {
+            this->sphere = (VertexArrayResource*) this->resourceManager.load("core/sphere.json", MimeTypes::VERTEXARRAY);
         }
 
         return this->sphere;
     }
 
     const VertexArrayResource *getLine() {
-        if(this->line == null && resourceManager != null) {
-            this->line= (VertexArrayResource*) this->resourceManager->load("core/line.json", MimeTypes::VERTEXARRAY);
+        if(this->line == null) {
+            this->line= (VertexArrayResource*) this->resourceManager.load("core/line.json", MimeTypes::VERTEXARRAY);
         }
 
         return this->line;
     }
 
     const VertexArrayResource *getAxes() {
-        if(this->axes == null && resourceManager != null) {
-            this->axes= (VertexArrayResource*) this->resourceManager->load("core/axis.json", MimeTypes::VERTEXARRAY);
+        if(this->axes == null) {
+            this->axes= (VertexArrayResource*) this->resourceManager.load("core/axis.json", MimeTypes::VERTEXARRAY);
         }
 
         return this->axes;
     }
 
     const VertexArrayResource *getBox() {
-            if(this->box == null && resourceManager != null) {
-                this->box= (VertexArrayResource*) this->resourceManager->load("core/box.json", MimeTypes::VERTEXARRAY);
+            if(this->box == null) {
+                this->box= (VertexArrayResource*) this->resourceManager.load("core/box.json", MimeTypes::VERTEXARRAY);
             }
 
             return this->box;
