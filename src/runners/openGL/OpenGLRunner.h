@@ -60,16 +60,7 @@ private:
 
 public:
 
-  OpenGLRunner(Playground &container) : VideoRunner(container) {
-    this->getResourceManager().addAdapter<TextureResourceAdapter>();
-    this->getResourceManager().addAdapter<CubeMapResourceAdapter>();
-    this->getResourceManager().addAdapter<VertexArrayResourceAdapter>();
-    this->getResourceManager().addAdapter<MeshResourceAdapter>();
-    this->getResourceManager().addAdapter<VertexShaderResourceAdapter>();
-    this->getResourceManager().addAdapter<FragmentShaderResourceAdapter>();
-    this->getResourceManager().addAdapter<ShaderProgramResourceAdapter>();
-    this->getResourceManager().addAdapter<TerrainResourceAdapter>();
-  }
+  using VideoRunner::VideoRunner;
 
   virtual unsigned char getInterests() const override {
     return RESIZE | KEY_DOWN;
@@ -95,6 +86,14 @@ public:
   virtual bool initialize() override {
     //logger->setLogLevel(LogLevel::DEBUG);
     VideoRunner::initialize();
+    this->getResourceManager().addAdapter<TextureResourceAdapter>();
+    this->getResourceManager().addAdapter<CubeMapResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexArrayResourceAdapter>();
+    this->getResourceManager().addAdapter<MeshResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<FragmentShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<ShaderProgramResourceAdapter>();
+    this->getResourceManager().addAdapter<TerrainResourceAdapter>();
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
       logger->error("SDL_Init Error: %s", SDL_GetError() == null ? "" : SDL_GetError());

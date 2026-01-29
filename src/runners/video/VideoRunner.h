@@ -32,15 +32,6 @@ protected:
 public:
 
 	using PlaygroundRunner::PlaygroundRunner; //inherit constructors
-	VideoRunner(Playground &container) : PlaygroundRunner(container) {
-    this->getResourceManager().addAdapter<PngResourceAdapter>();
-    this->getResourceManager().addAdapter<JpegResourceAdapter>();
-    this->getResourceManager().addAdapter<TgaResourceAdapter>();
-    this->getResourceManager().addAdapter<GeometryResourceAdapter>();
-    this->getResourceManager().addAdapter<ObjResourceAdapter>();
-    this->getResourceManager().addAdapter<MtlResourceAdapter>();
-    this->getResourceManager().addAdapter<HeightMapResourceAdapter>();
-	}
 
 	virtual unsigned char getId() const override {
 		return ID;
@@ -80,9 +71,17 @@ public:
 
 	virtual void setMousePosition(unsigned int x, unsigned int y) = 0;
 
-//	virtual bool initialize() override {
-//		return true;
-//	}
+	virtual bool initialize() override {
+		this->getResourceManager().addAdapter<PngResourceAdapter>();
+		this->getResourceManager().addAdapter<JpegResourceAdapter>();
+		this->getResourceManager().addAdapter<TgaResourceAdapter>();
+		this->getResourceManager().addAdapter<GeometryResourceAdapter>();
+		this->getResourceManager().addAdapter<ObjResourceAdapter>();
+		this->getResourceManager().addAdapter<MtlResourceAdapter>();
+    this->getResourceManager().addAdapter<HeightMapResourceAdapter>();
+
+		return true;
+	}
 
 	/**
 	 * Shader methods - should this go to a shader class?

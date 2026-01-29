@@ -40,10 +40,15 @@ private:
 	std::vector<TerrainTile>terrainTiles;
 
 public:
-	TerrainRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
+
+  using Renderer::Renderer;
+
+  virtual bool init() override {
     if(this->shader == null) {
         this->shader = (ShaderProgramResource *)resourceManager.load("shaders/terrain/terrain.program.json", MimeTypes::SHADERPROGRAM);
     }
+
+    return true;
 	}
 
 	void addTerrain(const vector &position, const TerrainResource *terrain) {

@@ -17,7 +17,9 @@ private:
     const VertexArrayResource *plane = null;
 
 public:
-    GridRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
+    using Renderer::Renderer;
+
+    virtual bool init() override {
       if(this->shader == null) {
           this->shader = (ShaderProgramResource *)resourceManager.load("shaders/grid/grid.program.json", MimeTypes::SHADERPROGRAM);
       }
@@ -25,7 +27,10 @@ public:
       if(this->plane == null) {
           this->plane = (VertexArrayResource *)resourceManager.load("geometry/grid/plane.json", MimeTypes::VERTEXARRAY);
       }
+
+      return true;
     }
+
 
     void render(const Camera &camera) override {
         if(isEnabled()) {

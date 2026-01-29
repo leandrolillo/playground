@@ -24,18 +24,18 @@ class AudioRunner: public PlaygroundRunner {
 	public:
 		static const unsigned char ID;
 	public:
-		AudioRunner(Playground &container) : PlaygroundRunner(container) {
-      this->getResourceManager().addAdapter<SourceResourceAdapter>();
-      this->getResourceManager().addAdapter<BufferResourceAdapter>();
-      this->getResourceManager().addAdapter<OggResourceAdapter>();
-      this->getResourceManager().addAdapter<WavResourceAdapter>();
-		}
+		using PlaygroundRunner::PlaygroundRunner; //inherit constructors
 
 		virtual unsigned char getId() const override {
 			return ID;
 		}
 
 		virtual bool initialize() override {
+			this->getResourceManager().addAdapter<SourceResourceAdapter>();
+			this->getResourceManager().addAdapter<BufferResourceAdapter>();
+			this->getResourceManager().addAdapter<OggResourceAdapter>();
+			this->getResourceManager().addAdapter<WavResourceAdapter>();
+
 			device = alcOpenDevice(null);
 			if(device == null) {
 				logger->error("Error opening alcDevice");

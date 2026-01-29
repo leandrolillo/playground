@@ -33,9 +33,18 @@ private:
 
   std::map<const TextureResource *, std::vector<Sprite>>spritesByTexture;
 public:
-  SpriteRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
+  using Renderer::Renderer;
+
+  virtual bool init() override {
+    if(this->shader == null) {
       this->shader = (ShaderProgramResource*) this->resourceManager.load("core/sprite.program.json", MimeTypes::SHADERPROGRAM);
+    }
+
+    if(this->rectangle == null) {
       this->rectangle = (VertexArrayResource *)this->resourceManager.load("core/rectangle.json", MimeTypes::VERTEXARRAY);
+    }
+
+    return true;
   }
 
   void render(const Camera &camera) override {

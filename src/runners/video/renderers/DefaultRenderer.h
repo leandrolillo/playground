@@ -77,8 +77,6 @@ private:
 
 public:
     DefaultRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
-      this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
-
       this->setMaterial(null);
     }
 
@@ -98,6 +96,14 @@ public:
         const TextureResource *previous = this->currentTexture;
         this->currentTexture = texture;
         return previous;
+    }
+
+    virtual bool init() override {
+      if(this->shader == null) {
+        this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
+      }
+
+      return true;
     }
 
     void render(const Camera &camera) override {

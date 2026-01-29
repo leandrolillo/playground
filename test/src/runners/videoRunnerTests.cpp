@@ -1,4 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
+
+#include "../../../src/runners/video/renderers/SpriteRenderer.h"
 #include "mathMatchers.h"
 
 #include "SkyboxRenderer.h"
@@ -15,7 +17,6 @@
 #include "GeometryRenderer.h"
 #include "TerrainRenderer.h"
 #include "GridRenderer.h"
-#include "SpriteRenderer.h"
 #include "Camera.h"
 
 TEST_CASE("Video Runner Test case")
