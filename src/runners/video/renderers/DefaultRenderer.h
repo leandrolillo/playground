@@ -77,9 +77,7 @@ private:
 
 public:
     DefaultRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
-      if(this->shader == null) {
-          this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
-      }
+      this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM);
 
       this->setMaterial(null);
     }
