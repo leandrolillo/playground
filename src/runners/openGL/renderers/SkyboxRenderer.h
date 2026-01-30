@@ -13,7 +13,9 @@ private:
   const CubeMapResource *cubeMap = null;
   const VertexArrayResource *box = null;
   real size = 300;
-  public:
+public:
+  using Renderer::Renderer;
+
   virtual RendererStatus initialize() override {
     if (this->shader == null) {
       this->shader = (ShaderProgramResource*) this->resourceManager.load("shaders/skybox/skybox.program.json", MimeTypes::SHADERPROGRAM);
@@ -49,7 +51,7 @@ private:
 
 protected:
   void doRender(const Camera &camera) override {
-    videoRunner.setTexture(0, "textureUnit", cubeMap, GL_TEXTURE_CUBE_MAP);
+    videoRunner.setTexture(0, "textureUnit", cubeMap, GL_TEXTURE_CUBE_MAP); //TODO: Refactor this to use generic properties and move to videoRunner
     videoRunner.sendMatrix("matrices.p", camera.getProjectionMatrix());
     videoRunner.sendMatrix("matrices.v", camera.getViewMatrix());
     videoRunner.sendReal("boxSize", this->size);
