@@ -51,48 +51,43 @@ public:
     this->light = light;
   }
 
-  virtual bool initialize() override {
+  virtual RendererStatus initialize() override {
     if (this->shader == null) {
-      this->shader = (ShaderProgramResource*) resourceManager.load("shaders/terrain/terrain.program.json", MimeTypes::SHADERPROGRAM);
+      if((this->shader = (ShaderProgramResource*) resourceManager.load("shaders/terrain/terrain.program.json", MimeTypes::SHADERPROGRAM)) == null) {
+        logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
+        return RendererStatus::FAILED;
+      }
     }
 
-    return true;
+    return RendererStatus::INITIALIZED;
   }
 
   bool isEnabled() const override {
     return Renderer::isEnabled() && !terrainTiles.empty();
   }
 
-  void render(const Camera &camera) override {
-    if (isEnabled()) {
-      videoRunner.useProgramResource(shader);
+protected:
+  void doRender(const Camera &camera) override {
+    this->sendLight(light);
+    for (const auto &terrainTile : terrainTiles) {
+      videoRunner.setTexture(0, "background", terrainTile.getTerrain()->getA());
+      videoRunner.setTexture(1, "textureR", terrainTile.getTerrain()->getR());
+      videoRunner.setTexture(2, "textureG", terrainTile.getTerrain()->getG());
+      videoRunner.setTexture(3, "textureB", terrainTile.getTerrain()->getB());
+      videoRunner.setTexture(4, "blendMap", terrainTile.getTerrain()->getMap());
 
-      this->sendLight(light);
-      for (const auto &terrainTile : terrainTiles) {
-        videoRunner.setTexture(0, "background", terrainTile.getTerrain()->getA());
-        videoRunner.setTexture(1, "textureR", terrainTile.getTerrain()->getR());
-        videoRunner.setTexture(2, "textureG", terrainTile.getTerrain()->getG());
-        videoRunner.setTexture(3, "textureB", terrainTile.getTerrain()->getB());
-        videoRunner.setTexture(4, "blendMap", terrainTile.getTerrain()->getMap());
-
-        videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * terrainTile.getModelMatrix());
+      videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * terrainTile.getModelMatrix());
 //                videoRunner.sendMatrix("matrices.model", terrainTile.getModelMatrix());
-        videoRunner.sendMatrix("matrices.normal", matriz_3x3::identidad);
+      videoRunner.sendMatrix("matrices.normal", matriz_3x3::identidad);
 
-        logger->debug("Drawing terrain at\n%s", terrainTile.getModelMatrix().toString().c_str());
-        videoRunner.drawVertexArray(terrainTile.getTerrain()->getModel());
-      }
-
-      videoRunner.setTexture(0, "background", null);
-      videoRunner.setTexture(1, "textureR", null);
-      videoRunner.setTexture(2, "textureG", null);
-      videoRunner.setTexture(3, "textureB", null);
-      videoRunner.setTexture(4, "blendMap", null);
-
-      videoRunner.useProgramResource(null);
-    } else {
-      logger->error("Not rendering! shader or terrain not set.");
-      this->initialize();
+      logger->debug("Drawing terrain at\n%s", terrainTile.getModelMatrix().toString().c_str());
+      videoRunner.drawVertexArray(terrainTile.getTerrain()->getModel());
     }
+
+    videoRunner.setTexture(0, "background", null);
+    videoRunner.setTexture(1, "textureR", null);
+    videoRunner.setTexture(2, "textureG", null);
+    videoRunner.setTexture(3, "textureB", null);
+    videoRunner.setTexture(4, "blendMap", null);
   }
 };

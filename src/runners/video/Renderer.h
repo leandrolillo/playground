@@ -11,8 +11,17 @@
 #include "ShaderProgramResource.h"
 #include "VideoRunner.h"
 
+enum class RendererStatus {
+  CREATED,
+  INITIALIZED,
+  FAILED
+};
+
+
 class Renderer {
 protected:
+  Logger *logger = LoggerFactory::getLogger("Renderer");
+  RendererStatus status;
   const ShaderProgramResource *shader = null;
   VideoRunner &videoRunner;
   ResourceManager &resourceManager;
@@ -20,6 +29,7 @@ protected:
 public:
 
   Renderer(VideoRunner &videoRunner) : videoRunner(videoRunner), resourceManager(videoRunner.getResourceManager()) {
+    this->status = RendererStatus::CREATED;
   }
 
   virtual ~Renderer() {
@@ -48,18 +58,39 @@ public:
     }
   }
 
-  virtual bool initialize() {
-    return true;
+  virtual RendererStatus initialize() {
+    if(this->status == RendererStatus::CREATED) {
+      return RendererStatus::INITIALIZED;
+    }
+
+    return this->status;
   }
 
-  virtual void render(const Camera &camera) = 0;
-
   virtual bool isEnabled() const {
-    return this->shader != null && this->enabled;
+    return this->status == RendererStatus::INITIALIZED && this->enabled;
   }
 
   void setEnabled(bool enabled) {
     this->enabled = enabled;
   }
 
+  virtual String toString() const {
+    return logger->getBasename();
+  }
+
+  void render(const Camera &camera) {
+    if(this->isEnabled()) {
+      videoRunner.useProgramResource(shader);
+      doRender(camera);
+    } else {
+      if(this->status == RendererStatus::CREATED) {
+        if((this->status = initialize()) != RendererStatus::INITIALIZED) {
+          logger->error("Renderer [%s] not properly initialized", this->toString().c_str());
+        }
+      } //else { logger->error("Renderer [%s] is not enabled", this->toString().c_str()); }
+    }
+  }
+
+protected:
+  virtual void doRender(const Camera &camera) = 0; //do the actual render
 };

@@ -35,7 +35,7 @@ private:
 public:
   using Renderer::Renderer;
 
-  virtual bool initialize() override {
+  virtual RendererStatus initialize() override {
     if(this->shader == null) {
       this->shader = (ShaderProgramResource*) this->resourceManager.load("core/sprite.program.json", MimeTypes::SHADERPROGRAM);
     }
@@ -44,29 +44,25 @@ public:
       this->rectangle = (VertexArrayResource *)this->resourceManager.load("core/rectangle.json", MimeTypes::VERTEXARRAY);
     }
 
-    return true;
-  }
-
-  bool isEnabled() const override {
-    return Renderer::isEnabled() && this->rectangle != null;
-  }
-
-  void render(const Camera &camera) override {
-    if(isEnabled()) {
-    videoRunner.useProgramResource(this->shader);
-//    videoRunner.setTexture(0, "image", &texture);
-//    videoRunner.sendMatrix("projection", null);
-//    videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, rotation)) * matriz_4x4::traslacion(vector3(position + size * 0.5, 0.0)) * matriz_4x4::zoom(vector3(size, 1.0)));
-//
-//    videoRunner.drawVertexArray(rectangle);
-    } else {
-      logger->error("Not rendering! Shader or rectangle not set.");
-      this->initialize();
+    if(shader == null || rectangle == null) {
+      logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
+      return RendererStatus::FAILED;
     }
 
+    return RendererStatus::INITIALIZED;
   }
 
   void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color) {
     this->spritesByTexture[this->currentTexture].emplace_back(texture, position, rotation, color);
   }
+
+protected:
+  void doRender(const Camera &camera) override {
+//    videoRunner.setTexture(0, "image", &texture);
+//    videoRunner.sendMatrix("projection", null);
+//    videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, rotation)) * matriz_4x4::traslacion(vector3(position + size * 0.5, 0.0)) * matriz_4x4::zoom(vector3(size, 1.0)));
+//
+//    videoRunner.drawVertexArray(rectangle);
+  }
+
 };

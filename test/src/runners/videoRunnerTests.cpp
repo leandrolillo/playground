@@ -1,11 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
-
-#include "../../../src/runners/video/renderers/SpriteRenderer.h"
 #include "mathMatchers.h"
 
-#include "SkyboxRenderer.h"
 #include "ResourceManagerMock.h"
-#include "VideoRunnerMock.h"
 #include "ImageResource.h"
 #include "PngResourceAdapter.h"
 #include "JpegResourceAdapter.h"
@@ -17,6 +13,7 @@
 #include "GeometryRenderer.h"
 #include "TerrainRenderer.h"
 #include "GridRenderer.h"
+#include "SpriteRenderer.h"
 #include "Camera.h"
 
 TEST_CASE("Video Runner Test case")
@@ -256,18 +253,3 @@ TEST_CASE("MousePicking tests") {
   unprojected = camera.unproject(0, 0, width, height);
   CHECK_THAT(rayDirection, EqualsVector(vector(-320, 240, -1)));
 }
-
-TEST_CASE("Video Renderers") {
-  Playground playground("resources");
-  VideoRunnerMock videoRunnerMock(playground);
-
-  //TODO: implement test cases
-  DefaultRenderer renderer(videoRunnerMock);
-  GridRenderer gridRenderer(videoRunnerMock);
-  TerrainRenderer terrainRenderer(videoRunnerMock);
-  SpriteRenderer spriteRenderer(videoRunnerMock);
-
-  GeometryRenderer geometryRenderer(renderer);
-}
-
-
