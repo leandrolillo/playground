@@ -6,18 +6,34 @@ class Sprite {
   friend class SpriteRenderer;
 
 protected:
-  const TextureResource &texture;
+  const TextureResource *texture = null; //would love to make this a non nullable reference
   vector2 position;
+  vector2 size;
   real rotation;
   vector3 color;
 public:
-  Sprite(const TextureResource &texture, const vector2 &position, real rotation, const vector3 &color) :
+  Sprite(const TextureResource *texture, const vector2 &position, const vector2 &size, real rotation = 0.0, const vector3 &color = vector3(1, 1, 1)) :
     texture(texture),
     position(position),
+    size(size),
     rotation(rotation),
     color(color)
   {
 
+  }
+
+  Sprite &setTexture(const TextureResource *texture) {
+    this->texture = texture;
+    return *this;
+  }
+
+  Sprite &setSize(const vector2 &size) {
+    this->size = size;
+    return *this;
+  }
+
+  virtual vector2 getPosition() const {
+    return this->position;
   }
 };
 
@@ -52,8 +68,18 @@ public:
     return RendererStatus::INITIALIZED;
   }
 
+  void clear() {
+    this->spritesByTexture.clear();
+  }
+
   void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color) {
-    this->spritesByTexture[this->currentTexture].emplace_back(texture, position, rotation, color);
+    this->spritesByTexture[this->currentTexture].emplace_back(&texture, position, size, rotation, color);
+  }
+
+  void draw(const Sprite &sprite) {
+    if(sprite.texture != null) {
+      this->spritesByTexture[sprite.texture].emplace_back(sprite);
+    }
   }
 
 protected:

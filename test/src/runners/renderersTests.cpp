@@ -33,6 +33,8 @@ TEST_CASE("Video Renderers") {
   SpriteRenderer spriteRenderer(videoRunnerMock);
   CHECK(spriteRenderer.isEnabled() == false);
   spriteRenderer.toString();
+
+  Sprite sprite(null, vector2(0, 0), vector2(100, 100));
 }
 
 TEST_CASE("Geometry (defaultRenderer) Render") {
