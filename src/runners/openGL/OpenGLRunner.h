@@ -26,14 +26,12 @@
 #include "VertexShaderResourceAdapter.h"
 #include "TerrainResourceAdapter.h"
 
-constexpr unsigned int DEPTH_TEST = GL_DEPTH_TEST;
-constexpr unsigned int CULL_FACE = GL_CULL_FACE;
+//TODO: how to get rid of these constants
 constexpr unsigned int CULL_FACE_BACK = GL_BACK;
 constexpr unsigned int CULL_FACE_FRONT = GL_FRONT;
 constexpr unsigned int CULL_FACE_NONE = GL_NONE;
-constexpr unsigned int BLEND = GL_BLEND;
-constexpr unsigned int RELATIVE_MOUSE_MODE = 1111;
-constexpr unsigned int LINE_WIDTH = GL_LINE_WIDTH;
+constexpr unsigned int SRC_ALPHA = GL_SRC_ALPHA;
+constexpr unsigned int ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC1_ALPHA;
 
 #ifndef GL_MAJOR_VERSION
 	#define GL_MAJOR_VERSION 0x821B
