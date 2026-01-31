@@ -233,6 +233,17 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
 
 //---
 
+TEST_CASE("Camera tests") {
+  Camera camera;
+
+  camera.setPerspectiveProjection(800, 600, 0.1, 300.0);
+  camera.setPerspectiveProjectionFov(45.0, (real)800/ (real)600, 0.1, 300.0);
+
+  camera.setOrthographicProjection(0, 0, 800, 600, -1, 1);
+  camera.setOrthographicProjection(800, 600, -1, 1);
+
+}
+
 TEST_CASE("MousePicking tests") {
   unsigned int width = 640;
   unsigned int height = 480;
