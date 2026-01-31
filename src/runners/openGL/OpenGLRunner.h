@@ -443,55 +443,67 @@ public:
     glClearColor(r, g, b, a);
   }
 
-  void enable(unsigned int attributeCode, unsigned int param1, unsigned int param2 = 0) override {
-    switch (attributeCode) {
-    case (DEPTH_TEST):
+  void enable(VideoAttribute attribute, unsigned int param1, unsigned int param2 = 0) override {
+    switch (attribute) {
+    case (VideoAttribute::DEPTH_TEST):
       if ((bool) param1) {
         glEnable(GL_DEPTH_TEST);
       } else {
         glDisable(GL_DEPTH_TEST);
       }
       break;
-    case (CULL_FACE):
+    case (VideoAttribute::CULL_FACE):
       glCullFace(param1);
       glEnable(GL_CULL_FACE);
       break;
-    case (BLEND):
+    case (VideoAttribute::BLEND):
       glBlendFunc(param1, param2);
       glEnable(GL_BLEND);
       break;
-    case (RELATIVE_MOUSE_MODE):
+    case (VideoAttribute::RELATIVE_MOUSE_MODE):
       SDL_SetWindowRelativeMouseMode(this->window, true);
       break;
     }
   }
 
-  void disable(unsigned int attributeCode) override {
-    switch (attributeCode) {
-    case (DEPTH_TEST):
+  void disable(VideoAttribute attribute) override {
+    switch (attribute) {
+    case (VideoAttribute::DEPTH_TEST):
       glDisable(GL_DEPTH_TEST);
       break;
-    case (CULL_FACE):
+    case (VideoAttribute::CULL_FACE):
       glDisable(GL_CULL_FACE);
       break;
-    case (BLEND):
+    case (VideoAttribute::BLEND):
       glDisable(GL_BLEND);
       break;
-    case (RELATIVE_MOUSE_MODE):
+    case (VideoAttribute::RELATIVE_MOUSE_MODE):
       SDL_SetWindowRelativeMouseMode(this->window, true);
       break;
     }
   }
 
-  void setOption(unsigned int attributeCode, real value) override {
-    switch (attributeCode) {
-    case GL_LINE_WIDTH:
+  void setOption(VideoAttribute attribute, real value) override {
+    switch (attribute) {
+    case VideoAttribute::LINE_WIDTH:
       logger->info("Setting line width to %.2f", value);
       glLineWidth(value);
       break;
     }
   }
-  ;
+
+
+  int getIntegerOption(VideoAttribute attribute) const override {
+    switch(attribute) {
+    case VideoAttribute::MAX_TEXTURES:
+      GLint max_fragment_texture_units;
+      glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_fragment_texture_units);
+      return max_fragment_texture_units;
+    }
+
+    return 0;
+  }
+
 
   /**
    * Expects [number of index] elements in every vertex array attribute. E.g. You can't have three vertices, six indices and six texture coordinates. See http://www.opengl.org/wiki/Vertex_Buffer_Object#Vertex_Stream

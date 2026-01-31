@@ -38,9 +38,7 @@ public:
   }
 protected:
   void doRender(const Camera &camera) override {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); //TODO: refactor this to use generic settings in videoRunner
-    glEnable (GL_BLEND);
-
+    videoRunner.enable(VideoAttribute::BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     videoRunner.sendMatrix("matrices.proj", camera.getProjectionMatrix());
     videoRunner.sendMatrix("matrices.view", camera.getViewMatrix());
     videoRunner.sendReal("near", camera.getZNear());

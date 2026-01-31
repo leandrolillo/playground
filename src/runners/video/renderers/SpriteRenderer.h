@@ -26,6 +26,9 @@ public:
     this->texture = texture;
     return *this;
   }
+  const TextureResource *getTexture() const {
+    return this->texture;
+  }
 
   Sprite &setSize(const vector2 &size) {
     this->size = size;
@@ -34,6 +37,19 @@ public:
 
   virtual vector2 getPosition() const {
     return this->position;
+  }
+
+  real getRotation() const {
+    return this->rotation;
+  }
+
+  const vector2 &getSize() const {
+    return this->size;
+  }
+
+
+  const vector3 &getColor() const {
+    return this->color;
   }
 };
 
@@ -48,6 +64,7 @@ private:
   const VertexArrayResource *rectangle = null;
 
   std::map<const TextureResource *, std::vector<Sprite>>spritesByTexture;
+  unsigned long maxTextures = 32;
 public:
   using Renderer::Renderer;
 
@@ -64,6 +81,8 @@ public:
       logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
       return RendererStatus::FAILED;
     }
+
+    this->maxTextures = videoRunner.getIntegerOption(VideoAttribute::MAX_TEXTURES);
 
     return RendererStatus::INITIALIZED;
   }
@@ -84,11 +103,22 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
-//    videoRunner.setTexture(0, "image", &texture);
-//    videoRunner.sendMatrix("projection", null);
-//    videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, rotation)) * matriz_4x4::traslacion(vector3(position + size * 0.5, 0.0)) * matriz_4x4::zoom(vector3(size, 1.0)));
-//
-//    videoRunner.drawVertexArray(rectangle);
+    videoRunner.sendMatrix("projection", camera.getProjectionMatrix());
+
+
+    unsigned long currentTextureIndex = 0;
+    for(auto &entry : spritesByTexture) {
+      videoRunner.setTexture(currentTextureIndex++, "image", entry.first);
+      //currentTextureIndex++;
+      if(maxTextures <= currentTextureIndex) {
+        currentTextureIndex = 0;
+      }
+
+      for(auto &sprite : entry.second) {
+        videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, sprite.getRotation())) * matriz_4x4::traslacion(vector3(sprite.getPosition() + sprite.getSize() * 0.5, 0.0)) * matriz_4x4::zoom(vector3(sprite.getSize(), 1.0)));
+        videoRunner.drawVertexArray(rectangle);
+      }
+    }
   }
 
 };

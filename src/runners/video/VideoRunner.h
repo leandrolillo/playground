@@ -21,6 +21,18 @@
 #include "HeightMapResourceAdapter.h"
 #include "TextureResource.h"
 
+enum class VideoAttribute {
+  DEPTH_TEST,
+  CULL_FACE,
+  CULL_FACE_BACK,
+  CULL_FACE_FRONT,
+  CULL_FACE_NONE,
+  BLEND,
+  RELATIVE_MOUSE_MODE,
+  LINE_WIDTH,
+  MAX_TEXTURES
+};
+
 
 class VideoRunner : public PlaygroundRunner {
 public:
@@ -99,10 +111,11 @@ public:
 	 * Drawing methods
 	 */
 	virtual void setClearColor(real r, real g, real b, real a) const = 0;
-	virtual void enable(unsigned int attributeCode, unsigned int param1, unsigned int param2 = 0) {};
-	virtual void disable(unsigned int attributeCode) {};
-	virtual void setOption(unsigned int attributeCode, real value) { };
-	virtual real getOption(unsigned int attributeCode) { return (real)0; };
+	virtual void enable(VideoAttribute attribute, unsigned int param1, unsigned int param2 = 0) {};
+	virtual void disable(VideoAttribute attribute) {};
+	virtual void setOption(VideoAttribute attribute, real value) { };
+	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };
+	virtual int getIntegerOption(VideoAttribute attribute) const { return 0; };
 
 	virtual void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
 	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
