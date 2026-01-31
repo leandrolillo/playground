@@ -109,24 +109,11 @@ public:
    * This is opengl style perspective projection, where height and width are the dimensions on the near plane
    */
   void setPerspectiveProjection(real height, real width, real near, real far) {
-    real left = width * -0.5;
-    real right = width * 0.5;
-    real bottom = height * -0.5;
-    real top = height * 0.5;
-
-    /**
-     * from glFrustrum man page at https://www.lri.fr/~mbl/ENS/IG2/docs/opengl1.1/glFrustum.html
-     */
-    setProjectionMatrix(matriz_4x4(
-        2.0 * near / (right - left), 0.0, (right + left) / (right - left), 0.0,
-        0.0, 2.0 * near / (top - bottom), (top + bottom) / (top - bottom), 0.0,
-        0.0, 0.0, -(far + near) / (far - near), -(2.0 * far * near) / (far - near),
-        0.0, 0.0, -1.0, 0.0));
-
+    setProjectionMatrix(matriz_4x4::perspectiveProjection(width, height, near, far));
     updateFrustrumNormals(height, width, near, far);
   }
 
-  void setOrthographicProjection(real width, real height, real near, real far) {
+  void setOrthographicProjection(real width, real height, real near, real far) { //This sets orthograpic projection with (0,0) in the center of the screen (instead of top left)
     real top = height * 0.5;
     real bottom = height * -0.5;
     real right = width * 0.5;
@@ -140,10 +127,10 @@ public:
     real tz = -(far + near) / (far - near);
 
     setProjectionMatrix(matriz_4x4(
-        2.0 / (right - left), 0.0, 0.0, tx,
-        0.0, 2.0 / (top - bottom), 0.0, ty,
-        0.0, 0.0, -2.0 / (far - near), tz,
-        0.0, 0.0, 0.0, 1.0));
+        2.0 / (right - left),   0.0,                  0.0,                  tx,
+        0.0,                    2.0 / (top - bottom), 0.0,                  ty,
+        0.0,                    0.0,                  -2.0 / (far - near),  tz,
+        0.0,                    0.0,                  0.0,                  1.0));
 
     updateFrustrumNormals(height, width, near, far);
   }
