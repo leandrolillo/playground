@@ -22,10 +22,11 @@ protected:
   const VertexArrayResource *object;
   const MaterialResource *material;
   public:
-  WorldObject(const matriz_4x4 &modelMatrix, const VertexArrayResource *object, const MaterialResource *material) {
-    this->object = object;
-    this->modelMatrix = modelMatrix;
-
+  WorldObject(const matriz_4x4 &modelMatrix, const VertexArrayResource *object, const MaterialResource *material) :
+    object(object),
+    modelMatrix(modelMatrix),
+    material(material)
+  {
     /**
      * Do not calculate inverse if determinant is zero - alternative to throwing the exception and stopping, specially for
      * drawLine functionality which generates singular matrixes.
@@ -37,7 +38,6 @@ protected:
     } else {
       this->normalMatrix = matriz_3x3::identidad;
     }
-    this->material = material;
   }
 
   const matriz_4x4& getModelMatrix() const {
