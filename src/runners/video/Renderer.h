@@ -67,7 +67,7 @@ public:
   }
 
   virtual bool isEnabled() const {
-    return this->status == RendererStatus::INITIALIZED && this->enabled;
+    return this->status == RendererStatus::INITIALIZED && this->shader != null && this->enabled;
   }
 
   void setEnabled(bool enabled) {
