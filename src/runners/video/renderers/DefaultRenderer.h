@@ -115,18 +115,18 @@ public:
 
   void drawObject(const matriz_4x4 &modelMatrix, const VertexArrayResource *object) {
     if (object != null) {
-      this->objectsByTexture[this->currentTexture].push_back(WorldObject(modelMatrix, object, currentMaterial));
+      this->objectsByTexture[this->currentTexture].emplace_back(modelMatrix, object, currentMaterial);
     }
   }
 
   void drawObject(const matriz_4x4 &modelMatrix, const MeshResource *object) {
     if (object != null) {
-      this->objectsByMesh[object].push_back(modelMatrix);
+      this->objectsByMesh[object].emplace_back(modelMatrix);
     }
   }
 
   void drawObject(const SceneNode &object) {
-    this->objectsByMesh[&(object.getMesh())].push_back(object.getBase());
+    this->objectsByMesh[&(object.getMesh())].emplace_back(object.getBase());
   }
 
   void drawAxes(const matriz_4x4 &modelMatrix, real length = 1.0f) {
