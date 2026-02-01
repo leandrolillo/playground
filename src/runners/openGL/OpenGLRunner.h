@@ -499,7 +499,7 @@ public:
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
-      unsigned int primitiveType = asGlPrimitive(vertexArrayResource->getPrimitiveType());
+      unsigned int primitiveType = OpenGLUtilites::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
       if (primitiveType < 7) {
         getGlError();
         //logger->info("Drawing vertexArray %s", vertexArrayResource->toString().c_str());
@@ -572,31 +572,6 @@ protected:
     }
 
     return errorMessage;
-  }
-
-  unsigned int asGlPrimitive(const String &typeString) const {
-    if (typeString == "points")
-      return GL_POINTS;
-    else if (typeString == "points")
-      return GL_LINES;
-    else if (typeString == "lineLoop")
-      return GL_LINE_LOOP;
-    else if (typeString == "lineStrip")
-      return GL_LINE_STRIP;
-    else if (typeString == "lines")
-      return GL_LINES;
-    else if (typeString == "triangles")
-      return GL_TRIANGLES;
-    else if (typeString == "triangleStrip")
-      return GL_TRIANGLE_STRIP;
-    else if (typeString == "triangleFan")
-      return GL_TRIANGLE_FAN;
-    else if (typeString == "quads")
-      return GL_QUADS;
-    else if (typeString == "triangleFan")
-      return GL_TRIANGLE_FAN;
-    else
-      throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
   }
 
   virtual String toString() const override {

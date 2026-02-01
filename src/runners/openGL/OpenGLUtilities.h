@@ -131,7 +131,6 @@ public:
       }
     }
   }
-protected:
 
   static GLenum asGlPrimitiveType(const String &typeString) {
     if (typeString == "points") {
@@ -155,6 +154,7 @@ protected:
     }
   }
 
+protected:
   static bool addBuffer(ShaderAttributeLocation attributeLocation,
       VertexArrayResource *resource, GLenum bufferDestination,
       const std::vector<vector2> &data) {
