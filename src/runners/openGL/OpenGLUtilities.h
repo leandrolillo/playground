@@ -28,18 +28,8 @@ protected:
     return logger;
   }
 
-  inline static const std::unordered_map<PrimitiveType, GLenum> glPrimitiveTypes = {
-      { PrimitiveType::POINTS, GL_POINTS },
-      { PrimitiveType::LINE_LOOP, GL_LINE_LOOP },
-      { PrimitiveType::LINE_STRIP, GL_LINE_STRIP },
-      { PrimitiveType::LINES, GL_LINES },
-      { PrimitiveType::TRIANGLES, GL_TRIANGLES },
-      { PrimitiveType::TRIANGLE_STRIP, GL_TRIANGLE_STRIP },
-      { PrimitiveType::TRIANGLE_FAN, GL_TRIANGLE_FAN },
-      { PrimitiveType::QUADS, GL_QUADS },
-      { PrimitiveType::QUAD_STRIP, GL_QUAD_STRIP },
-      { PrimitiveType::POLYGON, GL_POLYGON }
-    };
+  //need to be in the same order as PrimitiveTypes
+  inline static const std::array<GLenum, 10> glPrimitiveTypes = {GL_POINTS,GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_POLYGON };
 
 public:
   static VertexArrayResource* generateVertexArray(const GeometryResource *geometry) {
@@ -147,11 +137,7 @@ public:
   }
 
   static GLenum asGlPrimitiveType(PrimitiveType type) {
-    try {
-      return glPrimitiveTypes.at(type);
-    } catch(const std::out_of_range& outOfRangeException) {
-      throw std::invalid_argument("Invalid primitive type: [" + std::to_string((int)type) + "]");
-    }
+      return glPrimitiveTypes[(int)type];
   }
 
 protected:
