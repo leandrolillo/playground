@@ -38,7 +38,7 @@ protected:
     this->projectionViewMatrix = this->projectionMatrix * this->viewMatrix;
   }
 
-  void updateFrustrumNormals(real height, real width, real near, real far) {
+  void updateFrustrumNormals(real width, real height, real near, real far) {
     vector front = orientation.columna(2);
     vector right = orientation.columna(0);
     vector up = orientation.columna(1);
@@ -101,51 +101,26 @@ public:
   }
 
   void setPerspectiveProjectionFov(real fovy, real aspect, real near, real far) {
-    real height = 2.0 * tan(radian(fovy) * 0.5) * near; // half height = tan of half the fov times near
-    setPerspectiveProjection(height, height * aspect, near, far);
-  }
+      real height = 2.0 * tan(radian(fovy) * 0.5) * near; // half height = tan of half the fov times near
+      setPerspectiveProjection(height * aspect, height, near, far);
+    }
 
   /**
    * This is opengl style perspective projection, where height and width are the dimensions on the near plane
    */
-  void setPerspectiveProjection(real height, real width, real near, real far) {
-    real left = width * -0.5;
-    real right = width * 0.5;
-    real bottom = height * -0.5;
-    real top = height * 0.5;
-
-    /**
-     * from glFrustrum man page at https://www.lri.fr/~mbl/ENS/IG2/docs/opengl1.1/glFrustum.html
-     */
-    setProjectionMatrix(matriz_4x4(
-        2.0 * near / (right - left), 0.0, (right + left) / (right - left), 0.0,
-        0.0, 2.0 * near / (top - bottom), (top + bottom) / (top - bottom), 0.0,
-        0.0, 0.0, -(far + near) / (far - near), -(2.0 * far * near) / (far - near),
-        0.0, 0.0, -1.0, 0.0));
-
-    updateFrustrumNormals(height, width, near, far);
+  void setPerspectiveProjection(real width, real height, real near, real far) {
+    setProjectionMatrix(matriz_4x4::perspectiveProjection(width, height, near, far));
+    updateFrustrumNormals(width, height, near, far);
   }
 
-  void setOrthographicProjection(real width, real height, real near, real far) {
-    real top = height * 0.5;
-    real bottom = height * -0.5;
-    real right = width * 0.5;
-    real left = width * -0.5;
+  void setOrthographicProjection(real width, real height, real near, real far) { //This sets orthograpic projection with (0,0) in the center of the screen (instead of top left)
+    setProjectionMatrix(matriz_4x4::orthographicProjection(width, height, near, far));
+    updateFrustrumNormals(width, height, near, far);
+  }
 
-    /**
-     * from glOrtho man page at https://www.lri.fr/~mbl/ENS/IG2/docs/opengl1.1/glOrtho.html
-     */
-    real tx = -(right + left) / (right - left);
-    real ty = -(top + bottom) / (top - bottom);
-    real tz = -(far + near) / (far - near);
-
-    setProjectionMatrix(matriz_4x4(
-        2.0 / (right - left), 0.0, 0.0, tx,
-        0.0, 2.0 / (top - bottom), 0.0, ty,
-        0.0, 0.0, -2.0 / (far - near), tz,
-        0.0, 0.0, 0.0, 1.0));
-
-    updateFrustrumNormals(height, width, near, far);
+  void setOrthographicProjection(real left, real top, real right, real bottom, real near, real far) { //This sets orthograpic projection with (0,0) in the center of the screen (instead of top left)
+    setProjectionMatrix(matriz_4x4::orthographicProjection(left, top, right, bottom, near, far));
+    updateFrustrumNormals(right - left, bottom - top, near, far);
   }
 
   const matriz_4x4& getProjectionViewMatrix() const {
