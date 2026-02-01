@@ -138,7 +138,7 @@ public:
 	 * Drawing methods
 	 */
 	virtual void setClearColor(real r, real g, real b, real a) const = 0;
-	virtual void enable(VideoAttribute attribute, VideoAttribute param1, VideoAttribute param2 = VideoAttribute::NONE) {};
+	virtual void enable(VideoAttribute attribute, VideoAttribute param1 = VideoAttribute::NONE, VideoAttribute param2 = VideoAttribute::NONE) {};
 	virtual void disable(VideoAttribute attribute) {};
 	virtual void setOption(VideoAttribute attribute, real value) { };
 	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };

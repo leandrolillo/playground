@@ -434,7 +434,7 @@ public:
     glClearColor(r, g, b, a);
   }
 
-  void enable(VideoAttribute attribute, VideoAttribute param1, VideoAttribute param2 = VideoAttribute::NONE) override {
+  void enable(VideoAttribute attribute, VideoAttribute param1 = VideoAttribute::NONE, VideoAttribute param2 = VideoAttribute::NONE) override {
     switch (attribute) {
     case (VideoAttribute::DEPTH_TEST):
         glEnable(GL_DEPTH_TEST);
