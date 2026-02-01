@@ -1,6 +1,5 @@
 #pragma once
 
-#include <OpenGL/gl3.h>
 #include "CubeMapResource.h"
 #include "ShaderProgramResource.h"
 #include "VideoRunner.h"

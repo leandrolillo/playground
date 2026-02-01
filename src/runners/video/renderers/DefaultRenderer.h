@@ -192,6 +192,7 @@ private:
   }
 protected:
   virtual void doRender(const Camera &camera) override {
+    videoRunner.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
     videoRunner.sendVector("viewPosition", camera.getPosition());
     this->sendLight(light);
 

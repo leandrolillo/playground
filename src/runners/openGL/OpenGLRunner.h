@@ -26,13 +26,6 @@
 #include "VertexShaderResourceAdapter.h"
 #include "TerrainResourceAdapter.h"
 
-//TODO: how to get rid of these constants
-constexpr unsigned int CULL_FACE_BACK = GL_BACK;
-constexpr unsigned int CULL_FACE_FRONT = GL_FRONT;
-constexpr unsigned int CULL_FACE_NONE = GL_NONE;
-constexpr unsigned int SRC_ALPHA = GL_SRC_ALPHA;
-constexpr unsigned int ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC1_ALPHA;
-
 #ifndef GL_MAJOR_VERSION
 	#define GL_MAJOR_VERSION 0x821B
 #endif
@@ -441,21 +434,17 @@ public:
     glClearColor(r, g, b, a);
   }
 
-  void enable(VideoAttribute attribute, unsigned int param1, unsigned int param2 = 0) override {
+  void enable(VideoAttribute attribute, VideoAttribute param1, VideoAttribute param2 = VideoAttribute::NONE) override {
     switch (attribute) {
     case (VideoAttribute::DEPTH_TEST):
-      if ((bool) param1) {
         glEnable(GL_DEPTH_TEST);
-      } else {
-        glDisable(GL_DEPTH_TEST);
-      }
       break;
     case (VideoAttribute::CULL_FACE):
-      glCullFace(param1);
+      glCullFace(GL_FRONT_LEFT + ((int)VideoAttribute::FRONT_LEFT - (int)param1));
       glEnable(GL_CULL_FACE);
       break;
     case (VideoAttribute::BLEND):
-      glBlendFunc(param1, param2);
+      glBlendFunc(GL_SRC_COLOR + ((int)VideoAttribute::SRC_COLOR - (int)param1), GL_DST_COLOR + ((int)VideoAttribute::DST_COLOR - (int)param1));
       glEnable(GL_BLEND);
       break;
     case (VideoAttribute::RELATIVE_MOUSE_MODE):

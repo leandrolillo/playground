@@ -108,7 +108,7 @@ class VertexArrayResource : public Resource
 			return primitiveType;
 		}
 
-		void setPrimitiveType(String primitiveType) {
+		void setPrimitiveType(String primitiveType) { //TODO: Move this to an enum class
 			this->primitiveType = primitiveType;
 		}
 

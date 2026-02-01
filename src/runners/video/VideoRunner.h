@@ -21,13 +21,40 @@
 #include "HeightMapResourceAdapter.h"
 #include "TextureResource.h"
 
-enum class VideoAttribute {
+enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a map in the implementations.
   DEPTH_TEST,
+  /**
+   * Face culling options (for now they have to be defined in the same order as in opengl header)
+   */
   CULL_FACE,
-  CULL_FACE_BACK,
-  CULL_FACE_FRONT,
-  CULL_FACE_NONE,
+    NONE,
+    FRONT_LEFT,
+    FRONT_RIGHT,
+    BACK_LEFT,
+    BACK_RIGHT,
+    FRONT,
+    BACK,
+    LEFT,
+    RIGHT,
+    FRONT_AND_BACK,
+
+/**
+ * Blending options
+ */
   BLEND,
+    //destination factor
+    SRC_COLOR,
+    ONE_MINUS_SRC_COLOR,
+    SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA,
+    DST_ALPHA,
+    ONE_MINUS_DST_ALPHA,
+
+    //source factor
+    DST_COLOR,
+    ONE_MINUS_DST_COLOR,
+    SRC_ALPHA_SATURATE,
+
   RELATIVE_MOUSE_MODE,
   LINE_WIDTH,
   MAX_TEXTURES
@@ -111,7 +138,7 @@ public:
 	 * Drawing methods
 	 */
 	virtual void setClearColor(real r, real g, real b, real a) const = 0;
-	virtual void enable(VideoAttribute attribute, unsigned int param1, unsigned int param2 = 0) {};
+	virtual void enable(VideoAttribute attribute, VideoAttribute param1, VideoAttribute param2 = VideoAttribute::NONE) {};
 	virtual void disable(VideoAttribute attribute) {};
 	virtual void setOption(VideoAttribute attribute, real value) { };
 	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };

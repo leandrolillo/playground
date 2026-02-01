@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <OpenGL/gl3.h>
 #include "ShaderProgramResource.h"
 #include "Renderer.h"
 #include "VideoRunner.h"
@@ -38,7 +37,7 @@ public:
   }
 protected:
   void doRender(const Camera &camera) override {
-    videoRunner.enable(VideoAttribute::BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    videoRunner.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
     videoRunner.sendMatrix("matrices.proj", camera.getProjectionMatrix());
     videoRunner.sendMatrix("matrices.view", camera.getViewMatrix());
     videoRunner.sendReal("near", camera.getZNear());
