@@ -29,7 +29,16 @@ protected:
   }
 
   //need to be in the same order as PrimitiveTypes
-  inline static const std::array<GLenum, 10> glPrimitiveTypes = {GL_POINTS,GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_POLYGON };
+  inline static auto glPrimitiveTypes = std::array{GL_POINTS,GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_POLYGON };
+
+  //need to be in the same order as VideoAttributes
+  inline static auto glAttributes = std::array{
+    GL_DEPTH_TEST,
+    GL_CULL_FACE, GL_NONE, GL_FRONT, GL_BACK, GL_FRONT_AND_BACK,
+    GL_BLEND, GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA_SATURATE,
+    GL_LINE_WIDTH,
+    GL_MAX_TEXTURE_IMAGE_UNITS
+};
 
 public:
   static VertexArrayResource* generateVertexArray(const GeometryResource *geometry) {
@@ -138,6 +147,15 @@ public:
 
   static GLenum asGlPrimitiveType(PrimitiveType type) {
       return glPrimitiveTypes[(int)type];
+  }
+
+  static GLenum asGlAttribute(VideoAttribute attribute) {
+    try {
+      return glAttributes[(int)attribute];
+    } catch(const std::out_of_range& outOfRangeException) {
+      logger->error("Invalid attribute [%s]", std::to_string((int)attribute).c_str());
+      throw std::invalid_argument("Invalid attribute: [" + std::to_string((int)attribute) + "]");
+    }
   }
 
 protected:

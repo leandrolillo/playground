@@ -28,14 +28,8 @@ enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a 
    */
   CULL_FACE,
     NONE,
-    FRONT_LEFT,
-    FRONT_RIGHT,
-    BACK_LEFT,
-    BACK_RIGHT,
     FRONT,
     BACK,
-    LEFT,
-    RIGHT,
     FRONT_AND_BACK,
 
 /**
@@ -55,9 +49,9 @@ enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a 
     ONE_MINUS_DST_COLOR,
     SRC_ALPHA_SATURATE,
 
-  RELATIVE_MOUSE_MODE,
   LINE_WIDTH,
-  MAX_TEXTURES
+  MAX_TEXTURES,
+  RELATIVE_MOUSE_MODE,
 };
 
 

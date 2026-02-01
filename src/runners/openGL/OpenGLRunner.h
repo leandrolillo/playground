@@ -440,11 +440,11 @@ public:
         glEnable(GL_DEPTH_TEST);
       break;
     case (VideoAttribute::CULL_FACE):
-      glCullFace(GL_FRONT_LEFT + ((int)VideoAttribute::FRONT_LEFT - (int)param1));
+      glCullFace(OpenGLUtilities::asGlAttribute(param1));
       glEnable(GL_CULL_FACE);
       break;
     case (VideoAttribute::BLEND):
-      glBlendFunc(GL_SRC_COLOR + ((int)VideoAttribute::SRC_COLOR - (int)param1), GL_DST_COLOR + ((int)VideoAttribute::DST_COLOR - (int)param1));
+      glBlendFunc(OpenGLUtilities::asGlAttribute(param1), OpenGLUtilities::asGlAttribute(param2));
       glEnable(GL_BLEND);
       break;
     case (VideoAttribute::RELATIVE_MOUSE_MODE):
