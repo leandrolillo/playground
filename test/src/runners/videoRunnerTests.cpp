@@ -165,6 +165,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     CHECK(3 == resource->getTextureCoordinates().size());
     CHECK(3 == resource->getNormals().size());
     CHECK("geometry" == resource->getName());
+    CHECK(PrimitiveType::TRIANGLES == resource->getType());
 
     REQUIRE(resource->getMaterial() != null);
     CHECK(resource->getMaterial()->getName() == "material");

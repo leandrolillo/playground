@@ -21,7 +21,18 @@ public:
 		this->accepts(MimeTypes::JSON);
 	}
 
-  static const std::unordered_map<String, PrimitiveType> primitiveTypes;
+  inline static const std::unordered_map<String, PrimitiveType> primitiveTypes = {
+      { "points", PrimitiveType::POINTS },
+      { "lineloop", PrimitiveType::LINE_LOOP },
+      { "linestrip", PrimitiveType::LINE_STRIP },
+      { "lines", PrimitiveType::LINES },
+      { "triangles", PrimitiveType::TRIANGLES },
+      { "trianglestrip", PrimitiveType::TRIANGLE_STRIP },
+      { "trianglefan", PrimitiveType::TRIANGLE_FAN },
+      { "quads", PrimitiveType::QUADS },
+      { "quadstrip", PrimitiveType::QUAD_STRIP },
+      { "polygon", PrimitiveType::POLYGON }
+    };
 
 protected:
 	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
