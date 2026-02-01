@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "../../../src/runners/video/renderers/SkyboxRenderer.h"
 #include "OpenGLRunner.h"
-#include "SkyboxRenderer.h"
 #include "VideoRunnerMock.h"
 
 TEST_CASE("OpenGLRunner Test case", "[opengl]")

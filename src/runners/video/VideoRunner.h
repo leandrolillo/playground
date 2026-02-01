@@ -49,8 +49,10 @@ enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a 
     ONE_MINUS_DST_COLOR,
     SRC_ALPHA_SATURATE,
 
-  LINE_WIDTH,
+  TEXTURE_2D,
+  TEXTURE_CUBE_MAP,
   MAX_TEXTURES,
+  LINE_WIDTH,
   RELATIVE_MOUSE_MODE,
 };
 
@@ -138,8 +140,8 @@ public:
 	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };
 	virtual int getIntegerOption(VideoAttribute attribute) const { return 0; };
 
-	virtual void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
-	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
+	virtual void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
+	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
 	virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const = 0;
 
 	//TODO: get rid of this method

@@ -406,12 +406,12 @@ public:
     return true;
   }
 
-  void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D) override {
+  void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
     glActiveTexture(GL_TEXTURE0 + location);
     if (texture != null) {
       if (boundTextures.count(GL_TEXTURE0 + location) == 0 || boundTextures.at(GL_TEXTURE0 + location) != texture->getId()) {
         boundTextures[GL_TEXTURE0 + location] = texture->getId();
-        glBindTexture(type, texture->getId());
+        glBindTexture(OpenGLUtilities::asGlAttribute(type), texture->getId());
 
         String errorMessage;
         if (!(errorMessage = getGlError()).empty()) {
@@ -421,10 +421,10 @@ public:
       }
     } else {
       boundTextures[GL_TEXTURE0 + location] = 0;
-      glBindTexture(type, 0);
+      glBindTexture(OpenGLUtilities::asGlAttribute(type), 0);
     }
   }
-  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D)
+  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D)
       override {
     setTexture(location, texture, type);
     sendUnsignedInt(samplerName, location);
