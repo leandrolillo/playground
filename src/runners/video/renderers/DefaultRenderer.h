@@ -100,7 +100,7 @@ public:
 
   virtual RendererStatus initialize() override {
     if (this->shader == null) {
-      if ((this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM)) == null) {
+      if (this->shader = (ShaderProgramResource*) this->resourceManager.load("core/simple.program.json", MimeTypes::SHADERPROGRAM) ; this->shader == null) {
         logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
         return RendererStatus::FAILED;
       }
