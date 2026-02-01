@@ -103,8 +103,7 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
-    videoRunner.sendMatrix("projection", camera.getProjectionMatrix());
-
+    videoRunner.sendMatrix("matrices.projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
 
     unsigned long currentTextureIndex = 0;
     for(auto &entry : spritesByTexture) {
@@ -115,7 +114,7 @@ protected:
       }
 
       for(auto &sprite : entry.second) {
-        videoRunner.sendMatrix("model", matriz_4x4::rotacion(vector3(0.0, 0.0, sprite.getRotation())) * matriz_4x4::traslacion(vector3(sprite.getPosition() + sprite.getSize() * 0.5, 0.0)) * matriz_4x4::zoom(vector3(sprite.getSize(), 1.0)));
+        videoRunner.sendMatrix("matrices.model", matriz_4x4::rotacion(vector3(0.0, 0.0, sprite.getRotation())) * matriz_4x4::traslacion(vector3(sprite.getPosition() + sprite.getSize() * 0.5, 0.0)) * matriz_4x4::zoom(vector3(sprite.getSize(), 1.0)));
         videoRunner.drawVertexArray(rectangle);
       }
     }
