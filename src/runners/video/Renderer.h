@@ -82,6 +82,7 @@ public:
     if(this->isEnabled()) {
       videoRunner.useProgramResource(shader);
       doRender(camera);
+      videoRunner.useProgramResource(null);
     } else {
       if(this->status == RendererStatus::CREATED) {
         if((this->status = initialize()) != RendererStatus::INITIALIZED) {
