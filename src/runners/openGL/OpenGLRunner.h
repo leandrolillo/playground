@@ -499,7 +499,7 @@ public:
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
-      unsigned int primitiveType = OpenGLUtilites::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
+      unsigned int primitiveType = OpenGLUtilities::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
       if (primitiveType < 7) {
         getGlError();
         //logger->info("Drawing vertexArray %s", vertexArrayResource->toString().c_str());
@@ -560,7 +560,7 @@ protected:
     return textureHandler;
   }
 
-  String getGlError() const {
+  String getGlError() const { //Unify with OpenGLResourceAdapter getGLError
     String errorMessage;
     GLenum glError;
     while ((glError = glGetError()) != GL_NO_ERROR) {

@@ -43,7 +43,7 @@ private:
   MeshResource* buildMesh(const GeometryResource *geometry, ResourceLoadRequest &request, std::vector<Resource*> &response) const {
     MeshResource *resource = new MeshResource();
     resource->setName(geometry->getName());
-    resource->setVertexArray(OpenGLUtilites::generateVertexBuffer(geometry));
+    resource->setVertexArray(OpenGLUtilities::generateVertexArray(geometry));
     response.push_back(resource->getVertexArray()); //make sure to add generated resources to resource manager or they're leaked
 
     if (geometry->getMaterial() != null) {
