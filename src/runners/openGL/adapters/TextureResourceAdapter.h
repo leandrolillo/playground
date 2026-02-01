@@ -39,6 +39,8 @@ protected:
     TextureResource *resource = null;
 
     if (imageResource != null) {
+      glGetError(); //clear previous errors.
+
       unsigned int textureHandler = 0;
       glGenTextures(1, &textureHandler);
       String errorMessage;
