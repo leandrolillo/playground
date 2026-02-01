@@ -579,7 +579,7 @@ protected:
         errorMessage += ", ";
       }
 
-      errorMessage += (const char*) gluErrorString(glGetError());
+      errorMessage += std::to_string(glError) + ": " + (const char*) gluErrorString(glGetError());
     }
 
     return errorMessage;
