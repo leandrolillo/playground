@@ -43,7 +43,7 @@ protected:
       glGenTextures(1, &textureHandler);
       String errorMessage;
       if (!(errorMessage = getGlError()).empty()) {
-          logger->error("Error creating texture 0x[%x]: [%s]", errorMessage.c_str());
+          logger->error("Error creating texture [%s]: [%s]", request.getFilePath().c_str(), errorMessage.c_str());
           return response;
       }
 
