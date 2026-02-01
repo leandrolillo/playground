@@ -2,6 +2,7 @@
 
 #include "OpenGLRunner.h"
 #include "SkyboxRenderer.h"
+#include "VideoRunnerMock.h"
 
 TEST_CASE("OpenGLRunner Test case", "[opengl]")
 {
@@ -161,6 +162,10 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
 }
 
 TEST_CASE("OpenGL Renderers", "[opengl]") {
+  Playground playground("resources");
+  VideoRunnerMock videoRunnerMock(playground);
   //TODO: implement test cases
-  SkyboxRenderer skyboxRenderer();
+  SkyboxRenderer skyboxRenderer(videoRunnerMock);
+  CHECK(skyboxRenderer.isEnabled() == false);
+  skyboxRenderer.toString();
 }

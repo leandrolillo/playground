@@ -10,7 +10,7 @@
 #include <Geometry.h>
 #include "DefaultRenderer.h"
 
-class GeometryRenderer {
+class GeometryRenderer { //should this be a renderer?
 protected:
     DefaultRenderer &renderer;
     Logger *logger = LoggerFactory::getLogger("GeometryRenderer");

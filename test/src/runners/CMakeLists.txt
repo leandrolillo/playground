@@ -1,5 +1,7 @@
 target_sources(${TESTS} PUBLIC audioRunnerTests.cpp)
 target_sources(${TESTS} PUBLIC videoRunnerTests.cpp)
+target_sources(${TESTS} PUBLIC renderersTests.cpp)
+target_sources(${TESTS} PUBLIC cameraTests.cpp)
 target_sources(${TESTS} PUBLIC openGLRunnerTests.cpp)
 target_sources(${TESTS} PUBLIC physicsRunnerTests.cpp)
 
