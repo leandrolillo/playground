@@ -99,7 +99,7 @@ public:
 		return this->fullScreen;
 	}
 
-	virtual void resize(unsigned int height, unsigned int width) {
+	virtual void resize(unsigned int width, unsigned int height) {
 
 	}
 
