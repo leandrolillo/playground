@@ -186,8 +186,8 @@ public:
       return true;
     case SDL_EVENT_KEY_DOWN:
       //SDL_Log("SDL_KEYDOWN %d", event->key.keysym.sym);
-      logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.key);
-      this->getContainer().onKeyDown(event->key.key, event->key.key);
+      logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.mod);
+      this->getContainer().onKeyDown(event->key.key, event->key.mod);
       return true;
     case SDL_EVENT_KEY_UP:
       //SDL_Log("SDL_KEYUP %d", event->key.keysym.sym);
@@ -242,9 +242,7 @@ public:
         this->getContainer().stop();
       }
       break;
-    case 'Q':
-      case 'q':
-
+    case SDLK_Q:
       if (keyModifier & SDL_KMOD_ALT) {
         this->getContainer().stop();
       }
