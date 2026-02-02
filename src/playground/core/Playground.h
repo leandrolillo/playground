@@ -86,7 +86,7 @@ public:
   /**
    * TODO: Should move these methods to a separate interface (abstract class)?
    */
-  virtual void onResize(unsigned int height, unsigned width) {
+  virtual void onResize(unsigned int width, unsigned height) {
   }
 
   virtual void onKeyDown(unsigned int key, unsigned int keyModifier) {
@@ -253,9 +253,9 @@ public:
     status = PlaygroundStatus::STOPPED;
   }
 
-  void onResize(unsigned int height, unsigned width) const {
+  void onResize(unsigned int width, unsigned height) const {
     for (auto currentRunner : resizeObservers) {
-      currentRunner->onResize(height, width);
+      currentRunner->onResize(width, height);
     }
   }
 

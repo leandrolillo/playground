@@ -47,7 +47,7 @@ private:
 
   TextureResource *defaultTexture = null;
   const ShaderProgramResource *currentShaderProgram = null;
-  std::map<unsigned int, unsigned int> boundTextures;
+  std::unordered_map<unsigned int, unsigned int> boundTextures;
 
 public:
 
@@ -147,7 +147,7 @@ public:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer().onResize(height, width);
+    this->getContainer().onResize(width, height);
 
     SDL_WarpMouseInWindow(window, width >> 1, height >> 1);
 
@@ -181,7 +181,7 @@ public:
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
       SDL_SetWindowMouseGrab(this->window, false);
       logger->debug("WINDOW RESIZED to [%d, %d]", event->window.data2, event->window.data1);
-      this->getContainer().onResize(event->window.data2, event->window.data1);
+      this->getContainer().onResize(event->window.data1, event->window.data2);
       SDL_SetWindowMouseGrab(this->window, true);
       return true;
     case SDL_EVENT_KEY_DOWN:
@@ -265,7 +265,7 @@ public:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer().onResize(height, width);
+    this->getContainer().onResize(width, height);
 
     return this->getFullscreen();
   }

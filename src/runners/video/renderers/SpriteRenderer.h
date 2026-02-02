@@ -57,10 +57,6 @@ class SpriteRenderer: public Renderer {
 private:
   Logger *logger = LoggerFactory::getLogger("SpriteRenderer");
 
-  const TextureResource *currentTexture = null;
-  const MaterialResource *currentMaterial = null;
-  const LightResource *light = null;
-
   const VertexArrayResource *rectangle = null;
 
   std::map<const TextureResource *, std::vector<Sprite>>spritesByTexture;
@@ -92,7 +88,7 @@ public:
   }
 
   void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color = vector3(1.0, 1.0, 1.0)) {
-    this->spritesByTexture[this->currentTexture].emplace_back(&texture, position, size, rotation, color);
+    this->spritesByTexture[texture].emplace_back(&texture, position, size, rotation, color);
   }
 
   void draw(const Sprite &sprite) {
