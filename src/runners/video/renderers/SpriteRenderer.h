@@ -59,7 +59,7 @@ private:
 
   const VertexArrayResource *rectangle = null;
 
-  std::map<const TextureResource *, std::vector<Sprite>>spritesByTexture;
+  std::unordered_map<const TextureResource *, std::vector<Sprite>>spritesByTexture;
   unsigned long maxTextures = 32;
 public:
   using Renderer::Renderer;
@@ -88,7 +88,7 @@ public:
   }
 
   void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color = vector3(1.0, 1.0, 1.0)) {
-    this->spritesByTexture[texture].emplace_back(&texture, position, size, rotation, color);
+    this->spritesByTexture[&texture].emplace_back(&texture, position, size, rotation, color);
   }
 
   void draw(const Sprite &sprite) {
