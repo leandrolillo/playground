@@ -84,7 +84,7 @@ public:
 		return this->fullScreen;
 	}
 
-	virtual void onResize(unsigned int height, unsigned int width) override {
+	virtual void onResize(unsigned int width, unsigned int height) override {
 		this->height = height;
 		this->width = width;
 	}

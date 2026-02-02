@@ -219,8 +219,8 @@ public:
     return false;
   }
 
-  virtual void onResize(unsigned int height, unsigned int width) override {
-    VideoRunner::onResize(height, width);
+  virtual void onResize(unsigned int width, unsigned int height) override {
+    VideoRunner::onResize(width, height);
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   }
 
@@ -270,8 +270,8 @@ public:
     return this->getFullscreen();
   }
 
-  virtual void resize(unsigned int height, unsigned int width) override {
-    SDL_SetWindowSize(window, height, width);
+  virtual void resize(unsigned int width, unsigned int height) override {
+    SDL_SetWindowSize(window, width, height);
   }
 
   void setMousePosition(unsigned int x, unsigned int y) override {
