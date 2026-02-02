@@ -39,7 +39,7 @@ public:
     return this->size;
   }
 
-  Sprite &setPosition(const vector2 &position) const {
+  Sprite &setPosition(const vector2 &position) {
     this->position = position;
     return *this;
   }
