@@ -35,6 +35,14 @@ public:
     return *this;
   }
 
+  const vector2 &getSize() const {
+    return this->size;
+  }
+
+  Sprite &setPosition(const vector2 &position) const {
+    this->position = position;
+    return *this;
+  }
   virtual vector2 getPosition() const {
     return this->position;
   }
@@ -42,11 +50,6 @@ public:
   real getRotation() const {
     return this->rotation;
   }
-
-  const vector2 &getSize() const {
-    return this->size;
-  }
-
 
   const vector3 &getColor() const {
     return this->color;
