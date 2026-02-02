@@ -81,7 +81,6 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
     CHECK(resource->getId() != 0);
     CHECK(MimeTypes::VERTEXARRAY == resource->getMimeType());
   }
-
   SECTION("VertexArrayResourceAdapter with ResourceManager test") {
     ResourceAdapter &resourceAdapter = resourceManager.addAdapter<VertexArrayResourceAdapter>();
 

@@ -91,8 +91,8 @@ protected:
 		}
 
 		logger->debug(
-				"Primitive %s: [%d] vertices, [%d] indices, [%d] colors, [%d] normals, [%d] textureCoordinates",
-				resource->getType(), resource->getVertices().size(),
+				"Primitive [%d]: [%d] vertices, [%d] indices, [%d] colors, [%d] normals, [%d] textureCoordinates",
+				(int)resource->getType(), resource->getVertices().size(),
 				resource->getIndices().size(), resource->getColors().size(),
 				resource->getNormals().size(),
 				resource->getTextureCoordinates().size());
@@ -123,15 +123,14 @@ protected:
 //		logger->info("Disposed of %s", resource->toString().c_str());
 //	}
 
-private:
+protected:
 	//TODO: Review vertex normals generation. Review amount of needed vertex normals (according to number of indexes or unique vertices?). May need to build adapters and factories based on primitive type.
 	void ensureNormals(GeometryResource *resource) const {
 		if (resource->getNormals().size() == 0) {
-			NormalGenerator *generator = NormalGeneratorFactory::getGenerator(
-					resource->getType());
-
-			if (generator != null)
+			NormalGenerator *generator = NormalGeneratorFactory::getGenerator(resource->getType());
+			if (generator != null) {
 				generator->generateNormals(resource);
+			}
 		}
 	}
 
@@ -223,7 +222,7 @@ private:
 
 	PrimitiveType asPrimitiveType(const String &primitiveType) const {
     try {
-      return primitiveTypes.at(StringUtils::toLowercase(primitiveType));
+      return primitiveTypes.at(StringUtils::trim(StringUtils::toLowercase(primitiveType)));
     } catch(const std::out_of_range& outOfRangeException) {
       logger->error("Invalid primitive type [%s]", primitiveType.c_str());
       throw std::invalid_argument("Invalid primitive type: [" + primitiveType + "]");
