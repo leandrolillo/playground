@@ -5,14 +5,14 @@
  *      Author: leandro
  */
 
-#ifndef SRC_RUNNERS_OPENGL_OPENGLUTILITIES_H_
-#define SRC_RUNNERS_OPENGL_OPENGLUTILITIES_H_
+#pragma once
 
 #include <OpenGL/gl3.h>
+#include <OpenGL/glu.h>
 #include "GeometryResource.h"
 #include "VertexArrayResource.h"
 
-class OpenGLUtilites {
+class OpenGLUtilities {
 protected:
   inline static Logger *logger = null;
 
@@ -27,8 +27,21 @@ protected:
 
     return logger;
   }
+
+  //need to be in the same order as PrimitiveTypes
+  inline static auto glPrimitiveTypes = std::array{GL_POINTS,GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, GL_POLYGON };
+
+  //need to be in the same order as VideoAttributes
+  inline static auto glAttributes = std::array{
+    GL_DEPTH_TEST,
+    GL_CULL_FACE, GL_NONE, GL_FRONT, GL_BACK, GL_FRONT_AND_BACK,
+    GL_BLEND, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA_SATURATE,
+    GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP, GL_MAX_TEXTURE_IMAGE_UNITS,
+    GL_LINE_WIDTH,
+};
+
 public:
-  static VertexArrayResource* generateVertexBuffer(const GeometryResource *geometry) {
+  static VertexArrayResource* generateVertexArray(const GeometryResource *geometry) {
     VertexArrayResource *resource = null;
 
     glGetError();
@@ -132,25 +145,16 @@ public:
     }
   }
 
-  static GLenum asGlPrimitiveType(const String &typeString) {
-    if (typeString == "points") {
-      return GL_POINTS;
-    } else if (typeString == "lineLoop") {
-      return GL_LINE_LOOP;
-    } else if (typeString == "lineStrip") {
-      return GL_LINE_STRIP;
-    } else if (typeString == "lines") {
-      return GL_LINES;
-    } else if (typeString == "triangles") {
-      return GL_TRIANGLES;
-    } else if (typeString == "triangleStrip") {
-      return GL_TRIANGLE_STRIP;
-    } else if (typeString == "quads") {
-      return GL_QUADS;
-    } else if (typeString == "triangleFan") {
-      return GL_TRIANGLE_FAN;
-    } else {
-      throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
+  static GLenum asGlPrimitiveType(PrimitiveType type) {
+      return glPrimitiveTypes[(int)type];
+  }
+
+  static GLenum asGlAttribute(VideoAttribute attribute) {
+    try {
+      return glAttributes[(int)attribute];
+    } catch(const std::out_of_range& outOfRangeException) {
+      logger->error("Invalid attribute [%s]", std::to_string((int)attribute).c_str());
+      throw std::invalid_argument("Invalid attribute: [" + std::to_string((int)attribute) + "]");
     }
   }
 
@@ -270,5 +274,3 @@ protected:
     return true;
   }
 };
-
-#endif /* SRC_RUNNERS_OPENGL_OPENGLUTILITIES_H_ */

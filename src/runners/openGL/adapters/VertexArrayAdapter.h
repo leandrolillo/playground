@@ -19,7 +19,7 @@ public:
   }
 
   virtual void dispose(Resource *resource) const override {
-    OpenGLUtilites::disposeVertexArray((VertexArrayResource*) resource);
+    OpenGLUtilities::disposeVertexArray((VertexArrayResource*) resource);
   }
 
 protected:
@@ -36,7 +36,7 @@ protected:
     if (geometry == null) {
       logger->error("Could not load geometry [%s] with mimetype [%s]", request.getFilePath().c_str(), MimeTypes::GEOMETRY.c_str());
     } else {
-        response.push_back(OpenGLUtilites::generateVertexBuffer(geometry)); //make sure we add it to resource manager to avoid leaks
+        response.push_back(OpenGLUtilities::generateVertexArray(geometry)); //make sure we add it to resource manager to avoid leaks
     }
 
     return response;

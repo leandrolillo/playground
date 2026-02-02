@@ -8,6 +8,7 @@
 #include "GeometryRenderer.h"
 #include "TerrainRenderer.h"
 #include "GridRenderer.h"
+#include "SkyboxRenderer.h"
 #include "SpriteRenderer.h"
 
 #include "Camera.h"
@@ -25,6 +26,10 @@ TEST_CASE("Video Renderers") {
   GridRenderer gridRenderer(videoRunnerMock);
   CHECK(gridRenderer.isEnabled() == false);
   gridRenderer.toString();
+
+  SkyboxRenderer skyboxRenderer(videoRunnerMock);
+  CHECK(skyboxRenderer.isEnabled() == false);
+  skyboxRenderer.toString();
 
   TerrainRenderer terrainRenderer(videoRunnerMock);
   CHECK(terrainRenderer.isEnabled() == false);

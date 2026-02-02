@@ -28,14 +28,8 @@ enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a 
    */
   CULL_FACE,
     NONE,
-    FRONT_LEFT,
-    FRONT_RIGHT,
-    BACK_LEFT,
-    BACK_RIGHT,
     FRONT,
     BACK,
-    LEFT,
-    RIGHT,
     FRONT_AND_BACK,
 
 /**
@@ -55,9 +49,11 @@ enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a 
     ONE_MINUS_DST_COLOR,
     SRC_ALPHA_SATURATE,
 
-  RELATIVE_MOUSE_MODE,
+  TEXTURE_2D,
+  TEXTURE_CUBE_MAP,
+  MAX_TEXTURES,
   LINE_WIDTH,
-  MAX_TEXTURES
+  RELATIVE_MOUSE_MODE,
 };
 
 
@@ -144,8 +140,8 @@ public:
 	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };
 	virtual int getIntegerOption(VideoAttribute attribute) const { return 0; };
 
-	virtual void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
-	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
+	virtual void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
+	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
 	virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const = 0;
 
 	//TODO: get rid of this method

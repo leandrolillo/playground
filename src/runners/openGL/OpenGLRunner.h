@@ -406,12 +406,12 @@ public:
     return true;
   }
 
-  void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D) override {
+  void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
     glActiveTexture(GL_TEXTURE0 + location);
     if (texture != null) {
       if (boundTextures.count(GL_TEXTURE0 + location) == 0 || boundTextures.at(GL_TEXTURE0 + location) != texture->getId()) {
         boundTextures[GL_TEXTURE0 + location] = texture->getId();
-        glBindTexture(type, texture->getId());
+        glBindTexture(OpenGLUtilities::asGlAttribute(type), texture->getId());
 
         String errorMessage;
         if (!(errorMessage = getGlError()).empty()) {
@@ -421,10 +421,10 @@ public:
       }
     } else {
       boundTextures[GL_TEXTURE0 + location] = 0;
-      glBindTexture(type, 0);
+      glBindTexture(OpenGLUtilities::asGlAttribute(type), 0);
     }
   }
-  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D)
+  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D)
       override {
     setTexture(location, texture, type);
     sendUnsignedInt(samplerName, location);
@@ -440,11 +440,11 @@ public:
         glEnable(GL_DEPTH_TEST);
       break;
     case (VideoAttribute::CULL_FACE):
-      glCullFace(GL_FRONT_LEFT + ((int)VideoAttribute::FRONT_LEFT - (int)param1));
+      glCullFace(OpenGLUtilities::asGlAttribute(param1));
       glEnable(GL_CULL_FACE);
       break;
     case (VideoAttribute::BLEND):
-      glBlendFunc(GL_SRC_COLOR + ((int)VideoAttribute::SRC_COLOR - (int)param1), GL_DST_COLOR + ((int)VideoAttribute::DST_COLOR - (int)param1));
+      glBlendFunc(OpenGLUtilities::asGlAttribute(param1), OpenGLUtilities::asGlAttribute(param2));
       glEnable(GL_BLEND);
       break;
     case (VideoAttribute::RELATIVE_MOUSE_MODE):
@@ -499,7 +499,7 @@ public:
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
-      unsigned int primitiveType = OpenGLUtilites::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
+      unsigned int primitiveType = OpenGLUtilities::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
       if (primitiveType < 7) {
         getGlError();
         //logger->info("Drawing vertexArray %s", vertexArrayResource->toString().c_str());
@@ -560,7 +560,7 @@ protected:
     return textureHandler;
   }
 
-  String getGlError() const {
+  String getGlError() const { //Unify with OpenGLResourceAdapter getGLError
     String errorMessage;
     GLenum glError;
     while ((glError = glGetError()) != GL_NO_ERROR) {

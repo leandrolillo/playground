@@ -13,6 +13,20 @@
 #include "Resource.h"
 #include "MaterialResource.h"
 
+enum class PrimitiveType {
+  POINTS,
+  LINE_LOOP,
+  LINE_STRIP,
+  LINES,
+  TRIANGLES,
+  TRIANGLE_STRIP,
+  TRIANGLE_FAN,
+  QUADS,
+  QUAD_STRIP,
+  POLYGON
+};
+
+
 /**
  * Holds "Geometric" (not true, it also has colors and texture coordinates) data. It does not send anything to the gcp.
  * TODO: Find better name specially since it causes confusion with geometry (coldet).
@@ -26,7 +40,7 @@ private:
 	std::vector<vector3> normals;
 	std::vector<vector2> textureCoordinates;
 	std::vector<vector3> colors;
-	String type;
+	PrimitiveType type;
 	MaterialResource *material = null;
 
 	vector size {0.0, 0.0, 0.0 };
@@ -35,7 +49,7 @@ private:
 public:
 	GeometryResource(unsigned int id) :
 			Resource(id, MimeTypes::GEOMETRY) {
-		type = "triangles";
+		type = PrimitiveType::TRIANGLES;
 	}
 
 	const std::vector<vector3>& getNormals() const {
@@ -114,11 +128,11 @@ public:
 		this->indices.push_back(index);
 	}
 
-	const String &getType() const {
+	const PrimitiveType &getType() const {
 		return type;
 	}
 
-	void setType(String type) { //TODO: Move this to an enum
+	void setType(PrimitiveType type) {
 		this->type = type;
 	}
 

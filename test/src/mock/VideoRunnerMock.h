@@ -43,10 +43,10 @@ public:
   virtual void setClearColor(real r, real g, real b, real a) const override {
   }
 
-  virtual void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = 0x0DE1) override {
+  virtual void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
 
   }
-  virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = 0x0DE1) override {
+  virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
 
   }
   virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const override {

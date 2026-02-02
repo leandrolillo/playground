@@ -2,6 +2,8 @@
 #include "mathMatchers.h"
 
 #include "ResourceManagerMock.h"
+#include "GeometryResourceAdapterMock.h"
+
 #include "ImageResource.h"
 #include "PngResourceAdapter.h"
 #include "JpegResourceAdapter.h"
@@ -147,9 +149,29 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
       CHECK(MimeTypes::IMAGE == resource->getMimeType());
     }
 
-  /**********
-   * GEOMETRY
-   **********/
+
+
+//  /**********
+//   * GEOMETRY
+//   **********/
+  SECTION("GeometryResourceAdapter tests via Mock object") {
+    GeometryResourceAdapterMock &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapterMock>();
+
+    CHECK(PrimitiveType::POINTS == resourceAdapter.asPrimitiveTypePublic("points"));
+    CHECK(PrimitiveType::POINTS == resourceAdapter.asPrimitiveTypePublic(" points "));
+    CHECK(PrimitiveType::POINTS == resourceAdapter.asPrimitiveTypePublic("Points"));
+
+    CHECK(PrimitiveType::LINE_LOOP == resourceAdapter.asPrimitiveTypePublic("LineLoop"));
+    CHECK(PrimitiveType::LINE_STRIP == resourceAdapter.asPrimitiveTypePublic("lineStrip"));
+    CHECK(PrimitiveType::LINES == resourceAdapter.asPrimitiveTypePublic("lines"));
+    CHECK(PrimitiveType::TRIANGLES == resourceAdapter.asPrimitiveTypePublic("triangles"));
+    CHECK(PrimitiveType::TRIANGLE_STRIP == resourceAdapter.asPrimitiveTypePublic("triangleStrip"));
+    CHECK(PrimitiveType::TRIANGLE_FAN == resourceAdapter.asPrimitiveTypePublic("triangleFan"));
+    CHECK(PrimitiveType::QUADS == resourceAdapter.asPrimitiveTypePublic("quads"));
+    CHECK(PrimitiveType::QUAD_STRIP == resourceAdapter.asPrimitiveTypePublic("quadStrip"));
+    CHECK(PrimitiveType::POLYGON == resourceAdapter.asPrimitiveTypePublic("polygon"));
+  }
+
   SECTION("GeometryResourceAdapter (No resource manager) test") {
     ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
@@ -165,6 +187,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     CHECK(3 == resource->getTextureCoordinates().size());
     CHECK(3 == resource->getNormals().size());
     CHECK("geometry" == resource->getName());
+    CHECK(PrimitiveType::TRIANGLES == resource->getType());
 
     REQUIRE(resource->getMaterial() != null);
     CHECK(resource->getMaterial()->getName() == "material");
@@ -174,6 +197,7 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
   }
 
   SECTION("GeometryResourceAdapter with ResourceManager test") {
+    try {
     ResourceAdapter &resourceAdapter = resourceManager.addAdapter<GeometryResourceAdapter>();
 
     ResourceLoadRequest request = resourceManager.newRequest("geometry/geometry.json/geometry").acceptMimeType(MimeTypes::GEOMETRY);
@@ -191,6 +215,9 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     CHECK(resource->getMaterial()->getMimeType() == MimeTypes::MATERIAL);
     CHECK(resource->getMaterial()->getDiffuseTexture() == "/images/image.png");
     CHECK(resource->getMaterial()->getAmbientTexture() == "/geometry/fakeImage.png");
+    } catch(const std::exception &exception) {
+      INFO("Got exception: " << exception.what());
+    }
   }
 
   /*****

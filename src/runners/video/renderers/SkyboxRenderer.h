@@ -50,13 +50,13 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
-    videoRunner.setTexture(0, "textureUnit", cubeMap, GL_TEXTURE_CUBE_MAP); //TODO: Refactor this to use generic properties and move to videoRunner
+    videoRunner.setTexture(0, "textureUnit", cubeMap, VideoAttribute::TEXTURE_CUBE_MAP); //TODO: Refactor this to use generic properties and move to videoRunner
     videoRunner.sendMatrix("matrices.p", camera.getProjectionMatrix());
     videoRunner.sendMatrix("matrices.v", camera.getViewMatrix());
     videoRunner.sendReal("boxSize", this->size);
 
     videoRunner.drawVertexArray(box);
 
-    videoRunner.setTexture(0, null, GL_TEXTURE_CUBE_MAP);
+    videoRunner.setTexture(0, null, VideoAttribute::TEXTURE_CUBE_MAP);
   }
 };

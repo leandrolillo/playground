@@ -63,7 +63,6 @@ protected:
     GeometryResource *geometry = new GeometryResource(0);
     geometry->setUri(textParser.getFilename());
     geometry->setName(Paths::getBasename(textParser.getFilename()));
-    geometry->setType("triangles");
 
     logger->debug("Parsing object");
     std::vector<vector3> indices;

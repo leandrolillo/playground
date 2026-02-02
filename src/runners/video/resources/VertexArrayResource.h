@@ -11,7 +11,6 @@ enum ShaderAttributeLocation
 	COLOR_LOCATION
 };
 
-
 class VertexAttribPointer {
 //	Logger *logger = LoggerFactory::getLogger("video/VertexAttribPointer");
 
@@ -71,12 +70,12 @@ class VertexArrayResource : public Resource
 {
 	private:
 		std::unordered_map<unsigned int, std::unique_ptr<VertexAttribPointer>> attributes;
-		String primitiveType; // //TODO: Move this to an enum
+		PrimitiveType primitiveType;
 		vector size;
 	public:
 		VertexArrayResource(unsigned int id) : Resource(id, MimeTypes::VERTEXARRAY)
 		{
-			primitiveType = "triangles";
+			primitiveType = PrimitiveType::TRIANGLES;
 		}
 
 		/**
@@ -104,11 +103,11 @@ class VertexArrayResource : public Resource
 			attributes.clear();
 		}
 
-		String getPrimitiveType() const {
+		PrimitiveType getPrimitiveType() const {
 			return primitiveType;
 		}
 
-		void setPrimitiveType(String primitiveType) { //TODO: Move this to an enum class
+		void setPrimitiveType(PrimitiveType primitiveType) {
 			this->primitiveType = primitiveType;
 		}
 
