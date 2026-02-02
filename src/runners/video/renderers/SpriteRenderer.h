@@ -115,6 +115,7 @@ protected:
 
       for(auto &sprite : entry.second) {
         videoRunner.sendMatrix("matrices.model", matriz_4x4::rotacion(vector3(0.0, 0.0, sprite.getRotation())) * matriz_4x4::traslacion(vector3(sprite.getPosition() + sprite.getSize() * 0.5, 0.0)) * matriz_4x4::zoom(vector3(sprite.getSize(), 1.0)));
+        videoRunner.sendVector("color", sprite.getColor());
         videoRunner.drawVertexArray(rectangle);
       }
     }
