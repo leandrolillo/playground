@@ -39,12 +39,13 @@ protected:
     TextureResource *resource = null;
 
     if (imageResource != null) {
+      glGetError(); //clear previous errors.
+
       unsigned int textureHandler = 0;
-      glGetError();
       glGenTextures(1, &textureHandler);
-      GLenum glError = glGetError();
-      if (glError != GL_NO_ERROR) {
-          logger->error("Error creating texture 0x[%x]: [%s]", glError, gluErrorString(glError));
+      String errorMessage;
+      if (!(errorMessage = getGlError()).empty()) {
+          logger->error("Error creating texture [%s]: [%s]", request.getFilePath().c_str(), errorMessage.c_str());
           return response;
       }
 
@@ -68,7 +69,6 @@ protected:
 
       glBindTexture(GL_TEXTURE_2D, 0);
 
-      String errorMessage;
       if (!(errorMessage = getGlError()).empty()) {
         logger->error("Error loading texture [%s]: [%s]", request.getFilePath().c_str(), errorMessage.c_str());
         dispose(resource);

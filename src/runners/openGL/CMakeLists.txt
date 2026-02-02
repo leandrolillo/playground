@@ -4,7 +4,6 @@ add_library(${LIBRARY_NAME} INTERFACE)
 
 #sources
 add_subdirectory(adapters)
-add_subdirectory(renderers)
 target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${LIBRARY_NAME} INTERFACE playground videoRunner)
 

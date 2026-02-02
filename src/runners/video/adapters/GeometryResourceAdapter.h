@@ -21,6 +21,19 @@ public:
 		this->accepts(MimeTypes::JSON);
 	}
 
+  inline static const std::unordered_map<String, PrimitiveType> primitiveTypes = {
+      { "points", PrimitiveType::POINTS },
+      { "lineloop", PrimitiveType::LINE_LOOP },
+      { "linestrip", PrimitiveType::LINE_STRIP },
+      { "lines", PrimitiveType::LINES },
+      { "triangles", PrimitiveType::TRIANGLES },
+      { "trianglestrip", PrimitiveType::TRIANGLE_STRIP },
+      { "trianglefan", PrimitiveType::TRIANGLE_FAN },
+      { "quads", PrimitiveType::QUADS },
+      { "quadstrip", PrimitiveType::QUAD_STRIP },
+      { "polygon", PrimitiveType::POLYGON }
+    };
+
 protected:
 	virtual std::vector<Resource *> doLoad(ResourceLoadRequest &request) const override {
 	  std::vector<Resource *> response;
@@ -51,8 +64,7 @@ protected:
 			} else if (token == "colors") {
 				resource->setColors(parser.readVector3Array());
 			} else if (token == "type") {
-				String typeString = parser.readString();
-				resource->setType(typeString);
+				resource->setType(asPrimitiveType(parser.readString()));
 			} else if (token == "indices") {
 				resource->setIndices(parser.readUnsignedIntegerArray());
 			} else if (token == "generateNormals") {
@@ -79,8 +91,8 @@ protected:
 		}
 
 		logger->debug(
-				"Primitive %s: [%d] vertices, [%d] indices, [%d] colors, [%d] normals, [%d] textureCoordinates",
-				resource->getType().c_str(), resource->getVertices().size(),
+				"Primitive [%d]: [%d] vertices, [%d] indices, [%d] colors, [%d] normals, [%d] textureCoordinates",
+				(int)resource->getType(), resource->getVertices().size(),
 				resource->getIndices().size(), resource->getColors().size(),
 				resource->getNormals().size(),
 				resource->getTextureCoordinates().size());
@@ -111,15 +123,14 @@ protected:
 //		logger->info("Disposed of %s", resource->toString().c_str());
 //	}
 
-private:
+protected:
 	//TODO: Review vertex normals generation. Review amount of needed vertex normals (according to number of indexes or unique vertices?). May need to build adapters and factories based on primitive type.
 	void ensureNormals(GeometryResource *resource) const {
 		if (resource->getNormals().size() == 0) {
-			NormalGenerator *generator = NormalGeneratorFactory::getGenerator(
-					resource->getType());
-
-			if (generator != null)
+			NormalGenerator *generator = NormalGeneratorFactory::getGenerator(resource->getType());
+			if (generator != null) {
 				generator->generateNormals(resource);
+			}
 		}
 	}
 
@@ -166,34 +177,34 @@ private:
 		MaterialResource *material = new MaterialResource(vector(0.8, 0.8, 0.8), vector(0.8, 0.8, 0.8), vector(0.8, 0.8, 0.8), 1.0);
 
 		while ((token = parser.readToken()) != END_OBJECT && token != FileParser::eof) {
-            parser.readValueSeparator();
+      parser.readValueSeparator();
 
-            if (token == "name") {
-            	material->setName(parser.readString());
-            } else if (token == "ambient") {
-        		material->setAmbient(parser.readVector3());
-        	} else if (token == "specular") {
-        		material->setSpecular(parser.readVector3());
-        	} else if (token == "diffuse") {
-        		material->setDiffuse(parser.readVector3());
-        	} else if (token == "emissive") {
-        		material->setEmissive(parser.readVector3());
-        	} else if (token == "shininess") {
-        		material->setShininess(parser.readReal());
-        	} else if (token == "alpha") {
-        		material->setAlpha(parser.readReal());
-        	} else if (token == "d") {
-        		material->setAlpha(1.0 - parser.readReal());
-        	} else if (token == "ambientTexture") {
-        		material->setAmbientTexture(request.relativeUri(parser.readString()));
-        	} else if (token == "diffuseTexture") {
-        		material->setDiffuseTexture(request.relativeUri(parser.readString()));
-        	} else if (token == "specularTexture") {
-        		material->setSpecularTexture(request.relativeUri(parser.readString()));
-        	} else if (token == "alphaTexture") {
-        		material->setAlphaTexture(parser.readString());
-        	} else if (token == "bumpTexture" ) {
-        		material->setBumpTexture(request.relativeUri(parser.readString()));
+      if (token == "name") {
+        material->setName(parser.readString());
+      } else if (token == "ambient") {
+        material->setAmbient(parser.readVector3());
+      } else if (token == "specular") {
+        material->setSpecular(parser.readVector3());
+      } else if (token == "diffuse") {
+        material->setDiffuse(parser.readVector3());
+      } else if (token == "emissive") {
+        material->setEmissive(parser.readVector3());
+      } else if (token == "shininess") {
+        material->setShininess(parser.readReal());
+      } else if (token == "alpha") {
+        material->setAlpha(parser.readReal());
+      } else if (token == "d") {
+        material->setAlpha(1.0 - parser.readReal());
+      } else if (token == "ambientTexture") {
+        material->setAmbientTexture(request.relativeUri(parser.readString()));
+      } else if (token == "diffuseTexture") {
+        material->setDiffuseTexture(request.relativeUri(parser.readString()));
+      } else if (token == "specularTexture") {
+        material->setSpecularTexture(request.relativeUri(parser.readString()));
+      } else if (token == "alphaTexture") {
+        material->setAlphaTexture(parser.readString());
+      } else if (token == "bumpTexture" ) {
+        material->setBumpTexture(request.relativeUri(parser.readString()));
 			} else {
 				logger->error("Unexpected token: [%s] at (%d, %d)",
 						token.c_str(), parser.getLine(), parser.getColumn());
@@ -207,6 +218,15 @@ private:
 
 		return material;
 
+	}
+
+	PrimitiveType asPrimitiveType(const String &primitiveType) const {
+    try {
+      return primitiveTypes.at(StringUtils::trim(StringUtils::toLowercase(primitiveType)));
+    } catch(const std::out_of_range& outOfRangeException) {
+      logger->error("Invalid primitive type [%s]", primitiveType.c_str());
+      throw std::invalid_argument("Invalid primitive type: [" + primitiveType + "]");
+    }
 	}
 
 	void log(String prefix, std::vector<vector2> array) const {

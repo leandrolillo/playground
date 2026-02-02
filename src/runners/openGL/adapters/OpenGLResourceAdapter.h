@@ -7,7 +7,6 @@
 
 #pragma once
 #include <OpenGL/gl3.h>
-#include <OpenGL/glu.h>
 #include "ResourceAdapter.h"
 
 class OpenGLResourceAdapter : public ResourceAdapter {
@@ -45,31 +44,6 @@ protected:
         }
 
         return errorMessage;
-    }
-
-    GLenum asGlPrimitiveType(const String &typeString) const {
-        if (typeString == "points")
-            return GL_POINTS;
-        else if (typeString == "points")
-            return GL_LINES;
-        else if (typeString == "lineLoop")
-            return GL_LINE_LOOP;
-        else if (typeString == "lineStrip")
-            return GL_LINE_STRIP;
-        else if (typeString == "lines")
-            return GL_LINES;
-        else if (typeString == "triangles")
-            return GL_TRIANGLES;
-        else if (typeString == "triangleStrip")
-            return GL_TRIANGLE_STRIP;
-        else if (typeString == "triangleFan")
-            return GL_TRIANGLE_FAN;
-        else if (typeString == "quads")
-            return GL_QUADS;
-        else if (typeString == "triangleFan")
-            return GL_TRIANGLE_FAN;
-        else
-            throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
     }
 
     GLenum asShaderType(const String &mimeType) const {

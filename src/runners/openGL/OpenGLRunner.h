@@ -26,15 +26,6 @@
 #include "VertexShaderResourceAdapter.h"
 #include "TerrainResourceAdapter.h"
 
-constexpr unsigned int DEPTH_TEST = GL_DEPTH_TEST;
-constexpr unsigned int CULL_FACE = GL_CULL_FACE;
-constexpr unsigned int CULL_FACE_BACK = GL_BACK;
-constexpr unsigned int CULL_FACE_FRONT = GL_FRONT;
-constexpr unsigned int CULL_FACE_NONE = GL_NONE;
-constexpr unsigned int BLEND = GL_BLEND;
-constexpr unsigned int RELATIVE_MOUSE_MODE = 1111;
-constexpr unsigned int LINE_WIDTH = GL_LINE_WIDTH;
-
 #ifndef GL_MAJOR_VERSION
 	#define GL_MAJOR_VERSION 0x821B
 #endif
@@ -56,7 +47,7 @@ private:
 
   TextureResource *defaultTexture = null;
   const ShaderProgramResource *currentShaderProgram = null;
-  std::map<unsigned int, unsigned int> boundTextures;
+  std::unordered_map<unsigned int, unsigned int> boundTextures;
 
 public:
 
@@ -156,7 +147,7 @@ public:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer().onResize(height, width);
+    this->getContainer().onResize(width, height);
 
     SDL_WarpMouseInWindow(window, width >> 1, height >> 1);
 
@@ -190,13 +181,13 @@ public:
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
       SDL_SetWindowMouseGrab(this->window, false);
       logger->debug("WINDOW RESIZED to [%d, %d]", event->window.data2, event->window.data1);
-      this->getContainer().onResize(event->window.data2, event->window.data1);
+      this->getContainer().onResize(event->window.data1, event->window.data2);
       SDL_SetWindowMouseGrab(this->window, true);
       return true;
     case SDL_EVENT_KEY_DOWN:
       //SDL_Log("SDL_KEYDOWN %d", event->key.keysym.sym);
-      logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.key);
-      this->getContainer().onKeyDown(event->key.key, event->key.key);
+      logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.mod);
+      this->getContainer().onKeyDown(event->key.key, event->key.mod);
       return true;
     case SDL_EVENT_KEY_UP:
       //SDL_Log("SDL_KEYUP %d", event->key.keysym.sym);
@@ -228,8 +219,8 @@ public:
     return false;
   }
 
-  virtual void onResize(unsigned int height, unsigned int width) override {
-    VideoRunner::onResize(height, width);
+  virtual void onResize(unsigned int width, unsigned int height) override {
+    VideoRunner::onResize(width, height);
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   }
 
@@ -251,9 +242,7 @@ public:
         this->getContainer().stop();
       }
       break;
-    case 'Q':
-      case 'q':
-
+    case SDLK_Q:
       if (keyModifier & SDL_KMOD_ALT) {
         this->getContainer().stop();
       }
@@ -274,13 +263,13 @@ public:
     int width = 0;
     SDL_GetWindowSize(window, &width, &height);
 
-    this->getContainer().onResize(height, width);
+    this->getContainer().onResize(width, height);
 
     return this->getFullscreen();
   }
 
-  virtual void resize(unsigned int height, unsigned int width) override {
-    SDL_SetWindowSize(window, height, width);
+  virtual void resize(unsigned int width, unsigned int height) override {
+    SDL_SetWindowSize(window, width, height);
   }
 
   void setMousePosition(unsigned int x, unsigned int y) override {
@@ -415,12 +404,12 @@ public:
     return true;
   }
 
-  void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D) override {
+  void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
     glActiveTexture(GL_TEXTURE0 + location);
     if (texture != null) {
       if (boundTextures.count(GL_TEXTURE0 + location) == 0 || boundTextures.at(GL_TEXTURE0 + location) != texture->getId()) {
         boundTextures[GL_TEXTURE0 + location] = texture->getId();
-        glBindTexture(type, texture->getId());
+        glBindTexture(OpenGLUtilities::asGlAttribute(type), texture->getId());
 
         String errorMessage;
         if (!(errorMessage = getGlError()).empty()) {
@@ -430,10 +419,10 @@ public:
       }
     } else {
       boundTextures[GL_TEXTURE0 + location] = 0;
-      glBindTexture(type, 0);
+      glBindTexture(OpenGLUtilities::asGlAttribute(type), 0);
     }
   }
-  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = GL_TEXTURE_2D)
+  void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D)
       override {
     setTexture(location, texture, type);
     sendUnsignedInt(samplerName, location);
@@ -443,55 +432,63 @@ public:
     glClearColor(r, g, b, a);
   }
 
-  void enable(unsigned int attributeCode, unsigned int param1, unsigned int param2 = 0) override {
-    switch (attributeCode) {
-    case (DEPTH_TEST):
-      if ((bool) param1) {
+  void enable(VideoAttribute attribute, VideoAttribute param1 = VideoAttribute::NONE, VideoAttribute param2 = VideoAttribute::NONE) override {
+    switch (attribute) {
+    case (VideoAttribute::DEPTH_TEST):
         glEnable(GL_DEPTH_TEST);
-      } else {
-        glDisable(GL_DEPTH_TEST);
-      }
       break;
-    case (CULL_FACE):
-      glCullFace(param1);
+    case (VideoAttribute::CULL_FACE):
+      glCullFace(OpenGLUtilities::asGlAttribute(param1));
       glEnable(GL_CULL_FACE);
       break;
-    case (BLEND):
-      glBlendFunc(param1, param2);
+    case (VideoAttribute::BLEND):
+      glBlendFunc(OpenGLUtilities::asGlAttribute(param1), OpenGLUtilities::asGlAttribute(param2));
       glEnable(GL_BLEND);
       break;
-    case (RELATIVE_MOUSE_MODE):
+    case (VideoAttribute::RELATIVE_MOUSE_MODE):
       SDL_SetWindowRelativeMouseMode(this->window, true);
       break;
     }
   }
 
-  void disable(unsigned int attributeCode) override {
-    switch (attributeCode) {
-    case (DEPTH_TEST):
+  void disable(VideoAttribute attribute) override {
+    switch (attribute) {
+    case (VideoAttribute::DEPTH_TEST):
       glDisable(GL_DEPTH_TEST);
       break;
-    case (CULL_FACE):
+    case (VideoAttribute::CULL_FACE):
       glDisable(GL_CULL_FACE);
       break;
-    case (BLEND):
+    case (VideoAttribute::BLEND):
       glDisable(GL_BLEND);
       break;
-    case (RELATIVE_MOUSE_MODE):
+    case (VideoAttribute::RELATIVE_MOUSE_MODE):
       SDL_SetWindowRelativeMouseMode(this->window, true);
       break;
     }
   }
 
-  void setOption(unsigned int attributeCode, real value) override {
-    switch (attributeCode) {
-    case GL_LINE_WIDTH:
+  void setOption(VideoAttribute attribute, real value) override {
+    switch (attribute) {
+    case VideoAttribute::LINE_WIDTH:
       logger->info("Setting line width to %.2f", value);
       glLineWidth(value);
       break;
     }
   }
-  ;
+
+
+  int getIntegerOption(VideoAttribute attribute) const override {
+    switch(attribute) {
+    case VideoAttribute::MAX_TEXTURES:
+      GLint max_fragment_texture_units;
+      glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_fragment_texture_units);
+      return max_fragment_texture_units;
+    }
+
+    return 0;
+  }
+
 
   /**
    * Expects [number of index] elements in every vertex array attribute. E.g. You can't have three vertices, six indices and six texture coordinates. See http://www.opengl.org/wiki/Vertex_Buffer_Object#Vertex_Stream
@@ -500,7 +497,7 @@ public:
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
-      unsigned int primitiveType = asGlPrimitive(vertexArrayResource->getPrimitiveType());
+      unsigned int primitiveType = OpenGLUtilities::asGlPrimitiveType(vertexArrayResource->getPrimitiveType());
       if (primitiveType < 7) {
         getGlError();
         //logger->info("Drawing vertexArray %s", vertexArrayResource->toString().c_str());
@@ -561,7 +558,7 @@ protected:
     return textureHandler;
   }
 
-  String getGlError() const {
+  String getGlError() const { //Unify with OpenGLResourceAdapter getGLError
     String errorMessage;
     GLenum glError;
     while ((glError = glGetError()) != GL_NO_ERROR) {
@@ -569,35 +566,10 @@ protected:
         errorMessage += ", ";
       }
 
-      errorMessage += (const char*) gluErrorString(glGetError());
+      errorMessage += std::to_string(glError) + ": " + (const char*) gluErrorString(glGetError());
     }
 
     return errorMessage;
-  }
-
-  unsigned int asGlPrimitive(const String &typeString) const {
-    if (typeString == "points")
-      return GL_POINTS;
-    else if (typeString == "points")
-      return GL_LINES;
-    else if (typeString == "lineLoop")
-      return GL_LINE_LOOP;
-    else if (typeString == "lineStrip")
-      return GL_LINE_STRIP;
-    else if (typeString == "lines")
-      return GL_LINES;
-    else if (typeString == "triangles")
-      return GL_TRIANGLES;
-    else if (typeString == "triangleStrip")
-      return GL_TRIANGLE_STRIP;
-    else if (typeString == "triangleFan")
-      return GL_TRIANGLE_FAN;
-    else if (typeString == "quads")
-      return GL_QUADS;
-    else if (typeString == "triangleFan")
-      return GL_TRIANGLE_FAN;
-    else
-      throw std::invalid_argument("Invalid primitive type: [" + typeString + "]");
   }
 
   virtual String toString() const override {

@@ -21,6 +21,41 @@
 #include "HeightMapResourceAdapter.h"
 #include "TextureResource.h"
 
+enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a map in the implementations.
+  DEPTH_TEST,
+  /**
+   * Face culling options (for now they have to be defined in the same order as in opengl header)
+   */
+  CULL_FACE,
+    NONE,
+    FRONT,
+    BACK,
+    FRONT_AND_BACK,
+
+/**
+ * Blending options
+ */
+  BLEND,
+    //destination factor
+    SRC_COLOR,
+    ONE_MINUS_SRC_COLOR,
+    SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA,
+    DST_ALPHA,
+    ONE_MINUS_DST_ALPHA,
+
+    //source factor
+    DST_COLOR,
+    ONE_MINUS_DST_COLOR,
+    SRC_ALPHA_SATURATE,
+
+  TEXTURE_2D,
+  TEXTURE_CUBE_MAP,
+  MAX_TEXTURES,
+  LINE_WIDTH,
+  RELATIVE_MOUSE_MODE,
+};
+
 
 class VideoRunner : public PlaygroundRunner {
 public:
@@ -49,7 +84,7 @@ public:
 		return this->fullScreen;
 	}
 
-	virtual void onResize(unsigned int height, unsigned int width) override {
+	virtual void onResize(unsigned int width, unsigned int height) override {
 		this->height = height;
 		this->width = width;
 	}
@@ -64,7 +99,7 @@ public:
 		return this->fullScreen;
 	}
 
-	virtual void resize(unsigned int height, unsigned int width) {
+	virtual void resize(unsigned int width, unsigned int height) {
 
 	}
 
@@ -83,12 +118,6 @@ public:
 		return true;
 	}
 
-//	/**
-//	 * Performance counters
-//	 */
-//	virtual unsigned long getPerformanceCounter() const = 0;
-//	virtual unsigned long getPerformanceFreq() const = 0;
-
 	/**
 	 * Shader methods - should this go to a shader class?
 	 */
@@ -105,13 +134,14 @@ public:
 	 * Drawing methods
 	 */
 	virtual void setClearColor(real r, real g, real b, real a) const = 0;
-	virtual void enable(unsigned int attributeCode, unsigned int param1, unsigned int param2 = 0) {};
-	virtual void disable(unsigned int attributeCode) {};
-	virtual void setOption(unsigned int attributeCode, real value) { };
-	virtual real getOption(unsigned int attributeCode) { return (real)0; };
+	virtual void enable(VideoAttribute attribute, VideoAttribute param1 = VideoAttribute::NONE, VideoAttribute param2 = VideoAttribute::NONE) {};
+	virtual void disable(VideoAttribute attribute) {};
+	virtual void setOption(VideoAttribute attribute, real value) { };
+	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };
+	virtual int getIntegerOption(VideoAttribute attribute) const { return 0; };
 
-	virtual void setTexture(unsigned int location, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
-	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, unsigned int type = 0x0DE1) = 0;
+	virtual void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
+	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
 	virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const = 0;
 
 	//TODO: get rid of this method

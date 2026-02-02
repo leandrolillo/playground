@@ -75,7 +75,6 @@ protected:
     if (heightMap != null) {
       GeometryResource heightMapGeometry(0);
       heightMapGeometry.setName(Paths::getBasename(heightMap->getUri()));
-      heightMapGeometry.setType("triangles");
 
       for (unsigned int i = 0; i < heightMap->getGridWidth(); i++) {
         for (unsigned int j = 0; j < heightMap->getGridHeight(); j++) {
@@ -97,7 +96,7 @@ protected:
         }
       }
 
-      model = OpenGLUtilites::generateVertexBuffer(&heightMapGeometry);
+      model = OpenGLUtilities::generateVertexArray(&heightMapGeometry);
       model->setUri(heightMap->getUri());
     }
 

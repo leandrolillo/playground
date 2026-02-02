@@ -101,9 +101,9 @@ public:
   }
 
   void setPerspectiveProjectionFov(real fovy, real aspect, real near, real far) {
-      real height = 2.0 * tan(radian(fovy) * 0.5) * near; // half height = tan of half the fov times near
-      setPerspectiveProjection(height * aspect, height, near, far);
-    }
+    real height = 2.0 * tan(radian(fovy) * 0.5) * near; // half height = tan of half the fov times near
+    setPerspectiveProjection(height * aspect, height, near, far);
+  }
 
   /**
    * This is opengl style perspective projection, where height and width are the dimensions on the near plane
@@ -187,7 +187,6 @@ public:
 
     return frustum;
   }
-
 
   /**
    * From https://antongerdelan.net/opengl/raycasting.html
