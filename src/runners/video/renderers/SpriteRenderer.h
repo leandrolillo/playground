@@ -91,7 +91,7 @@ public:
     this->spritesByTexture.clear();
   }
 
-  void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color) {
+  void draw(const TextureResource &texture, const vector2 &position, const vector2 &size, real rotation, const vector3 &color = vector3(1.0, 1.0, 1.0)) {
     this->spritesByTexture[this->currentTexture].emplace_back(&texture, position, size, rotation, color);
   }
 
