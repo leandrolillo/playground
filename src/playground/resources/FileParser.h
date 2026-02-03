@@ -14,12 +14,12 @@
 
 class FileParser {
 public:
-    static const String eof;
-    static const String eol;
+    inline static const String eof = {-1};
+    inline static const String eol = "\n";
 
-    static const char charEof = (char)-1;
-    static const char charNewl = '\n';
-    static const char charEol = '\0';
+    static const char charEof { (char)-1 };
+    static const char charNewl {'\n'};
+    static const char charEol {'\0'};
 
 private:
     String filename;

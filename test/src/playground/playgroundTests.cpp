@@ -97,3 +97,37 @@ TEST_CASE("Chronometer") {
     CHECK((unsigned int)stopwatch.getTotalTime() == 3);
   }
 }
+
+TEST_CASE("Parsers") {
+  SECTION("FileParser") {
+    String token;
+
+    FileParser commentFileParser("resources/commentFileToParse.txt");
+    CHECK(FileParser::eof == commentFileParser.peekToken());
+    CHECK(FileParser::eof == commentFileParser.takeToken());
+    commentFileParser.close();
+
+    FileParser emptyFileParser("resources/emptyFileToParse.txt");
+    CHECK(FileParser::eof == emptyFileParser.peekToken());
+    CHECK(FileParser::eof == emptyFileParser.takeToken());
+    commentFileParser.close();
+
+    FileParser fileParser("resources/fileToParse.txt");
+    CHECK("{" == fileParser.peekToken());
+    CHECK("{" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("property" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK(":" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("value" == fileParser.takeToken());
+    CHECK("\"" == fileParser.takeToken());
+    CHECK("}" == fileParser.takeToken());
+    CHECK(FileParser::eof == fileParser.peekToken());
+    CHECK(FileParser::eof == fileParser.takeToken());
+  }
+
+  SECTION("JsonParser") {
+    JsonParser parser("resources/");
+  }
+}
