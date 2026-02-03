@@ -1,8 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include "PlaygroundMock.h"
 #include "chrono"
 #include "thread"
+
+#include "PlaygroundMock.h"
+#include"JsonParser.h"
 
 class TestPlaygroundRunner : public PlaygroundRunner {
 public:
@@ -128,6 +130,7 @@ TEST_CASE("Parsers") {
   }
 
   SECTION("JsonParser") {
-    JsonParser parser("resources/");
+    FileParser fileParser("resources/jsonTestFile.json");
+    JsonParser parser(fileParser);
   }
 }
