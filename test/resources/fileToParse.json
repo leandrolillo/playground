@@ -1,7 +1,4 @@
-#Test Json file used to address all json parser scenarios and issues.
+#this is a comment.
 {
-  "stringProperty": "value",
-  "intProperty": 10,
-  integerList: [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-  realList: [ 1.1, 1.2, 1.3, 1.4, 1.5, 1.0E12, 1.0e-12, 1.6, 1.7, 1. ]
+"property": "value"
 }
