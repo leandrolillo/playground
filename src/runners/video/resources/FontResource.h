@@ -56,6 +56,10 @@ public:
     return charMap[character]; //return default value if not present
   }
 
+  FontResource *setTextureAtlas(TextureResource *textureAtlas) {
+    this->textureAtlas = textureAtlas;
+  }
+
   const TextureResource *getTextureAtlas() const {
     return textureAtlas;
   }
