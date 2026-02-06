@@ -82,25 +82,29 @@ public:
 	  return *this;
 	}
 
-	void setMimeType(const String & mimeType) {
+	Resource &setMimeType(const String & mimeType) {
 		this->mimeType = StringUtils::trim(mimeType);
+		return *this;
 	}
 
 
-	void setUri(const String & fileName) {
+	Resource &setUri(const String & fileName) {
 		this->uri = StringUtils::trim(fileName);
+		return *this;
 	}
 
 	const std::set<String>& getLabels() const {
 		return labels;
 	}
 
-	void setLabels(const std::set<String> &labels) {
+	Resource &setLabels(const std::set<String> &labels) {
 		this->labels = labels;
+		return *this;
 	}
 
-	void addLabel(const String &label) {
+	Resource &addLabel(const String &label) {
 		this->labels.insert(StringUtils::trim(label));
+		return *this;
 	}
 
 	virtual bool supportsCaching() {

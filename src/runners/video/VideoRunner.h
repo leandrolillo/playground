@@ -15,6 +15,7 @@
 #include "ObjResourceAdapter.h"
 #include "PngResourceAdapter.h"
 #include "TgaResourceAdapter.h"
+#include "FontResourceAdapter.h"
 #include "LightResource.h"
 #include "ShaderProgramResource.h"
 #include "VertexArrayResource.h"
@@ -114,6 +115,7 @@ public:
 		this->getResourceManager().addAdapter<ObjResourceAdapter>();
 		this->getResourceManager().addAdapter<MtlResourceAdapter>();
     this->getResourceManager().addAdapter<HeightMapResourceAdapter>();
+    this->getResourceManager().addAdapter<FontResourceAdapter>();
 
 		return true;
 	}

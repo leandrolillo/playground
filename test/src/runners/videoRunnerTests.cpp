@@ -34,18 +34,18 @@ TEST_CASE("Image Resource test case")
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
 
   ImageResource resource(MimeTypes::IMAGE);
-  resource.resize(100, 200, 16);
+  resource.resize(200, 100, 16);
 
-  CHECK(resource.getAlto() == 100);
-  CHECK(resource.getAncho() == 200);
+  CHECK(resource.getHeight() == 100);
+  CHECK(resource.getWidth() == 200);
   CHECK(resource.getBpp() == 16);
   //CHECK(resource.getBytespp() == 2);
   CHECK(resource.getBufferSize() == 100 * 200 * 2);
 
-  resource.resize(200, 300, 8);
+  resource.resize(300, 200, 8);
 
-  CHECK(resource.getAlto() == 200);
-  CHECK(resource.getAncho() == 300);
+  CHECK(resource.getHeight() == 200);
+  CHECK(resource.getWidth() == 300);
   CHECK(resource.getBpp() == 8);
   //CHECK(resource.getBytespp() == 1);
   CHECK(resource.getBufferSize() == 200 * 300 * 1);
@@ -102,8 +102,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
-    CHECK(756 == resource->getAncho());
-    CHECK(512 == resource->getAlto());
+    CHECK(756 == resource->getWidth());
+    CHECK(512 == resource->getHeight());
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
@@ -114,8 +114,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     ImageResource *resource = (ImageResource *)resourceManager.load(request);
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
-    CHECK(756 == resource->getAncho());
-    CHECK(512 == resource->getAlto());
+    CHECK(756 == resource->getWidth());
+    CHECK(512 == resource->getHeight());
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
@@ -132,8 +132,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
     ImageResource *resource = (ImageResource *)response.back();
     REQUIRE(resource != null);
     CHECK(resource->getData() != null);
-    CHECK(400 == resource->getAncho());
-    CHECK(300 == resource->getAlto());
+    CHECK(400 == resource->getWidth());
+    CHECK(300 == resource->getHeight());
     CHECK(MimeTypes::IMAGE == resource->getMimeType());
   }
 
@@ -144,8 +144,8 @@ TEST_CASE("VideoRunner ResourceAdapters Tests")
       ImageResource *resource = (ImageResource *)resourceManager.load(request);
       REQUIRE(resource != null);
       CHECK(resource->getData() != null);
-      CHECK(400 == resource->getAncho());
-      CHECK(300 == resource->getAlto());
+      CHECK(400 == resource->getWidth());
+      CHECK(300 == resource->getHeight());
       CHECK(MimeTypes::IMAGE == resource->getMimeType());
     }
 

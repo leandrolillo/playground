@@ -22,7 +22,8 @@ Tech debts
 
 - replace printf by streams and toString() by << operator
 
-- Refactor Parsers: support xml, yaml and json. Use streams.
+- Refactor Parsers: support xml, yaml and json - should work the same just by switching the implementation class. Use streams.
+  - Support skipping unknown properties
 
 - review RAII and 5 of 5 principle (move semantics / perfect forwarding) in resources/playground classes.
 	specially in file parser / text parser and resources.
@@ -41,8 +42,8 @@ Tech debts
 
 New stuff:
 - blockout: following udemy learn advanced modern c++ 
-    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
     - menus, sound effects, victory message and multiple levels
+    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
 
 - Road fighter:
 	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 

@@ -52,10 +52,10 @@ protected:
       resource = new TextureResource(textureHandler);
       glBindTexture(GL_TEXTURE_2D, textureHandler);
       if (imageResource->getBpp() == 32)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageResource->getAncho(), imageResource->getAlto(), 0, GL_BGRA, GL_UNSIGNED_BYTE,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageResource->getWidth(), imageResource->getHeight(), 0, GL_BGRA, GL_UNSIGNED_BYTE,
             imageResource->getData());
       else
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageResource->getAncho(), imageResource->getAlto(), 0, GL_BGR, GL_UNSIGNED_BYTE,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageResource->getWidth(), imageResource->getHeight(), 0, GL_BGR, GL_UNSIGNED_BYTE,
             imageResource->getData());
 
       if (request.getOption("texture-filter") == "nearest") {

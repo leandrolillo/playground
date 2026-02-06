@@ -158,6 +158,17 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
     CHECK(resource->getId() != 0);
     CHECK(MimeTypes::SHADERPROGRAM == resource->getMimeType());
   }
+
+  SECTION("FontResourceAdapter with ResourceManager test") {
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<FontResourceAdapter>();
+    FontResource *resource = (FontResource *)resourceManager.load("fonts/Monaco.ttf");
+    REQUIRE(resource != null);
+    CHECK(resource->getId() == 0);
+    CHECK(resource->getMimeType() == MimeTypes::FONT);
+    CHECK(resource->getTextureAtlas() != null);
+    CHECK(resource->getGlyph('a').getTopLeft().x == 0);
+  }
+
 }
 
 TEST_CASE("OpenGLUtilities test", "[opengl]") {

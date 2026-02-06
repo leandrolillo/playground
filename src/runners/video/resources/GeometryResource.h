@@ -33,8 +33,6 @@ enum class PrimitiveType {
  */
 class GeometryResource: public Resource {
 private:
-	Logger *logger = LoggerFactory::getLogger("video/GeometryResource");
-
 	std::vector<vector3> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<vector3> normals;
@@ -49,6 +47,7 @@ private:
 public:
 	GeometryResource(unsigned int id) :
 			Resource(id, MimeTypes::GEOMETRY) {
+	  logger = LoggerFactory::getLogger("video/GeometryResource");
 		type = PrimitiveType::TRIANGLES;
 	}
 

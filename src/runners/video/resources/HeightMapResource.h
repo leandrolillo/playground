@@ -17,7 +17,6 @@ constexpr real one_over_max_color = 0.000000059604645; // 1.0 / (256.0 * 256.0 *
 
 class HeightMapResource: public Resource, public HeightMap {
 private:
-    Logger *logger = LoggerFactory::getLogger("video/HeightMapResource");
     vector voxelSize;
     ImageResource *heightMap;
     real height;
@@ -27,6 +26,8 @@ public:
      * VoxelSize can be interpreted as the dimensions of each and all individual voxels, or the factor/zoom applied to enlarge the original image dimensions
      */
     HeightMapResource(ImageResource *heightMap, vector voxelSize) : Resource(0, MimeTypes::HEIGHTMAP) {
+      logger = LoggerFactory::getLogger("video/HeightMapResource");
+
     	if(heightMap == null) {
     		throw std::invalid_argument("Heightmap can not be null");
     	}
@@ -37,7 +38,7 @@ public:
 
     // returns 3D generated width
     real getWidth() const {
-        return (real) (this->heightMap->getAncho() - 1) * voxelSize.x;
+        return (real) (this->heightMap->getWidth() - 1) * voxelSize.x;
     }
 
     // returns 3D generated height
@@ -48,7 +49,7 @@ public:
 
     // returns 3D generated depth
     real getDepth() const {
-        return (real) (this->heightMap->getAlto() - 1) * voxelSize.z;
+        return (real) (this->heightMap->getHeight() - 1) * voxelSize.z;
     }
 
     const vector &getVoxelSize() const {
@@ -57,12 +58,12 @@ public:
 
     // returns 2D grid width
     unsigned int getGridWidth() const {
-        return this->heightMap->getAncho();
+        return this->heightMap->getWidth();
     }
 
     // returns 2D grid height
     unsigned int getGridHeight() const {
-        return this->heightMap->getAlto();
+        return this->heightMap->getHeight();
     }
 
     unsigned int getI(real x) const {
@@ -99,7 +100,7 @@ public:
         i = std::min(i, this->getGridWidth());
         j = std::min(j, this->getGridHeight());
 
-        return vector2((real) i / (real) (this->heightMap->getAncho() - 1), (real) j / (real) (this->heightMap->getAlto() - 1));
+        return vector2((real) i / (real) (this->heightMap->getWidth() - 1), (real) j / (real) (this->heightMap->getHeight() - 1));
     }
 
     /**
