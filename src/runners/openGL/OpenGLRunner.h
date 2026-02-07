@@ -578,7 +578,7 @@ protected:
 
 };
 
-bool playgroundEventFilter(void *context, SDL_Event *event) {
+inline bool playgroundEventFilter(void *context, SDL_Event *event) {
   OpenGLRunner *runner = (OpenGLRunner*) context;
   return runner->processEvent(event);
 }
