@@ -72,7 +72,7 @@ public:
     }
 
     if (!geometry->getVertices().empty()) {
-      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION, 1)) {
+      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION, 3)) {
         disposeVertexArray(resource);
         return null;
       }
