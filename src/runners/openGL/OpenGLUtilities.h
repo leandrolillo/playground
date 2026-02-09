@@ -33,10 +33,12 @@ protected:
 
   //need to be in the same order as VideoAttributes
   inline static auto glAttributes = std::array{
+    GL_BYTE, GL_INT, GL_UNSIGNED_INT, GL_FLOAT,
     GL_DEPTH_TEST,
     GL_CULL_FACE, GL_NONE, GL_FRONT, GL_BACK, GL_FRONT_AND_BACK,
     GL_BLEND, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA_SATURATE,
     GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP, GL_MAX_TEXTURE_IMAGE_UNITS,
+    GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_STATIC_DRAW,
     GL_LINE_WIDTH,
 };
 
@@ -69,31 +71,29 @@ public:
       return null;
     }
 
-    if (geometry->getVertices().size() != 0
-        && !addBuffer(VERTEX_LOCATION, resource, GL_ARRAY_BUFFER,
-            geometry->getVertices())) {
+    if (!geometry->getVertices().empty()) {
+      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION)) {
+        disposeVertexArray(resource);
+        return null;
+      }
+    } else if(!geometry->getData().empty()) {
+      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION, VideoAttribute::ARRAY_BUFFER, VideoAttribute::FLOAT, sizeof(real), VideoAttribute::DYNAMIC_DRAW)) { //TODO: make bufferUsage configurable somehow - either via labels or json in geometry file.
+        disposeVertexArray(resource);
+        return null;
+      }
+    }
+
+    if (geometry->getNormals().size() != 0 && !addBuffer<vector3>(*resource, geometry->getNormals(), NORMAL_LOCATION)) {
       disposeVertexArray(resource);
       return null;
     }
 
-    if (geometry->getNormals().size() != 0
-        && !addBuffer(NORMAL_LOCATION, resource, GL_ARRAY_BUFFER,
-            geometry->getNormals())) {
+    if (geometry->getTextureCoordinates().size() != 0 && !addBuffer<vector2>(*resource, geometry->getTextureCoordinates(), TEXTURE_COORDINATES_LOCATION)) {
       disposeVertexArray(resource);
       return null;
     }
 
-    if (geometry->getTextureCoordinates().size() != 0
-        && !addBuffer(TEXTURE_COORDINATES_LOCATION, resource,
-        GL_ARRAY_BUFFER,
-            geometry->getTextureCoordinates())) {
-      disposeVertexArray(resource);
-      return null;
-    }
-
-    if (geometry->getColors().size() != 0
-        && !addBuffer(COLOR_LOCATION, resource, GL_ARRAY_BUFFER,
-            geometry->getColors())) {
+    if (geometry->getColors().size() != 0 && !addBuffer<vector3>(*resource, geometry->getColors(), COLOR_LOCATION)) {
       disposeVertexArray(resource);
       return null;
     }
@@ -101,9 +101,7 @@ public:
     /**
      * Indices need to be loaded after vertices
      */
-    if (geometry->getIndices().size() != 0
-        && !addBuffer(INDEX_LOCATION, resource,
-        GL_ELEMENT_ARRAY_BUFFER, geometry->getIndices())) {
+    if (geometry->getIndices().size() != 0 && !addBuffer<unsigned int>(*resource, geometry->getIndices(), INDEX_LOCATION, VideoAttribute::ELEMENT_ARRAY_BUFFER, VideoAttribute::UNSIGNED_INT, sizeof(unsigned int))) {
       disposeVertexArray(resource);
       return null;
     }
@@ -115,6 +113,41 @@ public:
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     return resource;
+  }
+
+  template<typename Primitive>
+  static bool addBuffer(VertexArrayResource &resource, const std::vector<Primitive> &data, ShaderAttributeLocation attributeLocation, VideoAttribute bufferDestination = VideoAttribute::ARRAY_BUFFER, VideoAttribute bufferElementType = VideoAttribute::FLOAT, GLint bufferElementSize = sizeof(real), VideoAttribute bufferUsage = VideoAttribute::STATIC_DRAW) {
+    if (data.size() > 0) {
+      getLogger()->verbose("Creating [%d] vector2 buffer for attribute [%d]", attributeLocation);
+
+      unsigned int sizeofPrimitive = sizeof(Primitive);
+      // create vertex buffer
+      unsigned int buffer;
+      glGenBuffers(1, &buffer); // Generate Vertex Buffer Object
+      glBindBuffer(asGlAttribute(bufferDestination), buffer); // Assign it to destination (GL_ARRAY_BUFFER | GL_ELEMENT_ARRAY_BUFFER)
+      glBufferData(asGlAttribute(bufferDestination), data.size() * sizeof(Primitive), data.data(), asGlAttribute(bufferUsage)); //send data
+
+      GLenum glError = glGetError();
+      if (glError != GL_NO_ERROR) {
+        getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
+        return false;
+      }
+
+      if (attributeLocation >= 0) { //Add attribute location
+        resource.addAttribute(attributeLocation, buffer, 0, data.size(), bufferDestination, bufferUsage);
+        glVertexAttribPointer((GLuint) attributeLocation, bufferElementSize, asGlAttribute(bufferElementType), GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(attributeLocation);
+        getLogger()->verbose("Enabled attribute [%d]", attributeLocation);
+      }
+
+      glError = glGetError();
+      if (glError != GL_NO_ERROR) {
+        getLogger()->error("Error binding buffer [%d] to attribute Location [%d]: 0x[%x]: [%s]", attributeLocation, buffer, glError, gluErrorString(glError));
+        return false;
+      }
+    }
+
+    return true;
   }
 
   static void disposeVertexArray(VertexArrayResource *vertexArrayResource) {
@@ -158,119 +191,18 @@ public:
     }
   }
 
-protected:
-  static bool addBuffer(ShaderAttributeLocation attributeLocation,
-      VertexArrayResource *resource, GLenum bufferDestination,
-      const std::vector<vector2> &data) {
-    if (data.size() > 0) {
-      getLogger()->verbose("Creating [%d] vector2 buffer for attribute [%d]",
-          data.size(), attributeLocation);
-
-      // create vertex buffer
-      unsigned int buffer;
-      glGenBuffers(1, &buffer); // Generate our Vertex Buffer Object
-      glBindBuffer(bufferDestination, buffer); // bind to GL_ARAY_BUFFER, as we're about to call glBufferData(GL_ARAY_BUFFER)
-      glBufferData(bufferDestination, data.size() * sizeof(vector2),
-          (real*) data.data(), GL_STATIC_DRAW);
-
-      GLenum glError = glGetError();
-      if (glError != GL_NO_ERROR) {
-        getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
-        return false;
+  static String getGlError() { //Unify with OpenGLResourceAdapter getGLError
+    String errorMessage;
+    GLenum glError;
+    while ((glError = glGetError()) != GL_NO_ERROR) {
+      if (errorMessage.size() != 0) {
+        errorMessage += ", ";
       }
 
-      if (attributeLocation >= 0) {
-        resource->addAttribute(attributeLocation, buffer, 0,
-            data.size());
-        glVertexAttribPointer((GLuint) attributeLocation, 2, GL_FLOAT,
-        GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(attributeLocation);
-        getLogger()->verbose("Enabled attribute [%d]", attributeLocation);
-      }
-
-      glError = glGetError();
-      if (glError != GL_NO_ERROR) {
-        getLogger()->error(
-            "Error binding buffer [%d] to attribute Location [%d]: 0x[%x]: [%s]",
-            attributeLocation, buffer, glError, gluErrorString(glError));
-        return false;
-      }
+      errorMessage += std::to_string(glError) + ": " + (const char*) gluErrorString(glGetError());
     }
 
-    return true;
+    return errorMessage;
   }
 
-  static bool addBuffer(ShaderAttributeLocation attributeLocation,
-      VertexArrayResource *resource, GLenum bufferDestination,
-      const std::vector<vector3> &data) {
-    getLogger()->verbose("Creating [%d] vector3 buffer for attribute [%d]",
-        data.size(), attributeLocation);
-
-    // create vertex buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer); // Generate our Vertex Buffer Object
-    glBindBuffer(bufferDestination, buffer); // bind to GL_ARAY_BUFFER, as we're about to call glBufferData(GL_ARAY_BUFFER)
-    glBufferData(bufferDestination, data.size() * sizeof(vector3),
-        (real*) data.data(), GL_STATIC_DRAW);
-
-    GLenum glError = glGetError();
-    if (glError != GL_NO_ERROR) {
-      getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
-      return false;
-    }
-
-    if (attributeLocation >= 0) {
-      resource->addAttribute(attributeLocation, buffer, 0, data.size());
-      glVertexAttribPointer((GLuint) attributeLocation, 3, GL_FLOAT,
-      GL_FALSE, 0, 0);
-      glEnableVertexAttribArray(attributeLocation);
-      getLogger()->verbose("Enabled attribute [%d]", attributeLocation);
-    }
-
-    glError = glGetError();
-    if (glError != GL_NO_ERROR) {
-      getLogger()->error(
-          "Error binding buffer [%d] to attribute location [%d]: 0x[%x]: [%s]",
-          attributeLocation, buffer, glError, gluErrorString(glError));
-      return false;
-    }
-
-    return true;
-  }
-  static bool addBuffer(ShaderAttributeLocation attributeLocation,
-      VertexArrayResource *resource, GLenum bufferDestination,
-      const std::vector<unsigned int> &data) {
-    getLogger()->verbose("Creating [%d] unsigned int buffer for attribute [%d]",
-        data.size(), attributeLocation);
-
-    // create vertex buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer); // Generate our Vertex Buffer Object
-    glBindBuffer(bufferDestination, buffer); // bind to GL_ELEMENT_ARRAY_BUFFER, as we're about to call glBufferData(GL_ELEMENT_ARRAY_BUFFER)
-    glBufferData(bufferDestination, data.size() * sizeof(unsigned int),
-        (unsigned int*) data.data(), GL_STATIC_DRAW);
-
-    GLenum glError = glGetError();
-    if (glError != GL_NO_ERROR) {
-      getLogger()->error("Error loading vertex buffer: 0x[%x]: [%s]", glError, gluErrorString(glError));
-      return false;
-    }
-
-    if (attributeLocation >= 0) {
-      resource->addAttribute(attributeLocation, buffer, 0, data.size());
-      glVertexAttribPointer((GLuint) attributeLocation, 1,
-      GL_UNSIGNED_INT, GL_FALSE, 0, 0);
-      glEnableVertexAttribArray(attributeLocation);
-      getLogger()->verbose("Enabled attribute [%d]", attributeLocation);
-    }
-
-    glError = glGetError();
-    if (glError != GL_NO_ERROR) {
-      getLogger()->error("Error binding buffer [%d] to location [%d]: 0x[%x]: [%s]",
-          buffer, attributeLocation, glError, gluErrorString(glError));
-      return false;
-    }
-
-    return true;
-  }
 };

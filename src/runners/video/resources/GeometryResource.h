@@ -38,6 +38,8 @@ private:
 	std::vector<vector3> normals;
 	std::vector<vector2> textureCoordinates;
 	std::vector<vector3> colors;
+  std::vector<real>data; //In case you want to specify a mixture of stuff in the same buffer. Either data or vertices.
+
 	PrimitiveType type;
 	MaterialResource *material = null;
 
@@ -122,6 +124,15 @@ public:
 	void setIndices(const std::vector<unsigned int> &indexes) {
 		this->indices = indexes;
 	}
+
+  const std::vector<real>& getData() const {
+    return data;
+  }
+
+  void setData(const std::vector<real> &data) {
+    this->data = data;
+  }
+
 
 	void addIndex(unsigned int index) {
 		this->indices.push_back(index);

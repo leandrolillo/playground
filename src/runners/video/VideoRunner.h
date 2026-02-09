@@ -9,6 +9,7 @@
 
 #include "Math3d.h"
 #include "Playground.h"
+#include "VideoAttribute.h"
 #include "GeometryResourceAdapter.h"
 #include "JpegResourceAdapter.h"
 #include "MtlResourceAdapter.h"
@@ -22,40 +23,6 @@
 #include "HeightMapResourceAdapter.h"
 #include "TextureResource.h"
 
-enum class VideoAttribute { //TODO: how to map these to opengl and d3d? Maybe a map in the implementations.
-  DEPTH_TEST,
-  /**
-   * Face culling options (for now they have to be defined in the same order as in opengl header)
-   */
-  CULL_FACE,
-    NONE,
-    FRONT,
-    BACK,
-    FRONT_AND_BACK,
-
-/**
- * Blending options
- */
-  BLEND,
-    //destination factor
-    SRC_COLOR,
-    ONE_MINUS_SRC_COLOR,
-    SRC_ALPHA,
-    ONE_MINUS_SRC_ALPHA,
-    DST_ALPHA,
-    ONE_MINUS_DST_ALPHA,
-
-    //source factor
-    DST_COLOR,
-    ONE_MINUS_DST_COLOR,
-    SRC_ALPHA_SATURATE,
-
-  TEXTURE_2D,
-  TEXTURE_CUBE_MAP,
-  MAX_TEXTURES,
-  LINE_WIDTH,
-  RELATIVE_MOUSE_MODE,
-};
 
 
 class VideoRunner : public PlaygroundRunner {
@@ -144,7 +111,7 @@ public:
 
 	virtual void setTexture(unsigned int location, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
 	virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) = 0;
-	virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const = 0;
+	virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource, const std::vector<real> &bufferSubData = {}) const = 0;
 
 	//TODO: get rid of this method
 	virtual TextureResource *getDefaultTexture() const = 0;

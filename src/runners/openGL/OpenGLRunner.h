@@ -493,7 +493,7 @@ public:
   /**
    * Expects [number of index] elements in every vertex array attribute. E.g. You can't have three vertices, six indices and six texture coordinates. See http://www.opengl.org/wiki/Vertex_Buffer_Object#Vertex_Stream
    */
-  void drawVertexArray(const VertexArrayResource *vertexArrayResource) const override {
+  void drawVertexArray(const VertexArrayResource *vertexArrayResource, const std::vector<real> &bufferSubData = {}) const override {
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
@@ -515,9 +515,19 @@ public:
             logger->error("Error drawing elements [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
           }
         } else {
-          glDrawArrays(primitiveType, 0, vertexArrayResource->getAttribute(VERTEX_LOCATION)->getCount());
-          if (!(errorMessage = getGlError()).empty()) {
-            logger->error("Error drawing arrays [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
+          auto vertexAttribute = vertexArrayResource->getAttribute(VERTEX_LOCATION);
+          if(vertexAttribute != null) {
+            if(vertexAttribute->getBufferUsage() == VideoAttribute::DYNAMIC_DRAW && !bufferSubData.empty()) {
+              GLenum bufferDestination = OpenGLUtilities::asGlAttribute(vertexAttribute->getBufferDestination());
+              glBindBuffer(bufferDestination, vertexAttribute->getBuffer());
+              glBufferSubData(bufferDestination, 0, bufferSubData.size() * sizeof(real), bufferSubData.data());
+              glBindBuffer(bufferDestination, 0);
+            }
+
+            glDrawArrays(primitiveType, 0, vertexAttribute->getCount());
+            if (!(errorMessage = getGlError()).empty()) {
+              logger->error("Error drawing arrays [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
+            }
           }
         }
 
@@ -525,7 +535,6 @@ public:
         glDisableVertexAttribArray(0);
       }
     }
-
   }
 
   TextureResource* getDefaultTexture() const override {
@@ -559,17 +568,7 @@ protected:
   }
 
   String getGlError() const { //Unify with OpenGLResourceAdapter getGLError
-    String errorMessage;
-    GLenum glError;
-    while ((glError = glGetError()) != GL_NO_ERROR) {
-      if (errorMessage.size() != 0) {
-        errorMessage += ", ";
-      }
-
-      errorMessage += std::to_string(glError) + ": " + (const char*) gluErrorString(glGetError());
-    }
-
-    return errorMessage;
+    return OpenGLUtilities::getGlError();
   }
 
   virtual String toString() const override {

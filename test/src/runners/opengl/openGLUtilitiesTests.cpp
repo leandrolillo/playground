@@ -4,6 +4,11 @@
 #include "OpenGLUtilities.h"
 
 TEST_CASE("OpenGLUtilities tests", "[opengl]") {
+  CHECK(GL_BYTE == OpenGLUtilities::asGlAttribute(VideoAttribute::BOOLEAN));
+  CHECK(GL_INT == OpenGLUtilities::asGlAttribute(VideoAttribute::INT));
+  CHECK(GL_UNSIGNED_INT == OpenGLUtilities::asGlAttribute(VideoAttribute::UNSIGNED_INT));
+  CHECK(GL_FLOAT == OpenGLUtilities::asGlAttribute(VideoAttribute::FLOAT));
+
   CHECK(GL_POINTS == OpenGLUtilities::asGlPrimitiveType(PrimitiveType::POINTS));
   CHECK(GL_LINE_LOOP == OpenGLUtilities::asGlPrimitiveType(PrimitiveType::LINE_LOOP));
   CHECK(GL_LINE_STRIP == OpenGLUtilities::asGlPrimitiveType(PrimitiveType::LINE_STRIP));
@@ -37,5 +42,11 @@ TEST_CASE("OpenGLUtilities tests", "[opengl]") {
   CHECK(GL_TEXTURE_2D == OpenGLUtilities::asGlAttribute(VideoAttribute::TEXTURE_2D));
   CHECK(GL_TEXTURE_CUBE_MAP == OpenGLUtilities::asGlAttribute(VideoAttribute::TEXTURE_CUBE_MAP));
   CHECK(GL_MAX_TEXTURE_IMAGE_UNITS == OpenGLUtilities::asGlAttribute(VideoAttribute::MAX_TEXTURES));
+
+  CHECK(GL_ARRAY_BUFFER == OpenGLUtilities::asGlAttribute(VideoAttribute::ARRAY_BUFFER));
+  CHECK(GL_ELEMENT_ARRAY_BUFFER == OpenGLUtilities::asGlAttribute(VideoAttribute::ELEMENT_ARRAY_BUFFER));
+  CHECK(GL_DYNAMIC_DRAW == OpenGLUtilities::asGlAttribute(VideoAttribute::DYNAMIC_DRAW));
+  CHECK(GL_STATIC_DRAW == OpenGLUtilities::asGlAttribute(VideoAttribute::STATIC_DRAW));
+
   CHECK(GL_LINE_WIDTH == OpenGLUtilities::asGlAttribute(VideoAttribute::LINE_WIDTH));
 }

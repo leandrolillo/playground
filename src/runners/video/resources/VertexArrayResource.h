@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Resource.h"
+#include "VideoAttribute.h"
 
 enum ShaderAttributeLocation
 {
@@ -15,46 +16,35 @@ class VertexAttribPointer {
 //	Logger *logger = LoggerFactory::getLogger("video/VertexAttribPointer");
 
 	public:
-		VertexAttribPointer(unsigned int buffer, unsigned int start, unsigned int count)
+		VertexAttribPointer(unsigned int buffer, unsigned int start, unsigned int count, VideoAttribute bufferDestination, VideoAttribute bufferUsage)
 		{
 			this->buffer = buffer;
 			this->start = start;
 			this->count = count;
+			this->bufferDestination = bufferDestination;
+			this->bufferUsage = bufferUsage;
 		}
-		VertexAttribPointer()
-		{
-			this->buffer = -1;
-			this->start = 0;
-			this->count = 0;
-		}
-
-//		~VertexAttribPointer() {
-//			logger->info("Deleting VertexAttribPointer");
-//		}
 
 		unsigned int getCount() const {
 			return count;
-		}
-
-		void setCount(unsigned int count) {
-			this->count = count;
 		}
 
 		unsigned int getBuffer() const {
 			return buffer;
 		}
 
-		void setBuffer(unsigned int pointer) {
-			this->buffer = pointer;
-		}
-
 		unsigned int getStart() const {
 			return start;
 		}
 
-		void setStart(unsigned int start) {
-			this->start = start;
+		VideoAttribute getBufferDestination() const {
+		  return this->bufferDestination;
 		}
+
+    VideoAttribute getBufferUsage() const {
+      return this->bufferUsage;
+    }
+
 
 		String toString() const {
 			return "[buffer: " + std::to_string(this->buffer) + " start: " + std::to_string(this->start) + " count: " + std::to_string(this->count);
@@ -64,6 +54,8 @@ class VertexAttribPointer {
 		unsigned int buffer;
 		unsigned int start;
 		unsigned int count;
+    VideoAttribute bufferDestination;
+    VideoAttribute bufferUsage;
 };
 
 class VertexArrayResource : public Resource
@@ -81,9 +73,9 @@ class VertexArrayResource : public Resource
 		/**
 		 * stores vertex buffer in the next free vertexAttribPointer, and returns the pointer.
 		 */
-		void addAttribute(unsigned int location, unsigned int vertexBuffer, unsigned int start, unsigned int count)
+		void addAttribute(unsigned int location, unsigned int vertexBuffer, unsigned int start, unsigned int count, VideoAttribute bufferDestination, VideoAttribute bufferUsage)
 		{
-			attributes[location] = std::unique_ptr<VertexAttribPointer>(new VertexAttribPointer(vertexBuffer, start, count));
+			attributes[location] = std::unique_ptr<VertexAttribPointer>(new VertexAttribPointer(vertexBuffer, start, count, bufferDestination, bufferUsage));
 		}
 
 		const VertexAttribPointer *getAttribute(unsigned int location) const {
