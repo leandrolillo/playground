@@ -38,19 +38,19 @@ private:
 	std::vector<vector3> normals;
 	std::vector<vector2> textureCoordinates;
 	std::vector<vector3> colors;
-  std::vector<real>data; //In case you want to specify a mixture of stuff in the same buffer. Either data or vertices.
 
-	PrimitiveType type;
+	std::vector<real>data; //In case you want to specify a mixture of stuff in the same buffer. Either data or vertices.
+  unsigned int dataComponentsPerVertex = 3; //1, 2, 3 or 4
+
+	PrimitiveType type = PrimitiveType::TRIANGLES;
 	MaterialResource *material = null;
 
 	vector size {0.0, 0.0, 0.0 };
 	vector max {REAL_MIN, REAL_MIN, REAL_MIN};
 	vector min {REAL_MAX, REAL_MAX, REAL_MAX};
 public:
-	GeometryResource(unsigned int id) :
-			Resource(id, MimeTypes::GEOMETRY) {
+	GeometryResource() : Resource(MimeTypes::GEOMETRY) {
 	  logger = LoggerFactory::getLogger("video/GeometryResource");
-		type = PrimitiveType::TRIANGLES;
 	}
 
 	const std::vector<vector3>& getNormals() const {
@@ -133,6 +133,13 @@ public:
     this->data = data;
   }
 
+  const unsigned int getDataComponentsPerVertex() const {
+    return dataComponentsPerVertex;
+  }
+
+  void setDataComponentsPerVertex(unsigned int dataComponentsPerVertex) {
+    this->dataComponentsPerVertex = dataComponentsPerVertex;
+  }
 
 	void addIndex(unsigned int index) {
 		this->indices.push_back(index);

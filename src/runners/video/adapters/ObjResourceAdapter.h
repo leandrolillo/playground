@@ -60,7 +60,7 @@ protected:
       std::vector<vector2> &textCoords,
       const ResourceLoadRequest *materialsRequest) const {
 
-    GeometryResource *geometry = new GeometryResource(0);
+    GeometryResource *geometry = new GeometryResource();
     geometry->setUri(textParser.getFilename());
     geometry->setName(Paths::getBasename(textParser.getFilename()));
 

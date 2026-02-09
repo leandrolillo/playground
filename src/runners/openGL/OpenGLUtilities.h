@@ -77,7 +77,7 @@ public:
         return null;
       }
     } else if(!geometry->getData().empty()) {
-      if(!addBuffer<real>(*resource, geometry->getData(), VERTEX_LOCATION, 1, VideoAttribute::ARRAY_BUFFER, VideoAttribute::FLOAT, VideoAttribute::DYNAMIC_DRAW)) { //TODO: make bufferUsage configurable somehow - either via labels or json in geometry file.
+      if(!addBuffer<real>(*resource, geometry->getData(), VERTEX_LOCATION, geometry->getDataComponentsPerVertex(), VideoAttribute::ARRAY_BUFFER, VideoAttribute::FLOAT, VideoAttribute::DYNAMIC_DRAW)) { //TODO: make bufferUsage configurable somehow - either via labels or json in geometry file.
         disposeVertexArray(resource);
         return null;
       }

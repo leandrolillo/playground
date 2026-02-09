@@ -39,7 +39,7 @@ protected:
 	  std::vector<Resource *> response;
 
 		JsonParser parser(request.getFileParser());
-		GeometryResource *resource = new GeometryResource(0);
+		GeometryResource *resource = new GeometryResource();
 
 		bool generateNormals = false;
 		bool generateIndexes = false;
@@ -65,6 +65,8 @@ protected:
 				resource->setColors(parser.readVector3Array());
 			} else if (token == "data") {
         resource->setData(parser.readRealArray());
+      } else if (token == "dataComponentsPerVertex") {
+        resource->setDataComponentsPerVertex(parser.readUnsignedInteger());
       } else if (token == "type") {
 				resource->setType(asPrimitiveType(parser.readString()));
 			} else if (token == "indices") {
