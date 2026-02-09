@@ -72,28 +72,28 @@ public:
     }
 
     if (!geometry->getVertices().empty()) {
-      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION)) {
+      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION, 1)) {
         disposeVertexArray(resource);
         return null;
       }
     } else if(!geometry->getData().empty()) {
-      if(!addBuffer<vector3>(*resource, geometry->getVertices(), VERTEX_LOCATION, VideoAttribute::ARRAY_BUFFER, VideoAttribute::FLOAT, sizeof(real), VideoAttribute::DYNAMIC_DRAW)) { //TODO: make bufferUsage configurable somehow - either via labels or json in geometry file.
+      if(!addBuffer<real>(*resource, geometry->getData(), VERTEX_LOCATION, 1, VideoAttribute::ARRAY_BUFFER, VideoAttribute::FLOAT, VideoAttribute::DYNAMIC_DRAW)) { //TODO: make bufferUsage configurable somehow - either via labels or json in geometry file.
         disposeVertexArray(resource);
         return null;
       }
     }
 
-    if (geometry->getNormals().size() != 0 && !addBuffer<vector3>(*resource, geometry->getNormals(), NORMAL_LOCATION)) {
+    if (!geometry->getNormals().empty() && !addBuffer<vector3>(*resource, geometry->getNormals(), NORMAL_LOCATION, 3)) {
       disposeVertexArray(resource);
       return null;
     }
 
-    if (geometry->getTextureCoordinates().size() != 0 && !addBuffer<vector2>(*resource, geometry->getTextureCoordinates(), TEXTURE_COORDINATES_LOCATION)) {
+    if (!geometry->getTextureCoordinates().empty() && !addBuffer<vector2>(*resource, geometry->getTextureCoordinates(), TEXTURE_COORDINATES_LOCATION, 2)) {
       disposeVertexArray(resource);
       return null;
     }
 
-    if (geometry->getColors().size() != 0 && !addBuffer<vector3>(*resource, geometry->getColors(), COLOR_LOCATION)) {
+    if (!geometry->getColors().empty() && !addBuffer<vector3>(*resource, geometry->getColors(), COLOR_LOCATION, 3)) {
       disposeVertexArray(resource);
       return null;
     }
@@ -101,7 +101,7 @@ public:
     /**
      * Indices need to be loaded after vertices
      */
-    if (geometry->getIndices().size() != 0 && !addBuffer<unsigned int>(*resource, geometry->getIndices(), INDEX_LOCATION, VideoAttribute::ELEMENT_ARRAY_BUFFER, VideoAttribute::UNSIGNED_INT, sizeof(unsigned int))) {
+    if (!geometry->getIndices().empty() && !addBuffer<unsigned int>(*resource, geometry->getIndices(), INDEX_LOCATION, 1, VideoAttribute::ELEMENT_ARRAY_BUFFER, VideoAttribute::UNSIGNED_INT)) {
       disposeVertexArray(resource);
       return null;
     }
@@ -116,7 +116,7 @@ public:
   }
 
   template<typename Primitive>
-  static bool addBuffer(VertexArrayResource &resource, const std::vector<Primitive> &data, ShaderAttributeLocation attributeLocation, VideoAttribute bufferDestination = VideoAttribute::ARRAY_BUFFER, VideoAttribute bufferElementType = VideoAttribute::FLOAT, GLint bufferElementSize = sizeof(real), VideoAttribute bufferUsage = VideoAttribute::STATIC_DRAW) {
+  static bool addBuffer(VertexArrayResource &resource, const std::vector<Primitive> &data, ShaderAttributeLocation attributeLocation, GLint bufferElementComponents, VideoAttribute bufferDestination = VideoAttribute::ARRAY_BUFFER, VideoAttribute bufferElementType = VideoAttribute::FLOAT, VideoAttribute bufferUsage = VideoAttribute::STATIC_DRAW) {
     if (data.size() > 0) {
       getLogger()->verbose("Creating [%d] vector2 buffer for attribute [%d]", attributeLocation);
 
@@ -135,7 +135,7 @@ public:
 
       if (attributeLocation >= 0) { //Add attribute location
         resource.addAttribute(attributeLocation, buffer, 0, data.size(), bufferDestination, bufferUsage);
-        glVertexAttribPointer((GLuint) attributeLocation, bufferElementSize, asGlAttribute(bufferElementType), GL_FALSE, 0, 0);
+        glVertexAttribPointer((GLuint) attributeLocation, bufferElementComponents, asGlAttribute(bufferElementType), GL_FALSE, 0, 0);
         glEnableVertexAttribArray(attributeLocation);
         getLogger()->verbose("Enabled attribute [%d]", attributeLocation);
       }
