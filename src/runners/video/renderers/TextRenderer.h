@@ -63,7 +63,9 @@ public:
   }
 
   void print(const String &text, const vector2 &position, const vector3 &color = vector3(1, 1, 1)) {
-    print(*defaultFont, position, text, color);
+    if(defaultFont != null) {
+      print(*defaultFont, position, text, color);
+    }
   }
 
   void print(const FontResource &font, const vector2 &position, const String &text, const vector3 &color = vector3(1, 1, 1)) {
@@ -83,7 +85,7 @@ protected:
 
     unsigned long currentTextureIndex = 0;
     for(auto &entry : textsByFont) {
-      auto &font = *entry.first;
+      auto &font = *(entry.first);
       video.setTexture(currentTextureIndex++, "image", font.getTextureAtlas());
       //currentTextureIndex++;
       if(maxTextures <= currentTextureIndex) {
