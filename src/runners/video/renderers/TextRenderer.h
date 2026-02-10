@@ -77,11 +77,11 @@ public:
 
   void print(const String &text, const vector2 &position, const vector3 &color = vector3(1, 1, 1)) {
     if(defaultFont != null) {
-      print(*defaultFont, position, text, color);
+      print(*defaultFont, text, position, color);
     }
   }
 
-  void print(const FontResource &font, const vector2 &position, const String &text, const vector3 &color = vector3(1, 1, 1)) {
+  void print(const FontResource &font, const String &text, const vector2 &position, const vector3 &color = vector3(1, 1, 1)) {
     textsByFont[&font].emplace_back(Text(text, position, color));
   }
 
