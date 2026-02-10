@@ -61,10 +61,7 @@ protected:
 
     for (unsigned char character = 32; character < 128; character++)
     {
-      /* retrieve glyph index from character code */
-      auto glyph_index = FT_Get_Char_Index( face, character );
-
-      if (FT_Load_Char(face, glyph_index, FT_LOAD_RENDER) == FT_Err_Ok) {
+      if (FT_Load_Char(face, character, FT_LOAD_RENDER) == FT_Err_Ok) {
         max_glyph_height = std::max(max_glyph_height, glyph->bitmap.rows);
 
         if(x + glyph->bitmap.width >= textureAtlas->getWidth()) {
