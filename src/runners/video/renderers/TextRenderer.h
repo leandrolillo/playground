@@ -32,6 +32,15 @@ private:
   FontResource *defaultFont = null;
 
   unsigned long maxTextures = 32;
+
+  std::vector<real> quadVertices = {    0, 1,   0, 0,
+                                        0, 0,   0, 1,
+                                        1, 0,   1, 1,
+
+                                        0, 1,   0, 0,
+                                        1, 0,   1, 1,
+                                        1, 1,   1, 0 };
+
 public:
   using Renderer::Renderer;
 
@@ -104,12 +113,14 @@ protected:
           vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
           vector2 size = glyph.getSize() * scale;
 
-          video.drawVertexArray(this->quad,
-              std::vector { position.x,           position.y + size.y,    0.0f, 0.0f,
-                            position.x + size.x,  position.y,             1.0f, 1.0f,
-                            position.x,           position.y + size.y,    0.0f, 0.0f,
-                            position.x + size.x,  position.y,             1.0f, 1.0f,
-                            position.x + size.x,  position.y + size.y,    1.0f, 0.0f }  );
+          this->quadVertices[0] = position.x;             this->quadVertices[1] = position.y + size.y;
+          this->quadVertices[1*4] = position.x;           this->quadVertices[1*4+1] = position.y;
+          this->quadVertices[2*4] = position.x + size.x;  this->quadVertices[2*4+1] = position.y;
+          this->quadVertices[3*4] = position.x;           this->quadVertices[3*4+1] = position.y + size.y;
+          this->quadVertices[4*4] = position.x + size.x;  this->quadVertices[4*4+1] = position.y;
+          this->quadVertices[5*4] = position.x + size.x;  this->quadVertices[5*4+1] = position.y + size.y;
+
+          video.drawVertexArray(this->quad, this->quadVertices);
 
           cursor.y += glyph.getAdvance();
         }
