@@ -62,7 +62,7 @@ public:
     return RendererStatus::INITIALIZED;
   }
 
-  void print(const vector2 &position, const String &text, const vector3 &color = vector3(1, 1, 1)) {
+  void print(const String &text, const vector2 &position, const vector3 &color = vector3(1, 1, 1)) {
     print(*defaultFont, position, text, color);
   }
 
