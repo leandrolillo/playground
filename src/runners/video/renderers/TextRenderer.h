@@ -73,7 +73,9 @@ public:
   }
 
   void clear() {
-    textsByFont.clear();
+    for(auto &entry : textsByFont) {
+      entry.second.clear();
+    }
   }
 
 
