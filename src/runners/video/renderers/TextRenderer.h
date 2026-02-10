@@ -83,7 +83,7 @@ protected:
 
     unsigned long currentTextureIndex = 0;
     for(auto &entry : textsByFont) {
-      const FontResource &font = *entry.first;
+      auto &font = *entry.first;
       video.setTexture(currentTextureIndex++, "image", font.getTextureAtlas());
       //currentTextureIndex++;
       if(maxTextures <= currentTextureIndex) {
