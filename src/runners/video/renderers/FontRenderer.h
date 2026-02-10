@@ -6,15 +6,30 @@ class Text {
   String text;
   vector2 position;
   vector3 color;
-
+public:
+  Text(const String &text, const vector2 &position, const vector3 &color) :
+    text(text),
+    position(position),
+    color(color)
+  {
+  }
+  const vector3 &getColor() const {
+    return this->color;
+  }
+  const vector2 &getPosition() const {
+    return this->position;
+  }
+  const String &getValue() const {
+    return this->text;
+  }
 };
 
 class FontRenderer: public Renderer {
 private:
   Logger *logger = LoggerFactory::getLogger("SpriteRenderer");
 
-  std::unordered_map<const FontResource *, std::list<Text>>textsByFont;
-  std::unique_ptr<VertexArrayResource> quad;
+  std::unordered_map<const FontResource *, std::vector<Text>>textsByFont;
+  VertexArrayResource *quad;
   unsigned long maxTextures = 32;
 public:
   using Renderer::Renderer;
@@ -35,8 +50,11 @@ public:
       this->quad = (VertexArrayResource *)this->resourceManager.load("core/glyph.json", MimeTypes::VERTEXARRAY);
     }
 
-
     return RendererStatus::INITIALIZED;
+  }
+
+  void print(const FontResource &font, vector2 position, String text, vector3 color = vector3(1, 1, 1)) {
+    textsByFont[&font].emplace_back(Text(text, position, color));
   }
 
   void clear() {
@@ -46,6 +64,8 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
+    real scale = 1.0;
+
     video.sendMatrix("projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
 
     unsigned long currentTextureIndex = 0;
@@ -59,8 +79,23 @@ protected:
 
       for(auto &text : entry.second) {
         video.sendVector("color", text.getColor());
+        vector2 cursor = text.getPosition();
 
-        video.drawVertexArray(this->quad);
+        for(char character : text.getValue()) {
+          auto glyph = font.getGlyph(character);
+
+          vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
+          vector2 size = glyph.getSize() * scale;
+
+          video.drawVertexArray(this->quad,
+              std::vector { position.x,           position.y + size.y,    0.0f, 0.0f,
+                            position.x + size.x,  position.y,             1.0f, 1.0f,
+                            position.x,           position.y + size.y,    0.0f, 0.0f,
+                            position.x + size.x,  position.y,             1.0f, 1.0f,
+                            position.x + size.x,  position.y + size.y,    1.0f, 0.0f }  );
+
+          cursor.y += glyph.getAdvance();
+        }
       }
     }
   }

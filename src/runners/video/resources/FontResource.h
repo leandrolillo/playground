@@ -52,12 +52,13 @@ public:
     return this;
   }
 
-  const Glyph &getGlyph(char character) {
-    return charMap[character]; //return default value if not present
+  const Glyph &getGlyph(char character) const {
+    return charMap.at(character); //return default value if not present
   }
 
   FontResource *setTextureAtlas(TextureResource *textureAtlas) {
     this->textureAtlas = textureAtlas;
+    return this;
   }
 
   const TextureResource *getTextureAtlas() const {

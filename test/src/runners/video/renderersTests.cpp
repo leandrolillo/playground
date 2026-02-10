@@ -10,6 +10,7 @@
 #include "GridRenderer.h"
 #include "SkyboxRenderer.h"
 #include "SpriteRenderer.h"
+#include "FontRenderer.h"
 
 #include "Camera.h"
 
@@ -40,6 +41,10 @@ TEST_CASE("Video Renderers") {
   spriteRenderer.toString();
 
   Sprite sprite(null, vector2(0, 0), vector2(100, 100));
+
+  FontRenderer fontRenderer(videoRunnerMock);
+  CHECK(spriteRenderer.isEnabled() == false);
+  fontRenderer.toString();
 }
 
 TEST_CASE("Geometry (defaultRenderer) Render") {
