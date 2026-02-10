@@ -24,36 +24,49 @@ public:
   }
 };
 
-class FontRenderer: public Renderer {
+class TextRenderer: public Renderer {
 private:
   Logger *logger = LoggerFactory::getLogger("SpriteRenderer");
-
   std::unordered_map<const FontResource *, std::vector<Text>>textsByFont;
-  VertexArrayResource *quad;
+  VertexArrayResource *quad = null;
+  FontResource *defaultFont = null;
+
   unsigned long maxTextures = 32;
 public:
   using Renderer::Renderer;
 
   virtual RendererStatus initialize() override {
     if(this->shader == null) {
-      this->shader = (ShaderProgramResource*) this->resourceManager.load("core/font.program.json", MimeTypes::SHADERPROGRAM);
-    }
-
-    if(shader == null) {
-      logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
-      return RendererStatus::FAILED;
+      if(this->shader = (ShaderProgramResource*) this->resourceManager.load("core/font.program.json", MimeTypes::SHADERPROGRAM); shader == null) {
+        logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
+        return RendererStatus::FAILED;
+      }
     }
 
     this->maxTextures = video.getIntegerOption(VideoAttribute::MAX_TEXTURES);
 
     if(this->quad == null) {
-      this->quad = (VertexArrayResource *)this->resourceManager.load("core/glyph.json", MimeTypes::VERTEXARRAY);
+      if(this->quad = (VertexArrayResource *)this->resourceManager.load("core/glyph.json", MimeTypes::VERTEXARRAY); this->quad == null) {
+        logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
+        return RendererStatus::FAILED;
+      }
+    }
+
+    if(defaultFont == null) {
+      if(this->defaultFont = (FontResource *)this->resourceManager.load("core/Geneva.ttf"); this->defaultFont == null) {
+        logger->error("Failed to initialize Renderer [%s]", this->toString().c_str());
+        return RendererStatus::FAILED;
+      }
     }
 
     return RendererStatus::INITIALIZED;
   }
 
-  void print(const FontResource &font, vector2 position, String text, vector3 color = vector3(1, 1, 1)) {
+  void print(const vector2 &position, const String &text, const vector3 &color = vector3(1, 1, 1)) {
+    print(*defaultFont, position, text, color);
+  }
+
+  void print(const FontResource &font, const vector2 &position, const String &text, const vector3 &color = vector3(1, 1, 1)) {
     textsByFont[&font].emplace_back(Text(text, position, color));
   }
 
