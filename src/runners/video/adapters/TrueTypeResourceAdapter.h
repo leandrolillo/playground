@@ -12,12 +12,13 @@
 #include FT_FREETYPE_H
 
 #include "ResourceAdapter.h"
+#include "ImageResource.h"
 #include "FontResource.h"
 
-class FontResourceAdapter: public ResourceAdapter {
+class TrueTypeResourceAdapter: public ResourceAdapter {
 public:
 
-  FontResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
+  TrueTypeResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("video/FontResourceAdapter");
     this->accepts(MimeTypes::TRUE_TYPE_FONT);
     this->produces(MimeTypes::FONT);
@@ -71,7 +72,7 @@ protected:
           y = 0;
           max_glyph_height = 0;
         }
-        font->add(character, vector2(0, 0), vector2(glyph->bitmap.width, glyph->bitmap.rows), vector2(glyph->bitmap_left, glyph->bitmap_top), glyph->advance.x);
+        font->add(character, vector2(0, 0), vector2(glyph->bitmap.width, glyph->bitmap.rows), vector2(glyph->bitmap_left, glyph->bitmap_top), glyph->advance.x >> 6);
         textureAtlas->copy(x, y, glyph->bitmap.buffer, glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.pitch / glyph->bitmap.width * 8);
 
         y += glyph->bitmap.width;

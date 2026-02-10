@@ -158,8 +158,8 @@ TEST_CASE("OpenGLRunner Test case", "[opengl]")
     CHECK(MimeTypes::SHADERPROGRAM == resource->getMimeType());
   }
 
-  SECTION("FontResourceAdapter with ResourceManager test") {
-    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<FontResourceAdapter>();
+  SECTION("TrueTypeResourceAdapter with ResourceManager test") {
+    ResourceAdapter &resourceAdapter = resourceManager.addAdapter<TrueTypeResourceAdapter>();
     FontResource *resource = (FontResource *)resourceManager.load("fonts/Monaco.ttf");
     REQUIRE(resource != null);
     CHECK(resource->getId() == 0);

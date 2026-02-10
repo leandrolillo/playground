@@ -1,14 +1,19 @@
 type summary add -s "<${var.x}, ${var.y}, ${var.z}>" vector
+type summary add -s "<${var.x}, ${var.y}>" vector2
 type summary add -s "<${var.x}, ${var.y}, ${var.z}>" vector3
+type summary add -s "<${var.x}, ${var.y}, ${var.z}, ${var.w}>" vector4
 
 type summary add -s "origin:${var.origin}, halfSizes:${var.halfSizes}" AABB
 type summary add -s "origin:${var.origin}, radius:${var.radius}" Sphere
 type summary add -s "origin:${var.origin}, normal:${var.normal}" Plane
+type summary add -s "origin:${var.origin}, direction:${var.direction}" Line
+
+type summary add -s "boundingVolume:${var.boundingVolume}, m:${var.mass}, v:${var.velocity}, a:${var.acceleration}" Particle
 
 type summary add -s "${var.filename} ${var.line}:${var.column}" FileParser
 type summary add -s "${var.fileParser.filename} ${var.fileParser.line}:${var.fileParser.column}" JsonParser
 
-type summary add -s "${var.uri}|${var.outputMimeType} <- ${var.inputMimeType}" ResourceLoadRequest
+type summary add -s "Request ${var.uri}|${var.outputMimeType} <- ${var.inputMimeType}" ResourceLoadRequest
 type summary add -s "${var.outputMimeTypes}<-${var.inputMimeType}" ResourceAdapter
 
 type summary add -s "(id:${var.id})[${var.mimeType}][${var.uri}] [${var.labels}]" Resource
