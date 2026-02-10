@@ -27,7 +27,7 @@ public:
 
 class TextRenderer: public Renderer {
 private:
-  Logger *logger = LoggerFactory::getLogger("SpriteRenderer");
+  Logger *logger = LoggerFactory::getLogger("TextRenderer");
   std::unordered_map<const FontResource *, std::vector<Text>>textsByFont;
   VertexArrayResource *quad = null;
   FontResource *defaultFont = null;
@@ -41,16 +41,8 @@ private:
                                         0, 1,   0, 0,
                                         1, 0,   1, 1,
                                         1, 1,   1, 0 };
-
-  SpriteRenderer &spriteRenderer;
-
 public:
-  //using Renderer::Renderer;
-
-  TextRenderer(VideoRunner &video, SpriteRenderer &spriteRenderer):
-    Renderer(video), spriteRenderer(spriteRenderer) {
-
-  }
+  using Renderer::Renderer;
 
   const FontResource *getDefaultFont() const {
     return this->defaultFont;
@@ -101,68 +93,71 @@ public:
 
 
 protected:
-//  void doRender(const Camera &camera) override {
-//    real scale = 1.0;
-//
-//    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
-//    video.disable(VideoAttribute::DEPTH_TEST);
-//    video.sendMatrix("projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
-//
-//    unsigned long currentTextureIndex = 0;
-//    for(auto &entry : textsByFont) {
-//      auto &font = *(entry.first);
-//      video.setTexture(currentTextureIndex++, "image", font.getTextureAtlas());
-//      //currentTextureIndex++;
-//      if(maxTextures <= currentTextureIndex) {
-//        currentTextureIndex = 0;
-//      }
-//
-//      for(auto &text : entry.second) {
-//        video.sendVector("color", text.getColor());
-//        vector2 cursor = text.getPosition();
-//
-//        for(char character : text.getValue()) {
-//          auto &glyph = font.getGlyph(character);
-//
-//          vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
-//          vector2 size = glyph.getSize() * scale;
-//
-//          quadVertices[0] = position.x;             quadVertices[1] = position.y + size.y;      quadVertices[2] = glyph.getTextureTopLeft().x;        quadVertices[3] = glyph.getTextureTopLeft().y;
-//          quadVertices[1*4] = position.x;           quadVertices[1*4+1] = position.y;           quadVertices[1*4+2] = glyph.getTextureTopLeft().x;    quadVertices[1*4+3] = glyph.getTextureBottomRight().y;
-//          quadVertices[2*4] = position.x + size.x;  quadVertices[2*4+1] = position.y;           quadVertices[2*4+2] = glyph.getTextureBottomRight().x;  quadVertices[2*4+3] = glyph.getTextureBottomRight().y;
-//          quadVertices[3*4] = position.x;           quadVertices[3*4+1] = position.y + size.y;  quadVertices[3*4+2] = glyph.getTextureTopLeft().x;    quadVertices[3*4+3] = glyph.getTextureTopLeft().y;
-//          quadVertices[4*4] = position.x + size.x;  quadVertices[4*4+1] = position.y;           quadVertices[4*4+2] = glyph.getTextureBottomRight().x;  quadVertices[4*4+3] = glyph.getTextureBottomRight().y;
-//          quadVertices[5*4] = position.x + size.x;  quadVertices[5*4+1] = position.y + size.y;  quadVertices[5*4+2] = glyph.getTextureBottomRight().x;  quadVertices[5*4+3] = glyph.getTextureTopLeft().y;
-//
-//          video.drawVertexArray(this->quad, this->quadVertices);
-//
-//          cursor.y += glyph.getAdvance();
-//        }
-//      }
-//    }
-//  }
-
   void doRender(const Camera &camera) override {
     real scale = 1.0;
+
+    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.disable(VideoAttribute::DEPTH_TEST);
+    video.disable(VideoAttribute::CULL_FACE);
+    video.sendMatrix("projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
+
     unsigned long currentTextureIndex = 0;
     for(auto &entry : textsByFont) {
       auto &font = *(entry.first);
+      video.setTexture(currentTextureIndex++, "image", font.getTextureAtlas());
+      //currentTextureIndex++;
+      if(maxTextures <= currentTextureIndex) {
+        currentTextureIndex = 0;
+      }
 
       for(auto &text : entry.second) {
+        video.sendVector("color", text.getColor());
         vector2 cursor = text.getPosition();
 
         for(char character : text.getValue()) {
           auto &glyph = font.getGlyph(character);
 
-          vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
+          vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getOffset().y - glyph.getSize().y) * scale;
           vector2 size = glyph.getSize() * scale;
 
-          spriteRenderer.draw(*font.getTextureAtlas(), position, size, 0.0);
+          quadVertices[0] = position.x;             quadVertices[1] = position.y + size.y;      quadVertices[2] = glyph.getTextureTopLeft().x;        quadVertices[3] = glyph.getTextureTopLeft().y;
+          quadVertices[1*4] = position.x;           quadVertices[1*4+1] = position.y;           quadVertices[1*4+2] = glyph.getTextureTopLeft().x;    quadVertices[1*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[2*4] = position.x + size.x;  quadVertices[2*4+1] = position.y;           quadVertices[2*4+2] = glyph.getTextureBottomRight().x;  quadVertices[2*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[3*4] = position.x;           quadVertices[3*4+1] = position.y + size.y;  quadVertices[3*4+2] = glyph.getTextureTopLeft().x;    quadVertices[3*4+3] = glyph.getTextureTopLeft().y;
+          quadVertices[4*4] = position.x + size.x;  quadVertices[4*4+1] = position.y;           quadVertices[4*4+2] = glyph.getTextureBottomRight().x;  quadVertices[4*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[5*4] = position.x + size.x;  quadVertices[5*4+1] = position.y + size.y;  quadVertices[5*4+2] = glyph.getTextureBottomRight().x;  quadVertices[5*4+3] = glyph.getTextureTopLeft().y;
 
+          video.drawVertexArray(this->quad, this->quadVertices);
 
-          cursor.y += glyph.getAdvance();
+          cursor.x += glyph.getAdvance() * scale;
         }
       }
     }
   }
+
+//  void doRender(const Camera &camera) override {
+//    real scale = 1.0;
+//    unsigned long currentTextureIndex = 0;
+//    for(auto &entry : textsByFont) {
+//      auto &font = *(entry.first);
+//
+//      for(auto &text : entry.second) {
+//        vector2 cursor = text.getPosition();
+//
+//        for(char character : text.getValue()) {
+//          auto &glyph = font.getGlyph(character);
+//
+//          if(character != 32) {
+//            vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
+//            vector2 size = glyph.getSize() * scale;
+//
+//            spriteRenderer.draw(*font.getTextureAtlas(), position, size, 0.0);
+//          }
+//
+//
+//          cursor.x += glyph.getAdvance() * scale;
+//        }
+//      }
+//    }
+//  }
 };

@@ -42,7 +42,7 @@ TEST_CASE("Video Renderers") {
 
   Sprite sprite(null, vector2(0, 0), vector2(100, 100));
 
-  TextRenderer textRenderer(videoRunnerMock, spriteRenderer);
+  TextRenderer textRenderer(videoRunnerMock);
   CHECK(textRenderer.isEnabled() == false);
   textRenderer.toString();
 }

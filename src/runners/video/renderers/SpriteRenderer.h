@@ -103,14 +103,13 @@ public:
 protected:
   void doRender(const Camera &camera) override {
     video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
-    video.enable(VideoAttribute::DEPTH_TEST);
+    //video.enable(VideoAttribute::DEPTH_TEST);
 
     video.sendMatrix("matrices.projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
 
     unsigned long currentTextureIndex = 0;
     for(auto &entry : spritesByTexture) {
       video.setTexture(currentTextureIndex++, "image", entry.first);
-      //currentTextureIndex++;
       if(maxTextures <= currentTextureIndex) {
         currentTextureIndex = 0;
       }
