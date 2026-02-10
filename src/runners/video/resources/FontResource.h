@@ -38,7 +38,7 @@ public:
 class FontResource: public Resource {
 private:
   Logger *logger = LoggerFactory::getLogger("video/font");
-  TextureResource *textureAtlas = null;
+  const TextureResource *textureAtlas = null;
   std::unordered_map<char, Glyph> charMap;
 
 public:
@@ -56,7 +56,7 @@ public:
     return charMap.at(character); //return default value if not present
   }
 
-  FontResource *setTextureAtlas(TextureResource *textureAtlas) {
+  FontResource *setTextureAtlas(const TextureResource *textureAtlas) {
     this->textureAtlas = textureAtlas;
     return this;
   }

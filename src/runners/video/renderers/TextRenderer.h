@@ -44,6 +44,10 @@ private:
 public:
   using Renderer::Renderer;
 
+  const FontResource *getDefaultFont() const {
+    return this->defaultFont;
+  }
+
   virtual RendererStatus initialize() override {
     if(this->shader == null) {
       if(this->shader = (ShaderProgramResource*) this->resourceManager.load("core/font.program.json", MimeTypes::SHADERPROGRAM); shader == null) {
@@ -108,7 +112,7 @@ protected:
         vector2 cursor = text.getPosition();
 
         for(char character : text.getValue()) {
-          auto glyph = font.getGlyph(character);
+          auto &glyph = font.getGlyph(character);
 
           vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
           vector2 size = glyph.getSize() * scale;
