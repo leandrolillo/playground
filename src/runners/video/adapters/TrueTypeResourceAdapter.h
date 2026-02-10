@@ -62,6 +62,9 @@ protected:
     for (unsigned char character = 32; character < 128; character++)
     {
       if (FT_Load_Char(face, character, FT_LOAD_RENDER) == FT_Err_Ok) {
+
+        FT_Render_Glyph(glyph, FT_RENDER_MODE_SDF);
+
         max_glyph_height = std::max(max_glyph_height, glyph->bitmap.rows);
 
         if(x + glyph->bitmap.width >= textureAtlas->getWidth()) {
