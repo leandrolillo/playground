@@ -117,12 +117,12 @@ protected:
           vector2 position = cursor +  vector2(glyph.getOffset().x, glyph.getSize().y - glyph.getOffset().y) * scale;
           vector2 size = glyph.getSize() * scale;
 
-          this->quadVertices[0] = position.x;             this->quadVertices[1] = position.y + size.y;
-          this->quadVertices[1*4] = position.x;           this->quadVertices[1*4+1] = position.y;
-          this->quadVertices[2*4] = position.x + size.x;  this->quadVertices[2*4+1] = position.y;
-          this->quadVertices[3*4] = position.x;           this->quadVertices[3*4+1] = position.y + size.y;
-          this->quadVertices[4*4] = position.x + size.x;  this->quadVertices[4*4+1] = position.y;
-          this->quadVertices[5*4] = position.x + size.x;  this->quadVertices[5*4+1] = position.y + size.y;
+          quadVertices[0] = position.x;             quadVertices[1] = position.y + size.y;      quadVertices[2] = glyph.getTextureTopLeft().x;        quadVertices[3] = glyph.getTextureTopLeft().y;
+          quadVertices[1*4] = position.x;           quadVertices[1*4+1] = position.y;           quadVertices[1*4+2] = glyph.getTextureTopLeft().x;    quadVertices[1*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[2*4] = position.x + size.x;  quadVertices[2*4+1] = position.y;           quadVertices[2*4+2] = glyph.getTextureBottomRight().x;  quadVertices[2*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[3*4] = position.x;           quadVertices[3*4+1] = position.y + size.y;  quadVertices[3*4+2] = glyph.getTextureTopLeft().x;    quadVertices[3*4+3] = glyph.getTextureTopLeft().y;
+          quadVertices[4*4] = position.x + size.x;  quadVertices[4*4+1] = position.y;           quadVertices[4*4+2] = glyph.getTextureBottomRight().x;  quadVertices[4*4+3] = glyph.getTextureBottomRight().y;
+          quadVertices[5*4] = position.x + size.x;  quadVertices[5*4+1] = position.y + size.y;  quadVertices[5*4+2] = glyph.getTextureBottomRight().x;  quadVertices[5*4+3] = glyph.getTextureTopLeft().y;
 
           video.drawVertexArray(this->quad, this->quadVertices);
 

@@ -59,7 +59,7 @@ protected:
     unsigned int y = 0;
     unsigned int max_glyph_height = 0;
 
-    for (unsigned char character = 0; character < 128; character++)
+    for (unsigned char character = 32; character < 128; character++)
     {
       /* retrieve glyph index from character code */
       auto glyph_index = FT_Get_Char_Index( face, character );
@@ -67,15 +67,20 @@ protected:
       if (FT_Load_Char(face, glyph_index, FT_LOAD_RENDER) == FT_Err_Ok) {
         max_glyph_height = std::max(max_glyph_height, glyph->bitmap.rows);
 
-        if(y + glyph->bitmap.width >= textureAtlas->getWidth()) {
-          x += max_glyph_height;
-          y = 0;
+        if(x + glyph->bitmap.width >= textureAtlas->getWidth()) {
+          y += max_glyph_height;
+          x = 0;
           max_glyph_height = 0;
         }
-        font->add(character, vector2(0, 0), vector2(glyph->bitmap.width, glyph->bitmap.rows), vector2(glyph->bitmap_left, glyph->bitmap_top), glyph->advance.x >> 6);
+        font->add(character,
+            vector2((real)x / textureAtlas->getWidth(), (real)y / textureAtlas->getHeight()),
+            vector2((real)(x + glyph->bitmap.width) / textureAtlas->getWidth(), (real)(y + glyph->bitmap.rows) / textureAtlas->getHeight()),
+            vector2(glyph->bitmap.width, glyph->bitmap.rows),
+            vector2(glyph->bitmap_left, glyph->bitmap_top),
+            glyph->advance.x >> 6);
         textureAtlas->copy(x, y, glyph->bitmap.buffer, glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.pitch / glyph->bitmap.width * 8);
 
-        y += glyph->bitmap.width;
+        x += glyph->bitmap.width;
       } else {
         logger->error("Could not load character [%c]", character);
       }
