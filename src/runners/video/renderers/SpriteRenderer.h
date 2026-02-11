@@ -103,7 +103,7 @@ public:
 protected:
   void doRender(const Camera &camera) override {
     video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
-    //video.enable(VideoAttribute::DEPTH_TEST);
+    video.enable(VideoAttribute::DEPTH_TEST);
 
     video.sendMatrix("matrices.projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
 
