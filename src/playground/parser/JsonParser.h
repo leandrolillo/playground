@@ -137,24 +137,44 @@ class JsonParser : public TextParser
 		}
 
 		std::vector<unsigned int> readUnsignedIntegerArray()
-				{
-					std::vector<unsigned int>array;
+    {
+      std::vector<unsigned int>array;
 
-					readStartArray();
-					String token;
+      readStartArray();
+      String token;
 
-					while((token = fileParser.peekToken()) != END_ARRAY && token != FileParser::eof) {
-						unsigned int value = readUnsignedInteger();
-						array.push_back(value);
+      while((token = fileParser.peekToken()) != END_ARRAY && token != FileParser::eof) {
+        unsigned int value = readUnsignedInteger();
+        array.push_back(value);
 
-						if((token = fileParser.peekToken()) == ",")
-							fileParser.takeToken();
-					}
+        if((token = fileParser.peekToken()) == ",")
+          fileParser.takeToken();
+      }
 
-					readEndArray();
+      readEndArray();
 
-					return array;
-				}
+      return array;
+    }
+
+		std::vector<real> readRealArray()
+    {
+      std::vector<real>array;
+
+      readStartArray();
+      String token;
+
+      while((token = fileParser.peekToken()) != END_ARRAY && token != FileParser::eof) {
+        real value = readReal();
+        array.push_back(value);
+
+        if((token = fileParser.peekToken()) == ",")
+          fileParser.takeToken();
+      }
+
+      readEndArray();
+
+      return array;
+    }
 
 		std::vector<vector2> readVector2Array()
 		{

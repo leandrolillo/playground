@@ -6,7 +6,6 @@
 #include "VertexArrayResource.h"
 
 class TerrainResource: public Resource {
-    Logger *logger = LoggerFactory::getLogger("video/TerrainResource");
 	TextureResource *r = null;
 	TextureResource *g = null;
 	TextureResource *b = null;
@@ -20,6 +19,7 @@ class TerrainResource: public Resource {
 
 public:
 	TerrainResource() : Resource(0, MimeTypes::TERRAIN) {
+	  logger = LoggerFactory::getLogger("video/TerrainResource");
 	}
 
 	const TextureResource* getA() const {

@@ -186,32 +186,32 @@ public:
       return true;
     case SDL_EVENT_KEY_DOWN:
       //SDL_Log("SDL_KEYDOWN %d", event->key.keysym.sym);
-      logger->verbose("KEYDOWN: %d, %d", event->key.key, event->key.mod);
+      logger->debug("KEYDOWN: %d, %d", event->key.key, event->key.mod);
       this->getContainer().onKeyDown(event->key.key, event->key.mod);
       return true;
     case SDL_EVENT_KEY_UP:
       //SDL_Log("SDL_KEYUP %d", event->key.keysym.sym);
-      logger->verbose("KEYUP: %d, %d", event->key.key, event->key.mod);
+      logger->debug("KEYUP: %d, %d", event->key.key, event->key.mod);
       this->getContainer().onKeyUp(event->key.key, event->key.mod);
       return true;
     case SDL_EVENT_MOUSE_MOTION:
       //SDL_Log("SDL_MOUSEMOTION (%d,%d) delta=(%d,%d)", event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel);
       this->getContainer().onMouseMove(event->motion.x, event->motion.y, event->motion.xrel, event->motion.yrel, event->motion.state);
-      logger->verbose("MOUSEMOVE: (%d, %d)", event->motion.xrel, event->motion.yrel);
+      logger->debug("MOUSEMOVE: (%d, %d)", event->motion.xrel, event->motion.yrel);
       return true;
     case SDL_EVENT_MOUSE_BUTTON_DOWN:
       //SDL_Log("SDL_MOUSEBUTTONDOWN %d", event->button.button);
-      logger->verbose("MOUSEBUTTONDOWN: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
+      logger->debug("MOUSEBUTTONDOWN: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
       this->getContainer().onMouseButtonDown(event->button.button, event->button.x, event->button.y);
       return true;
     case SDL_EVENT_MOUSE_BUTTON_UP:
       //SDL_Log("SDL_MOUSEBUTTONUP %d", event->button.button);
-      logger->verbose("MOUSEBUTTONUP: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
+      logger->debug("MOUSEBUTTONUP: %d at <%d, %d>", event->button.button, event->button.x, event->button.y);
       this->getContainer().onMouseButtonUp(event->button.button, event->button.x, event->button.y);
       return true;
     case SDL_EVENT_MOUSE_WHEEL:
       //SDL_Log("SDL_MOUSEWHEEL %d %d", event->wheel.direction, event->wheel.y);
-      logger->verbose("MOUSEWHEEL: %d", event->wheel.y);
+      logger->debug("MOUSEWHEEL: %d", event->wheel.y);
       this->getContainer().onMouseWheel(event->wheel.y);
       return true;
     }
@@ -225,13 +225,13 @@ public:
   }
 
   virtual void onKeyDown(unsigned int key, unsigned int keyModifier) override {
-    logger->info("Key down: %d", key);
-    logger->info("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->info("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->info("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
-    logger->info("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
-    logger->info("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
-    logger->info("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
+    logger->debug("Key down: %d", key);
+    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+    logger->debug("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
+    logger->debug("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
+    logger->debug("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
+    logger->debug("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
 
     switch (key) {
     case SDLK_ESCAPE:
@@ -493,7 +493,7 @@ public:
   /**
    * Expects [number of index] elements in every vertex array attribute. E.g. You can't have three vertices, six indices and six texture coordinates. See http://www.opengl.org/wiki/Vertex_Buffer_Object#Vertex_Stream
    */
-  void drawVertexArray(const VertexArrayResource *vertexArrayResource) const override {
+  void drawVertexArray(const VertexArrayResource *vertexArrayResource, const std::vector<real> &bufferSubData = {}) const override {
     String errorMessage;
 
     if (vertexArrayResource != null && vertexArrayResource->getId() > 0) {
@@ -515,9 +515,19 @@ public:
             logger->error("Error drawing elements [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
           }
         } else {
-          glDrawArrays(primitiveType, 0, vertexArrayResource->getAttribute(VERTEX_LOCATION)->getCount());
-          if (!(errorMessage = getGlError()).empty()) {
-            logger->error("Error drawing arrays [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
+          auto vertexAttribute = vertexArrayResource->getAttribute(VERTEX_LOCATION);
+          if(vertexAttribute != null) {
+            if(vertexAttribute->getBufferUsage() == VideoAttribute::DYNAMIC_DRAW && !bufferSubData.empty()) {
+              GLenum bufferDestination = OpenGLUtilities::asGlAttribute(vertexAttribute->getBufferDestination());
+              glBindBuffer(bufferDestination, vertexAttribute->getBuffer());
+              glBufferSubData(bufferDestination, 0, bufferSubData.size() * sizeof(real), bufferSubData.data());
+              glBindBuffer(bufferDestination, 0);
+            }
+
+            glDrawArrays(primitiveType, 0, vertexAttribute->getCount());
+            if (!(errorMessage = getGlError()).empty()) {
+              logger->error("Error drawing arrays [%s]: %s", vertexArrayResource->toString().c_str(), errorMessage.c_str());
+            }
           }
         }
 
@@ -525,7 +535,6 @@ public:
         glDisableVertexAttribArray(0);
       }
     }
-
   }
 
   TextureResource* getDefaultTexture() const override {
@@ -559,17 +568,7 @@ protected:
   }
 
   String getGlError() const { //Unify with OpenGLResourceAdapter getGLError
-    String errorMessage;
-    GLenum glError;
-    while ((glError = glGetError()) != GL_NO_ERROR) {
-      if (errorMessage.size() != 0) {
-        errorMessage += ", ";
-      }
-
-      errorMessage += std::to_string(glError) + ": " + (const char*) gluErrorString(glGetError());
-    }
-
-    return errorMessage;
+    return OpenGLUtilities::getGlError();
   }
 
   virtual String toString() const override {
@@ -578,7 +577,7 @@ protected:
 
 };
 
-bool playgroundEventFilter(void *context, SDL_Event *event) {
+inline bool playgroundEventFilter(void *context, SDL_Event *event) {
   OpenGLRunner *runner = (OpenGLRunner*) context;
   return runner->processEvent(event);
 }

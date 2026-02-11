@@ -39,7 +39,7 @@ protected:
 	  std::vector<Resource *> response;
 
 		JsonParser parser(request.getFileParser());
-		GeometryResource *resource = new GeometryResource(0);
+		GeometryResource *resource = new GeometryResource();
 
 		bool generateNormals = false;
 		bool generateIndexes = false;
@@ -63,7 +63,11 @@ protected:
 				resource->setNormals(parser.readVector3Array());
 			} else if (token == "colors") {
 				resource->setColors(parser.readVector3Array());
-			} else if (token == "type") {
+			} else if (token == "data") {
+        resource->setData(parser.readRealArray());
+      } else if (token == "dataComponentsPerVertex") {
+        resource->setDataComponentsPerVertex(parser.readUnsignedInteger());
+      } else if (token == "type") {
 				resource->setType(asPrimitiveType(parser.readString()));
 			} else if (token == "indices") {
 				resource->setIndices(parser.readUnsignedIntegerArray());
@@ -82,12 +86,14 @@ protected:
 			}
 		}
 
-		if (generateNormals && resource->getNormals().size() == 0) {
-			ensureNormals(resource);
-		}
+		if(!resource->getVertices().empty()) {
+      if (generateNormals && resource->getNormals().empty()) {
+        ensureNormals(resource);
+      }
 
-		if (generateIndexes && resource->getIndices().size() == 0) {
-			buildIndicesArray(resource);
+      if (generateIndexes && resource->getIndices().empty()) {
+        buildIndicesArray(resource);
+      }
 		}
 
 		logger->debug(
@@ -97,7 +103,11 @@ protected:
 				resource->getNormals().size(),
 				resource->getTextureCoordinates().size());
 
-		log("vertices ", resource->getVertices());
+		if(!resource->getVertices().empty())
+		  log("vertices ", resource->getVertices());
+		else
+	    log("data", resource->getData());
+
 		log("indices ", resource->getIndices());
 		log("colors ", resource->getColors());
 		log("normals ", resource->getNormals());
@@ -250,6 +260,17 @@ protected:
 
 		logger->verbose(prefix.c_str());
 	}
+
+  void log(String prefix, std::vector<real> array) const {
+    prefix.insert(0, "[" + std::to_string(array.size()) + "]");
+    prefix.append(" [");
+    for(auto &current : array) {
+      prefix.append(std::to_string(current) + " ");
+    }
+    prefix.append(" ]");
+
+    logger->verbose(prefix.c_str());
+  }
 
 	void log(String prefix, std::vector<vector3> array) const {
 		prefix.insert(0, "[" + std::to_string(array.size()) + "]");

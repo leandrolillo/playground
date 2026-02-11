@@ -153,7 +153,7 @@ public:
   }
 
   void clear() {
-    this->setTexture(videoRunner.getDefaultTexture());
+    this->setTexture(video.getDefaultTexture());
     this->setMaterial(&defaultMaterial);
     this->objectsByTexture.clear();
     this->objectsByMesh.clear();
@@ -192,8 +192,8 @@ private:
   }
 protected:
   virtual void doRender(const Camera &camera) override {
-    videoRunner.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
-    videoRunner.sendVector("viewPosition", camera.getPosition());
+    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.sendVector("viewPosition", camera.getPosition());
     this->sendLight(light);
 
     const MaterialResource *lastMaterial = null;
@@ -202,21 +202,21 @@ protected:
       const MeshResource *mesh = iterator.first;
       auto &bases = iterator.second;
       if (bases.size() > 0) {
-        videoRunner.setTexture(0, "textureUnit", mesh->getTexture() != null ? mesh->getTexture() : videoRunner.getDefaultTexture());
+        video.setTexture(0, "textureUnit", mesh->getTexture() != null ? mesh->getTexture() : video.getDefaultTexture());
         this->sendMaterial(mesh->getMaterial());
 
         for (auto &base : bases) {
-          videoRunner.sendMatrix("matrices.model", base);
-          videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * base);
+          video.sendMatrix("matrices.model", base);
+          video.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * base);
 
           matriz_3x3 reducedModelMatrix = (matriz_3x3) base;
           real determinante = reducedModelMatrix.determinante();
 
-          videoRunner.sendMatrix("matrices.normal",
+          video.sendMatrix("matrices.normal",
               !equalsZeroAbsoluteMargin(determinante) ?
                                                         reducedModelMatrix.inversa(determinante).traspuesta() :
                                                         matriz_3x3::identidad);
-          videoRunner.drawVertexArray(mesh->getVertexArray());
+          video.drawVertexArray(mesh->getVertexArray());
         }
       }
     }
@@ -226,7 +226,7 @@ protected:
       const TextureResource *texture = iterator.first;
       auto &worldObjects = iterator.second;
       if (worldObjects.size() > 0) {
-        videoRunner.setTexture(0, "textureUnit", texture != null ? texture : videoRunner.getDefaultTexture());
+        video.setTexture(0, "textureUnit", texture != null ? texture : video.getDefaultTexture());
 
         for (auto &object : worldObjects) {
           if (lastMaterial != object.getMaterial()) {
@@ -235,15 +235,15 @@ protected:
               this->sendMaterial(lastMaterial);
             }
           }
-          videoRunner.sendMatrix("matrices.model", object.getModelMatrix());
-          videoRunner.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * object.getModelMatrix());
-          videoRunner.sendMatrix("matrices.normal", object.getNormalMatrix());
-          videoRunner.drawVertexArray(object.getVertexArray());
+          video.sendMatrix("matrices.model", object.getModelMatrix());
+          video.sendMatrix("matrices.pvm", camera.getProjectionViewMatrix() * object.getModelMatrix());
+          video.sendMatrix("matrices.normal", object.getNormalMatrix());
+          video.drawVertexArray(object.getVertexArray());
         }
       }
     }
 
-    videoRunner.setTexture(0, null);
+    video.setTexture(0, null);
   }
 };
 

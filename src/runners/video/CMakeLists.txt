@@ -22,6 +22,11 @@ find_package(PNG REQUIRED)
 target_include_directories(${LIBRARY_NAME} PUBLIC ${PNG_INCLUDE_DIR})
 target_link_libraries(${LIBRARY_NAME} PUBLIC ${PNG_LIBRARY})
 
+#Freetype
+find_package(Freetype REQUIRED)
+target_link_libraries(${LIBRARY_NAME} PUBLIC Freetype::Freetype)
+
+#Geometry
 FetchContent_Declare(
     geometry
     GIT_REPOSITORY https://github.com/leandrolillo/geometry.git

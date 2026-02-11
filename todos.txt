@@ -1,13 +1,9 @@
 Tech debts
-- split audioRunner and openALRunner
-
-- move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
+- split audioRunner and openALRunner. Move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
 
 - split tests closer to classes rather than runners
 
 - make all libraries public to troubleshoot includes
-
-- make chronometer use native c++ timers instead of sdl - make the class accesible for anyone not via runners
 
 - Add toString to playground that will return the current playground information:
 	- name?
@@ -26,28 +22,28 @@ Tech debts
 
 - replace printf by streams and toString() by << operator
 
+- Refactor Parsers: support xml, yaml and json - should work the same just by switching the implementation class. Use streams.
+  - Support skipping unknown properties
+
 - review RAII and 5 of 5 principle (move semantics / perfect forwarding) in resources/playground classes.
 	specially in file parser / text parser and resources.
 	- resources that contain graphics handles (such as vertex shaders) should be move only
 	- ideally all resources should be stateless, "definitions", and thus be move only. Resource manager returns pointers to them. 
 	     However this causes issues with openAL sources <-- openAL sources should not be resources but audioRunner objects instead.
+	- resource manager load should return const resources (to avoid modifications).
 
 - review design of particle manager/collision detector / geometry vs particles / etc. Too much vector passing and copying. Review polymorfism / std::vector<unique_ptr> usage.
-
-- Review collision action design: use lambdas instead of template pattern for collision response actions. Review design of BulletParticle used for playing sounds on balls bouncing.
 
 - Review collision detection / response: there is no way to configure restitution factor - should be based on the two objects colliding and/or configurable.
 
 - improve box rendering (normals)
 
-
 ----------------
 
 New stuff:
 - blockout: following udemy learn advanced modern c++ 
-    - colored blocks
-    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
     - menus, sound effects, victory message and multiple levels
+    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
 
 - Road fighter:
 	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 

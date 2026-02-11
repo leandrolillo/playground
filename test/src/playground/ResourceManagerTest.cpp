@@ -88,6 +88,10 @@ TEST_CASE("ResourceLoadRequest tests") {
     ResourceManagerMock relativeResourceManager(rootFolder);
     request = relativeResourceManager.newRequest("children/fileToParse.json").newRequest("/fileToParse.json");
     CHECK( resourceManager.getRootFolder() + "/fileToParse.json" == request.getFilePath());
+
+    //Issue with uri starting with rootFolder: do not duplicate /resources/resources
+    request = resourceManager.newRequest(resourceManager.getRootFolder() + "/fileToParse.json");
+    CHECK( request.getFqdn() == resourceManager.getRootFolder() + "/fileToParse.json");
   }
 
   SECTION("SimpleUri") {

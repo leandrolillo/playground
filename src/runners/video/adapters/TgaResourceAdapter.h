@@ -76,7 +76,7 @@ protected:
         return response;
       }
 
-    resource->resize(le_short(header.height), le_short(header.width), header.bits_per_pixel >> 3);
+    resource->resize(le_short(header.width), le_short(header.height), header.bits_per_pixel >> 3);
     if (request.getFileParser().read(resource->getData(), 1, resource->getBufferSize()) != resource->getBufferSize()) {
       logger->error("%s has incomplete image\n",
           request.getFilePath().c_str());

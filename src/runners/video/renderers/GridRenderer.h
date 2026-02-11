@@ -37,12 +37,12 @@ public:
   }
 protected:
   void doRender(const Camera &camera) override {
-    videoRunner.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
-    videoRunner.sendMatrix("matrices.proj", camera.getProjectionMatrix());
-    videoRunner.sendMatrix("matrices.view", camera.getViewMatrix());
-    videoRunner.sendReal("near", camera.getZNear());
-    videoRunner.sendReal("far", camera.getZFar());
+    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.sendMatrix("matrices.proj", camera.getProjectionMatrix());
+    video.sendMatrix("matrices.view", camera.getViewMatrix());
+    video.sendReal("near", camera.getZNear());
+    video.sendReal("far", camera.getZFar());
 
-    videoRunner.drawVertexArray(plane);
+    video.drawVertexArray(plane);
   }
 };

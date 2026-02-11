@@ -33,23 +33,24 @@ enum class PrimitiveType {
  */
 class GeometryResource: public Resource {
 private:
-	Logger *logger = LoggerFactory::getLogger("video/GeometryResource");
-
 	std::vector<vector3> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<vector3> normals;
 	std::vector<vector2> textureCoordinates;
 	std::vector<vector3> colors;
-	PrimitiveType type;
+
+	std::vector<real>data; //In case you want to specify a mixture of stuff in the same buffer. Either data or vertices.
+  unsigned int dataComponentsPerVertex = 3; //1, 2, 3 or 4
+
+	PrimitiveType type = PrimitiveType::TRIANGLES;
 	MaterialResource *material = null;
 
 	vector size {0.0, 0.0, 0.0 };
 	vector max {REAL_MIN, REAL_MIN, REAL_MIN};
 	vector min {REAL_MAX, REAL_MAX, REAL_MAX};
 public:
-	GeometryResource(unsigned int id) :
-			Resource(id, MimeTypes::GEOMETRY) {
-		type = PrimitiveType::TRIANGLES;
+	GeometryResource() : Resource(MimeTypes::GEOMETRY) {
+	  logger = LoggerFactory::getLogger("video/GeometryResource");
 	}
 
 	const std::vector<vector3>& getNormals() const {
@@ -123,6 +124,22 @@ public:
 	void setIndices(const std::vector<unsigned int> &indexes) {
 		this->indices = indexes;
 	}
+
+  const std::vector<real>& getData() const {
+    return data;
+  }
+
+  void setData(const std::vector<real> &data) {
+    this->data = data;
+  }
+
+  const unsigned int getDataComponentsPerVertex() const {
+    return dataComponentsPerVertex;
+  }
+
+  void setDataComponentsPerVertex(unsigned int dataComponentsPerVertex) {
+    this->dataComponentsPerVertex = dataComponentsPerVertex;
+  }
 
 	void addIndex(unsigned int index) {
 		this->indices.push_back(index);

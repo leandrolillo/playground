@@ -23,6 +23,9 @@ public:
   inline static const String TEXTURE = "video/texture";
   inline static const String CUBEMAP = "video/cubemap";
 
+  inline static const String TRUE_TYPE_FONT = "video/true-type-font";
+  inline static const String FONT = "video/font";
+
   inline static const String WAVE = "audio/wav";
   inline static const String OGG = "audio/ogg";
   inline static const String AUDIO = "audio/audio";
@@ -46,52 +49,56 @@ public:
   inline static const String GEOMETRYSHADER = "video/geometry-shader";
   inline static const String TESELLATIONSHADER = "video/tesellation-shader";
 
+protected:
+  inline static const std::unordered_map<String, String> defaultInputMimeTypes = {
+      { "ogg", OGG },
+      { "wav", WAVE },
+      { "jpeg", JPEG },
+      { "jpg", JPEG },
+      { "png", PNG },
+      { "tga", TGA },
+      { "txt", TXT },
+      { "json", JSON },
+      { "glsl", GLSL },
+      { "obj", WAVEFRONT_OBJ },
+      { "mtl", WAVEFRONT_MATERIAL },
+      { "ttf", TRUE_TYPE_FONT },
+  };
+
+  inline static const std::unordered_map<String, String> defaultOutputMimeTypes = {
+      {"ogg", AUDIO},
+      { "wav", AUDIO},
+      { "jpeg", IMAGE},
+      { "jpg", IMAGE},
+      { "png", IMAGE},
+      { "tga", IMAGE},
+      { "obj", GEOMETRY},
+      { "mtl", MATERIAL},
+      { "ttf", FONT}
+  };
+
+public:
   static String guessMimeType(const String &fileName) {
     return defaultInputMimeType(fileName);
   }
 
+
+
   static String defaultInputMimeType(const String &fileName) {
     String extension = guessExtension(fileName);
-    if (extension == "ogg") {
-      return OGG;
-    } else if (extension == "wav") {
-      return WAVE;
-    } else if (extension == "jpeg" || extension == "jpg") {
-      return JPEG;
-    } else if (extension == "png") {
-      return PNG;
-    } else if (extension == "tga") {
-      return TGA;
-    } else if (extension == "txt") {
-      return TXT;
-    } else if (extension == "json") {
-      return JSON;
-    } else if (extension == "glsl") {
-      return GLSL;
-    } else if (extension == "obj") {
-      return WAVEFRONT_OBJ;
-    } else if (extension == "mtl") {
-      return WAVEFRONT_MATERIAL;
+
+    if(auto iterator = defaultInputMimeTypes.find(extension); iterator != defaultInputMimeTypes.end()) {
+      return iterator->second;
     }
 
     return "";
   }
+
   static String defaultOutputMimeType(const String &fileName) {
     String extension = guessExtension(fileName);
-    if (extension == "ogg") {
-      return AUDIO;
-    } else if (extension == "wav") {
-      return AUDIO;
-    } else if (extension == "jpeg" || extension == "jpg") {
-      return IMAGE;
-    } else if (extension == "png") {
-      return IMAGE;
-    } else if (extension == "tga") {
-      return IMAGE;
-    } else if (extension == "obj") {
-      return GEOMETRY;
-    } else if (extension == "mtl") {
-      return MATERIAL;
+
+    if(auto iterator = defaultOutputMimeTypes.find(extension); iterator != defaultInputMimeTypes.end()) {
+      return iterator->second;
     }
 
     return "";

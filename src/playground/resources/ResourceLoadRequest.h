@@ -93,7 +93,7 @@ public:
 
 
   ResourceLoadRequest& withUri(const String &uri) {
-    this->uri = StringUtils::trim(uri);
+    this->uri = uriOnly(StringUtils::trim(uri));
     this->inputMimeType = this->inputMimeType.empty() ? MimeTypes::defaultInputMimeType(getFilePath()): this->inputMimeType;
     this->outputMimeType = this->outputMimeType.empty() ? MimeTypes::defaultOutputMimeType(getFilePath()) : this->outputMimeType;
     return *this;
@@ -138,6 +138,7 @@ public:
 
   ResourceLoadRequest& withRootFolder(const String &rootFolder) {
     this->rootFolder = StringUtils::trim(rootFolder);
+    this->uri = uriOnly(this->uri);
     this->inputMimeType = this->inputMimeType.empty() ? MimeTypes::defaultInputMimeType(getFilePath()): this->inputMimeType;
     this->outputMimeType = this->outputMimeType.empty() ? MimeTypes::defaultOutputMimeType(getFilePath()) : this->outputMimeType;
 
@@ -218,7 +219,7 @@ public:
     return errors().empty();
   }
 
-  String toString() {
+  String toString() const {
     return StringFormatter::format("[%s]<-[%s] [%s]", getOutputMimeType().c_str(), getInputMimeType().c_str(), getUri().c_str());
   }
 private:

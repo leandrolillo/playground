@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "../../../../src/runners/video/renderers/TextRenderer.h"
 #include "mathMatchers.h"
 
 #include "VideoRunnerMock.h"
@@ -10,7 +11,7 @@
 #include "GridRenderer.h"
 #include "SkyboxRenderer.h"
 #include "SpriteRenderer.h"
-
+#include "TextRenderer.h"
 #include "Camera.h"
 
 
@@ -40,6 +41,10 @@ TEST_CASE("Video Renderers") {
   spriteRenderer.toString();
 
   Sprite sprite(null, vector2(0, 0), vector2(100, 100));
+
+  TextRenderer textRenderer(videoRunnerMock);
+  CHECK(textRenderer.isEnabled() == false);
+  textRenderer.toString();
 }
 
 TEST_CASE("Geometry (defaultRenderer) Render") {

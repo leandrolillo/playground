@@ -13,10 +13,9 @@
 
 class ImageResource: public Resource {
 private:
-  Logger *logger = LoggerFactory::getLogger("video/image");
-  unsigned int alto = 0;
-  unsigned int ancho = 0;
-  unsigned char bpp = 0;
+  unsigned int height = 0;
+  unsigned int width = 0;
+  unsigned char bpp = 0; //bits per pixel
   unsigned char format = 0; //future storage of rgba, rgb, bgr, bgra, etc.
   unsigned char *data = null;
 
@@ -24,6 +23,11 @@ public:
   //Inherit constructors
   using Resource::Resource;
   ImageResource() : Resource(0, MimeTypes::IMAGE) {
+    logger = LoggerFactory::getLogger("video/image");
+  }
+
+  ImageResource(unsigned int width, unsigned int height, unsigned char bpp) : ImageResource() {
+    this->resize(width, height, bpp);
   }
 
   /*
@@ -37,8 +41,8 @@ public:
 
     // by swapping the members of two objects, the two objects are effectively swapped
     swap(left.data, right.data);
-    swap(left.alto, right.alto);
-    swap(left.ancho, right.ancho);
+    swap(left.height, right.height);
+    swap(left.width, right.width);
     swap(left.bpp, right.bpp);
     swap(left.format, right.format);
   }
@@ -46,7 +50,7 @@ public:
   ImageResource(const ImageResource &right) :
       Resource(right) {
 
-    this->resize(right.alto, right.ancho, right.bpp);
+    this->resize(right.width, right.height, right.bpp);
     this->format = right.format;
     memcpy(data, right.data, this->getBufferSize());
   }
@@ -69,38 +73,56 @@ public:
     this->resize(0, 0, 0);
   }
 
-  unsigned int getAlto() const {
-    return alto;
+  unsigned int getHeight() const {
+    return height;
   }
 
-  unsigned int getAncho() const {
-    return ancho;
+  unsigned int getWidth() const {
+    return width;
   }
 
   unsigned char getBpp() const {
     return bpp;
   }
 
-  unsigned char *resize(unsigned int alto, unsigned int ancho, unsigned char bpp, unsigned int bufferSize = 0)
+  unsigned char *resize(unsigned int width, unsigned int height, unsigned char bpp, unsigned int bufferSize = 0)
   {
     if(bufferSize == 0) {
-      bufferSize = getBufferSize(alto, ancho, bpp);
+      bufferSize = getBufferSize(width, height, bpp);
     }
 
-    if(bufferSize < getBufferSize(alto, ancho, bpp)) {
-      throw std::invalid_argument(StringFormatter::format("Image: Buffer size [%d] is smaller than dimensions [%d]x[%d]x[%d]bpp", bufferSize, alto, ancho, bpp));
+    if(bufferSize < getBufferSize(width, height, bpp)) {
+      throw std::invalid_argument(StringFormatter::format("Image: Buffer size [%d] is smaller than dimensions [%d]x[%d]x[%d]bpp", bufferSize, height, width, bpp));
     }
 
     if(this->data != null) { //TODO: maybe we should delete only if the requested buffer is bigger
       delete [] this->data;
     }
 
-    this->alto = alto;
-    this->ancho = ancho;
+    this->height = height;
+    this->width = width;
     this->bpp = bpp;
     this->data = new unsigned char[bufferSize];
 
     return this->data;
+  }
+
+  /*
+   * Copies an image fragment (at sourceTopLeft and size sourceSize) into this image resource at the specified targetTopLeft location
+   */
+  void copy(unsigned int x, unsigned int y, const unsigned char *sourceData, unsigned int sourceWidth, unsigned int sourceHeight, unsigned int sourceBpp) {
+    if(this->getBpp() == sourceBpp) {
+      if(x < this->width && y < this->height) {
+        auto targetWidth = std::min(sourceWidth, this->width - x);
+        auto targetHeight = std::min(sourceHeight, this->height - y);
+
+        for(unsigned int j = 0; j < targetHeight; j++) {
+          auto destinationPosition = getOffset(x, y + j);
+          auto sourcePosition = j * sourceWidth * asBytespp(sourceBpp);
+          std::memcpy(this->data + destinationPosition, sourceData + sourcePosition, targetWidth * asBytespp(sourceBpp));
+        }
+      }
+    }
   }
 
 
@@ -112,14 +134,18 @@ public:
     this->data = data;
   }
 
-  unsigned int getBufferSize() {
-    return getBufferSize(alto, ancho, bpp);
+  unsigned int getBufferSize() const {
+    return getBufferSize(width, height, bpp);
+  }
+
+  unsigned int getOffset(unsigned int x, unsigned int y) const {
+    return (y * this->getWidth() + x) * asBytespp(bpp);
   }
 
   //TODO: Should be a vector3 of integers instead of reals.
-  vector getPixel(unsigned int x, unsigned int y) {
-    if (x < this->getAlto() && y <= this->getAncho()) {
-      unsigned int position = (y * this->getAncho() + x) * asBytespp(bpp);
+  vector getPixel(unsigned int x, unsigned int y) const {
+    if (x < this->getWidth() && y < this->getHeight()) {
+      unsigned int position = getOffset(x, y);
 
       return vector(((unsigned char*) this->data)[position],
           ((unsigned char*) this->data)[position + 1],
@@ -132,8 +158,8 @@ public:
   virtual String toString() const {
     return "Image(id:" + std::to_string(this->getId()) + ") ["
         + this->getMimeType() + "] [" + this->getUri() + "]: ["
-        + std::to_string(this->getAlto()) + "x"
-        + std::to_string(this->getAlto()) + "x" + std::to_string(this->getBpp())
+        + std::to_string(this->getWidth()) + "x"
+        + std::to_string(this->getHeight()) + "x" + std::to_string(this->getBpp())
         + "bpp]";
   }
 
@@ -145,8 +171,8 @@ private:
     return bpp >> 3;
   }
 
-  unsigned int getBufferSize(unsigned int alto, unsigned int ancho, unsigned char bpp) {
-    return alto * ancho * asBytespp(bpp);
+  unsigned int getBufferSize(unsigned int width, unsigned int height, unsigned char bpp) const {
+    return height * width * asBytespp(bpp);
   }
 
 };
