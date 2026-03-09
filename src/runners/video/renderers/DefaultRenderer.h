@@ -192,7 +192,10 @@ private:
   }
 protected:
   virtual void doRender(const Camera &camera) override {
+    video.enable(VideoAttribute::DEPTH_TEST);
     video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.enable(VideoAttribute::CULL_FACE, VideoAttribute::BACK);
+
     video.sendVector("viewPosition", camera.getPosition());
     this->sendLight(light);
 

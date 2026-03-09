@@ -520,6 +520,8 @@ public:
             if(vertexAttribute->getBufferUsage() == VideoAttribute::DYNAMIC_DRAW && !bufferSubData.empty()) {
               GLenum bufferDestination = OpenGLUtilities::asGlAttribute(vertexAttribute->getBufferDestination());
               glBindBuffer(bufferDestination, vertexAttribute->getBuffer());
+              //Buffer Orphaning: https://wikis.khronos.org/opengl/Buffer_Object_Streaming#Buffer_re-specification
+              glBufferData(bufferDestination, bufferSubData.size() * sizeof(real), NULL, OpenGLUtilities::asGlAttribute(vertexAttribute->getBufferUsage()));
               glBufferSubData(bufferDestination, 0, bufferSubData.size() * sizeof(real), bufferSubData.data());
               glBindBuffer(bufferDestination, 0);
             }

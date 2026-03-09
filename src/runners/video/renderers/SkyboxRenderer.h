@@ -50,6 +50,10 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
+    video.enable(VideoAttribute::DEPTH_TEST);
+    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.enable(VideoAttribute::CULL_FACE, VideoAttribute::BACK);
+
     video.setTexture(0, "textureUnit", cubeMap, VideoAttribute::TEXTURE_CUBE_MAP); //TODO: Refactor this to use generic properties and move to videoRunner
     video.sendMatrix("matrices.p", camera.getProjectionMatrix());
     video.sendMatrix("matrices.v", camera.getViewMatrix());

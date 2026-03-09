@@ -37,7 +37,10 @@ public:
   }
 protected:
   void doRender(const Camera &camera) override {
+    video.enable(VideoAttribute::DEPTH_TEST);
     video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.enable(VideoAttribute::CULL_FACE, VideoAttribute::BACK);
+
     video.sendMatrix("matrices.proj", camera.getProjectionMatrix());
     video.sendMatrix("matrices.view", camera.getViewMatrix());
     video.sendReal("near", camera.getZNear());

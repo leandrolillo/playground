@@ -99,6 +99,7 @@ protected:
     video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
     video.disable(VideoAttribute::DEPTH_TEST);
     video.disable(VideoAttribute::CULL_FACE);
+
     video.sendMatrix("projectionView", camera.getProjectionMatrix() * matriz_4x4::traslacion(camera.getPosition()));
 
     unsigned long currentTextureIndex = 0;

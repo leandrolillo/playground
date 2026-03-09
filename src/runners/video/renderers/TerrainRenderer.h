@@ -68,6 +68,10 @@ public:
 
 protected:
   void doRender(const Camera &camera) override {
+    video.enable(VideoAttribute::DEPTH_TEST);
+    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    video.enable(VideoAttribute::CULL_FACE, VideoAttribute::BACK);
+
     this->sendLight(light);
     for (const auto &terrainTile : terrainTiles) {
       video.setTexture(0, "background", terrainTile.getTerrain()->getA());
