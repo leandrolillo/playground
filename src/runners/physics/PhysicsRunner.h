@@ -7,6 +7,7 @@ class PhysicsRunner: public PlaygroundRunner {
 	Logger *logger = LoggerFactory::getLogger("physics/PhysicsRunner");
 
 	ParticleManager particleManager;
+	const Chronometer &stopWatch;
 
 	real playbackSpeed = 1.0f;
 
@@ -17,7 +18,7 @@ class PhysicsRunner: public PlaygroundRunner {
 public:
 	static const unsigned char ID;
 public:
-	PhysicsRunner(Playground &container) : PlaygroundRunner(container) {
+	PhysicsRunner(Playground &container) : PlaygroundRunner(container), stopWatch(container.getStopWatch()) {
 	}
 
 	unsigned char getId() const override {
@@ -62,7 +63,7 @@ public:
 	}
 
 	LoopResult doLoop() override {
-		real dt = getStopWatch().getElapsedTime();
+		real dt = stopWatch.getElapsedTime();
 
 		this->particleManager.step(dt * playbackSpeed);
 

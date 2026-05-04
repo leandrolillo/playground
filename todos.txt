@@ -41,7 +41,7 @@ Tech debts
 ----------------
 
 New stuff:
-- blockout: following udemy learn advanced modern c++ 
+- breakout: following udemy learn advanced modern c++ 
     - menus, sound effects, victory message and multiple levels
     - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
 

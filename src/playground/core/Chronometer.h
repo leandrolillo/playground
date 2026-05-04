@@ -28,7 +28,7 @@ public:
     }
   }
 
-  real getElapsedTime() {
+  real getElapsedTime() const {
     return dt.count();
   }
 
@@ -40,7 +40,7 @@ public:
     return dt.count();
   }
 
-  real getTotalTime() {
+  real getTotalTime() const {
     auto tf = steady_clock::now();
     return duration_cast<floatSeconds>(tf - initialTime).count();
   }
