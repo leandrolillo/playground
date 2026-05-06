@@ -11,10 +11,12 @@
 
 using namespace std::chrono;
 
-typedef std::chrono::duration<real> floatSeconds;
+//Use double for storing time, floats are file for deltas (elapsed time, total time):
+//https://randomascii.wordpress.com/2012/02/13/dont-store-that-in-a-float/
+typedef std::chrono::duration<double> doubleSeconds;
 
 class Chronometer {
-  floatSeconds dt{0s};
+  doubleSeconds dt{0s};
   steady_clock::time_point to;
   steady_clock::time_point initialTime { steady_clock::time_point::min()};
 public:
@@ -34,7 +36,7 @@ public:
 
   real update() {
     auto tf = steady_clock::now();
-    this->dt = duration_cast<floatSeconds>(tf - to);
+    this->dt = duration_cast<doubleSeconds>(tf - to);
     to = tf;
 
     return dt.count();
@@ -42,7 +44,7 @@ public:
 
   real getTotalTime() const {
     auto tf = steady_clock::now();
-    return duration_cast<floatSeconds>(tf - initialTime).count();
+    return duration_cast<doubleSeconds>(tf - initialTime).count();
   }
 
   virtual ~Chronometer() {
