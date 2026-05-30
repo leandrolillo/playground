@@ -1,0 +1,5 @@
+if(EXISTS "/tmp/workspace/leandrolillo/playground/build-manual/_deps/math-build/test/math_unit_tests-b12d07c_tests.cmake")
+  include("/tmp/workspace/leandrolillo/playground/build-manual/_deps/math-build/test/math_unit_tests-b12d07c_tests.cmake")
+else()
+  add_test(math_unit_tests_NOT_BUILT-b12d07c math_unit_tests_NOT_BUILT-b12d07c)
+endif()
