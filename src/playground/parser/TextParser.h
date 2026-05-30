@@ -87,13 +87,13 @@ public:
     }
 
     real readReal() {
-        fileParser.setTokenSeparator("  # ()[]{},.:;<>+-*/^�=|&!�?\n\r\"\'\\eE�");
-        real mantissa = readMantissa();
-        int exponent = readExponent();
+      fileParser.setTokenSeparator("  # ()[]{},.:;<>+-*/^�=|&!�?\n\r\"\'\\eE�");
+      real mantissa = readMantissa();
+      int exponent = readExponent();
 
-        fileParser.setDefaultSpecialCharacters();
+      fileParser.setDefaultSpecialCharacters();
 
-        return mantissa * pow(10.0, exponent);
+      return mantissa * pow(10.0, exponent);
     }
 
     String takeToken() {

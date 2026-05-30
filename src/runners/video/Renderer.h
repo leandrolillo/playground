@@ -23,12 +23,12 @@ protected:
   Logger *logger = LoggerFactory::getLogger("Renderer");
   RendererStatus status;
   const ShaderProgramResource *shader = null;
-  VideoRunner &videoRunner;
+  VideoRunner &video;
   ResourceManager &resourceManager;
   bool enabled = true;
 public:
 
-  Renderer(VideoRunner &videoRunner) : videoRunner(videoRunner), resourceManager(videoRunner.getResourceManager()) {
+  Renderer(VideoRunner &videoRunner) : video(videoRunner), resourceManager(videoRunner.getResourceManager()) {
     this->status = RendererStatus::CREATED;
   }
 
@@ -41,20 +41,20 @@ public:
 
   void sendMaterial(const MaterialResource *material) const {
     if (material != null) {
-      videoRunner.sendVector("material.ambient", material->getAmbient());
-      videoRunner.sendVector("material.diffuse", material->getDiffuse());
-      videoRunner.sendVector("material.specular", material->getSpecular());
-      videoRunner.sendReal("material.alpha", material->getAlpha());
-      videoRunner.sendReal("material.shininess", material->getShininess());
+      video.sendVector("material.ambient", material->getAmbient());
+      video.sendVector("material.diffuse", material->getDiffuse());
+      video.sendVector("material.specular", material->getSpecular());
+      video.sendReal("material.alpha", material->getAlpha());
+      video.sendReal("material.shininess", material->getShininess());
     }
   }
 
   void sendLight(const LightResource *light) const {
     if (light) {
-      videoRunner.sendVector("light.ambient", light->getAmbient() * light->getShininess());
-      videoRunner.sendVector("light.diffuse", light->getDiffuse() * light->getShininess());
-      videoRunner.sendVector("light.specular", light->getSpecular() * light->getShininess());
-      videoRunner.sendVector("light.position", light->getPosition());
+      video.sendVector("light.ambient", light->getAmbient() * light->getShininess());
+      video.sendVector("light.diffuse", light->getDiffuse() * light->getShininess());
+      video.sendVector("light.specular", light->getSpecular() * light->getShininess());
+      video.sendVector("light.position", light->getPosition());
     }
   }
 
@@ -80,7 +80,7 @@ public:
 
   void render(const Camera &camera) {
     if(this->isEnabled()) {
-      videoRunner.useProgramResource(shader);
+      video.useProgramResource(shader);
       doRender(camera);
       //videoRunner.useProgramResource(null);
     } else {

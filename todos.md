@@ -1,13 +1,21 @@
-Tech debts
-- split audioRunner and openALRunner
+# Tech debts
+Runner class hierarchy: 
+- audio runner interface used for service locator. Fmod and maybe openal implementations
+- video runner interface used for service locator. Opengl base class?. Implementations would be sdl, win32, cocoa, etc (only window and events).
+  video runners:
+    opengl:
+      sdl
+      win32
+      cocoa
+    direct3d
+      sdl
+      win32
 
-- move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
+- Move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
 
 - split tests closer to classes rather than runners
 
 - make all libraries public to troubleshoot includes
-
-- make chronometer use native c++ timers instead of sdl - make the class accesible for anyone not via runners
 
 - Add toString to playground that will return the current playground information:
 	- name?
@@ -26,38 +34,38 @@ Tech debts
 
 - replace printf by streams and toString() by << operator
 
+- Refactor Parsers: support xml, yaml and json - should work the same just by switching the implementation class. Use streams.
+  - Support skipping unknown properties
+
 - review RAII and 5 of 5 principle (move semantics / perfect forwarding) in resources/playground classes.
 	specially in file parser / text parser and resources.
 	- resources that contain graphics handles (such as vertex shaders) should be move only
 	- ideally all resources should be stateless, "definitions", and thus be move only. Resource manager returns pointers to them. 
 	     However this causes issues with openAL sources <-- openAL sources should not be resources but audioRunner objects instead.
+	- resource manager load should return const resources (to avoid modifications).
 
 - review design of particle manager/collision detector / geometry vs particles / etc. Too much vector passing and copying. Review polymorfism / std::vector<unique_ptr> usage.
-
-- Review collision action design: use lambdas instead of template pattern for collision response actions. Review design of BulletParticle used for playing sounds on balls bouncing.
 
 - Review collision detection / response: there is no way to configure restitution factor - should be based on the two objects colliding and/or configurable.
 
 - improve box rendering (normals)
 
-
 ----------------
 
-New stuff:
-- blockout: following udemy learn advanced modern c++ 
-    - colored blocks
-    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
+# New stuff:
+- breakout: following udemy learn advanced modern c++ 
     - menus, sound effects, victory message and multiple levels
+    - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
 
 - Road fighter:
-	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 
+	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separately. 
 	- Add labels to resources, so that we can unload a level resources and load next levels.
 
 
 - add option to stop background music
 
 - TerrainDemo: 
-	- Add class to compose several terrain patches and make calculations to determine which patch. 
+  - Add class to compose several terrain patches and make calculations to determine which patch. 
 	- mod infinite terrain? render those inside camera frustrum
 	- Add some class to generate bounding geometry from this.
 	- Some other tree model
@@ -66,22 +74,19 @@ New stuff:
 
 	- evolve this demo to be a planet and then a solar system.
 
-Games: 
+## Games: 
 - Battle city
 - road fighter 
 - tanques vs naves
 - defend the tower
 - scenery (with train or racing cars - lightning mcqueen and cruz, wind/rain, vegetation and animals, water, day/night transition, sun and moon, etc.)
-
-robotica - brazo (curso)
-scalectric - o vehículos (autos, trenes, naves) que sigan una ruta predefinida con escenarios de fondo
-
-nave de futurama
-
-Kboom
-Destruir la tierra (o algún planeta) mediante asteroides que se lanzan desde fuera del sistema solar.
-efemeride planetaria (https://ssd.jpl.nasa.gov/?ephemerides#planets)
-regiones del sistema solar
-Roles de los planetas (como saturno que actúa de escudo - era saturno?)
-visualizaciones de gases del meteoro de acuerdo a composición
-potencial educativo.
+- robotica - brazo (curso)
+- scalectric - o vehículos (autos, trenes, naves) que sigan una ruta predefinida con escenarios de fondo
+- nave de futurama
+- Kboom
+  - Destruir la tierra (o algún planeta) mediante asteroides que se lanzan desde fuera del sistema solar.
+  - efemeride planetaria (https://ssd.jpl.nasa.gov/?ephemerides#planets)
+  - regiones del sistema solar
+  - Roles de los planetas (como saturno que actúa de escudo - era saturno?)
+  - visualizaciones de gases del meteoro de acuerdo a composición
+  - potencial educativo.

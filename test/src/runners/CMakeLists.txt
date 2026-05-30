@@ -1,8 +1,7 @@
+add_subdirectory(video)
+add_subdirectory(opengl)
+
 target_sources(${TESTS} PUBLIC audioRunnerTests.cpp)
-target_sources(${TESTS} PUBLIC videoRunnerTests.cpp)
-target_sources(${TESTS} PUBLIC renderersTests.cpp)
-target_sources(${TESTS} PUBLIC cameraTests.cpp)
-target_sources(${TESTS} PUBLIC openGLRunnerTests.cpp)
 target_sources(${TESTS} PUBLIC physicsRunnerTests.cpp)
 
 target_include_directories(${TESTS} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -37,7 +37,7 @@ protected:
 				JPOOL_IMAGE, row_stride, 1);
 
 		ImageResource *resource = new ImageResource();
-		resource->resize(cinfo.output_height, cinfo.output_width, cinfo.output_components);
+		resource->resize(cinfo.output_width, cinfo.output_height, cinfo.output_components);
 
 		while (cinfo.output_scanline < cinfo.output_height) {
 			/* jpeg_read_scanlines expects an array of pointers to scanlines.

@@ -49,7 +49,7 @@ public:
   virtual void setTexture(unsigned int location, const String &samplerName, const TextureResource *texture, VideoAttribute type = VideoAttribute::TEXTURE_2D) override {
 
   }
-  virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource) const override {
+  virtual void drawVertexArray(const VertexArrayResource *vertexArrayResource, const std::vector<real> &bufferSubData = {}) const override {
 
   }
 

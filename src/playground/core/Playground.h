@@ -71,7 +71,7 @@ public:
     return this->container;
   }
 
-  Chronometer &getStopWatch() const;
+  const Chronometer &getStopWatch() const;
 
   ResourceManager& getResourceManager() const {
     return this->resourceManager;
@@ -180,7 +180,7 @@ public:
     return pair->second;
   }
 
-  Chronometer &getStopWatch() {
+  const Chronometer &getStopWatch() const {
     return this->stopWatch;
   }
 

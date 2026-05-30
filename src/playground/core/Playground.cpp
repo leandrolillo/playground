@@ -13,6 +13,6 @@ PlaygroundRunner::PlaygroundRunner(Playground &container) : container(container)
 }
 
 
-Chronometer &PlaygroundRunner::getStopWatch() const {
+const Chronometer &PlaygroundRunner::getStopWatch() const {
 	return this->container.getStopWatch();
 }

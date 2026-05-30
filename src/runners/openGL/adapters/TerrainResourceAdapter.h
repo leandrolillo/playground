@@ -73,7 +73,7 @@ protected:
   VertexArrayResource* buildModel(const HeightMapResource *heightMap) const {
     VertexArrayResource *model = null;
     if (heightMap != null) {
-      GeometryResource heightMapGeometry(0);
+      GeometryResource heightMapGeometry;
       heightMapGeometry.setName(Paths::getBasename(heightMap->getUri()));
 
       for (unsigned int i = 0; i < heightMap->getGridWidth(); i++) {
