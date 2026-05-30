@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <limits.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include "JavaLike.h"

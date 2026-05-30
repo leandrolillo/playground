@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <unordered_map>
 #include "JavaLike.h"
 #include "StringUtils.h"
 

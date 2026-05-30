@@ -123,14 +123,37 @@ TEST_CASE("TextParser coverage") {
   }
 
   SECTION("Read real values") {
-    String filename = writeTempFile("-12.5e2 +10 .25 1.0E-2");
-    FileParser fileParser(filename);
-    TextParser parser(fileParser);
+    SECTION("Negative exponent notation") {
+      String filename = writeTempFile("-12.5e2");
+      FileParser fileParser(filename);
+      TextParser parser(fileParser);
 
-    CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(-1250.0, 0.000001));
-    CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(10.0, 0.000001));
-    CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(0.25, 0.000001));
-    CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(0.01, 0.000001));
+      CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(-1250.0, 0.000001));
+    }
+
+    SECTION("Positive integers") {
+      String filename = writeTempFile("+10");
+      FileParser fileParser(filename);
+      TextParser parser(fileParser);
+
+      CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(10.0, 0.000001));
+    }
+
+    SECTION("Leading decimal point") {
+      String filename = writeTempFile(".25");
+      FileParser fileParser(filename);
+      TextParser parser(fileParser);
+
+      CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(0.25, 0.000001));
+    }
+
+    SECTION("Uppercase exponent notation") {
+      String filename = writeTempFile("1.0E-2");
+      FileParser fileParser(filename);
+      TextParser parser(fileParser);
+
+      CHECK_THAT(parser.readReal(), Catch::Matchers::WithinAbs(0.01, 0.000001));
+    }
   }
 }
 
