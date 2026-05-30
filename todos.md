@@ -1,5 +1,17 @@
-Tech debts
-- split audioRunner and openALRunner. Move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
+# Tech debts
+Runner class hierarchy: 
+- audio runner interface used for service locator. Fmod and maybe openal implementations
+- video runner interface used for service locator. Opengl base class?. Implementations would be sdl, win32, cocoa, etc (only window and events).
+  video runners:
+    opengl:
+      sdl
+      win32
+      cocoa
+    direct3d
+      sdl
+      win32
+
+- Move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
 
 - split tests closer to classes rather than runners
 
@@ -40,20 +52,20 @@ Tech debts
 
 ----------------
 
-New stuff:
+# New stuff:
 - breakout: following udemy learn advanced modern c++ 
     - menus, sound effects, victory message and multiple levels
     - paddle: with hierarchical boundary / logic to deflect the ball based on distance to center
 
 - Road fighter:
-	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separatedly. 
+	- Add textured object code support, so that I can load and display a 3d object instead of having to load the vertex array, texture and material separately. 
 	- Add labels to resources, so that we can unload a level resources and load next levels.
 
 
 - add option to stop background music
 
 - TerrainDemo: 
-	- Add class to compose several terrain patches and make calculations to determine which patch. 
+  - Add class to compose several terrain patches and make calculations to determine which patch. 
 	- mod infinite terrain? render those inside camera frustrum
 	- Add some class to generate bounding geometry from this.
 	- Some other tree model
@@ -62,22 +74,19 @@ New stuff:
 
 	- evolve this demo to be a planet and then a solar system.
 
-Games: 
+## Games: 
 - Battle city
 - road fighter 
 - tanques vs naves
 - defend the tower
 - scenery (with train or racing cars - lightning mcqueen and cruz, wind/rain, vegetation and animals, water, day/night transition, sun and moon, etc.)
-
-robotica - brazo (curso)
-scalectric - o vehículos (autos, trenes, naves) que sigan una ruta predefinida con escenarios de fondo
-
-nave de futurama
-
-Kboom
-Destruir la tierra (o algún planeta) mediante asteroides que se lanzan desde fuera del sistema solar.
-efemeride planetaria (https://ssd.jpl.nasa.gov/?ephemerides#planets)
-regiones del sistema solar
-Roles de los planetas (como saturno que actúa de escudo - era saturno?)
-visualizaciones de gases del meteoro de acuerdo a composición
-potencial educativo.
+- robotica - brazo (curso)
+- scalectric - o vehículos (autos, trenes, naves) que sigan una ruta predefinida con escenarios de fondo
+- nave de futurama
+- Kboom
+  - Destruir la tierra (o algún planeta) mediante asteroides que se lanzan desde fuera del sistema solar.
+  - efemeride planetaria (https://ssd.jpl.nasa.gov/?ephemerides#planets)
+  - regiones del sistema solar
+  - Roles de los planetas (como saturno que actúa de escudo - era saturno?)
+  - visualizaciones de gases del meteoro de acuerdo a composición
+  - potencial educativo.
