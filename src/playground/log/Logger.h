@@ -13,6 +13,7 @@
 #include<sys/stat.h>
 #include <set>
 #include <map>
+#include <memory>
 #include <string.h>
 #include <errno.h>
 #include "JavaLike.h"
