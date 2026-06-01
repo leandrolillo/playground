@@ -26,14 +26,17 @@ TEST_CASE("Image Resource test case")
   //CHECK(resource.getBytespp() == 1);
   CHECK(resource.getBufferSize() == 200 * 300 * 1);
 
-  //Test copy
+  /**
+   * Test copy
+   */
+  //make sure image is clear
   std::memset(resource.getData(), 0, resource.getBufferSize());
   CHECK(resource.getData()[resource.getOffset(0, 0)] == 0);
   CHECK(resource.getData()[resource.getOffset(99, 99)] == 0);
   CHECK(resource.getData()[resource.getOffset(250, 150)] == 0);
   CHECK(resource.getData()[resource.getOffset(349, 249)] == 0);
 
-  //copy image that fits inside
+  //copy image that fits inside and check contents
   ImageResource anotherResource(100, 100, 8);
   std::memset(anotherResource.getData(), 3, anotherResource.getBufferSize());
   resource.copy(0, 0, anotherResource.getData(), anotherResource.getWidth(), anotherResource.getHeight(), anotherResource.getBpp());
@@ -47,7 +50,7 @@ TEST_CASE("Image Resource test case")
   //copy over the boundaries
   resource.copy(250, 150, anotherResource.getData(), anotherResource.getWidth(), anotherResource.getHeight(), anotherResource.getBpp());
   CHECK(resource.getData()[resource.getOffset(250, 150)] == 3);
-  CHECK(resource.getData()[resource.getOffset(349, 249)] == 3);
+  CHECK(resource.getData()[resource.getOffset(299, 199)] == 3);
   CHECK(resource.getWidth() == 300);
   CHECK(resource.getHeight() == 200);
 }
