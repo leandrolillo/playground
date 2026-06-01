@@ -8,6 +8,7 @@
 #pragma once
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include "JavaLike.h"
 
 class StringUtils {

@@ -128,7 +128,7 @@ public:
 
         this->setDefaultSpecialCharacters();
 
-        position = -1;
+        fgetpos(fileStream, &position);
         line = 1;
         column = 1;
         lineBackup = line;
