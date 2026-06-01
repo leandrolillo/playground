@@ -13,4 +13,4 @@ jobs:
     - uses: actions/checkout@v2
     - name: building and testing
       run: |
-        cmake_test_options="-E "".*OpenGL.*" ./cmakew -t . #exclude opengl tests since it does not initialize properly
+        cmake_options="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" cmake_test_options="-E "".*OpenGL.*"" ./cmakew -t . #exclude opengl tests since it does not initialize properly
