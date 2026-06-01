@@ -7,10 +7,12 @@ on:
     branches:
       - "main"
       - "master"
+      - "breakout"
   pull_request:
     branches:
       - "main"
       - "master"
+      - "breakout"
 
 jobs:
   build-and-test:
