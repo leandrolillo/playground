@@ -10,10 +10,10 @@
 #include "ShaderProgramResource.h"
 #include "MaterialResource.h"
 #include "LightResource.h"
-#include "TerrainResource.h"
 #include "GeometryResource.h"
-#include "MeshResource.h"
 #include "VertexArrayResource.h"
+#include "TerrainResource.h"
+#include "MeshResource.h"
 #include "FontResource.h"
 
 TEST_CASE("Image Resource test case")
