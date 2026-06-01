@@ -1,7 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 #include "mathMatchers.h"
 
 #include "ImageResource.h"
+#include "HeightMapResource.h"
 
 TEST_CASE("Image Resource test case")
 {
@@ -53,4 +55,15 @@ TEST_CASE("Image Resource test case")
   CHECK(resource.getData()[resource.getOffset(299, 199)] == 3);
   CHECK(resource.getWidth() == 300);
   CHECK(resource.getHeight() == 200);
+}
+
+TEST_CASE("HeightMapResource::normalAt returns a flat normal at right edge for a flat map")
+{
+  ImageResource image(3, 3, 24);
+  std::memset(image.getData(), 255, image.getBufferSize());
+
+  HeightMapResource heightMap(&image, vector(1, 1, 1));
+  vector actual = heightMap.normalAt(heightMap.getWidth(), 1.0);
+
+  CHECK_THAT(actual, EqualsVector(vector3(0, -1, 0)));
 }
