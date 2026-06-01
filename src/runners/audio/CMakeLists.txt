@@ -11,22 +11,14 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 
 #dependencies
 #ogg
-FetchContent_Declare(
-    Ogg
-    GIT_REPOSITORY https://github.com/xiph/ogg.git
-    GIT_TAG ${OGG_VERSION}
-    GIT_SHALLOW TRUE)
-FetchContent_MakeAvailable(Ogg)
-target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
+find_package(Ogg REQUIRED)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${OGG_INCLUDE_DIRS} ${OGG_INCLUDE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${OGG_LIBRARIES} ${OGG_LIBRARY})
 
 #vorbis
-FetchContent_Declare(
-    Vorbis
-    GIT_REPOSITORY https://github.com/xiph/vorbis.git
-    GIT_TAG ${VORBIS_VERSION}
-    GIT_SHALLOW TRUE)
-FetchContent_MakeAvailable(Vorbis)
-target_link_libraries(${LIBRARY_NAME} INTERFACE vorbis vorbisfile)
+find_package(Vorbis REQUIRED)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${VORBIS_INCLUDE_DIRS})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${VORBIS_LIBRARIES})
 
 #openAL
 find_package(OpenAL REQUIRED)

@@ -1,16 +1,67 @@
-name: Build and Test
+name: CMake Build and Test
 
 on:
+  workflow_call:
+  workflow_dispatch:
   push:
-    branches: [ main, master]
+    branches:
+      - "main"
+      - "master"
   pull_request:
-    branches: [ main, master]
+    branches:
+      - "main"
+      - "master"
 
 jobs:
-  build:
-    runs-on: macos-latest
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [Debug, Release]
+
+    runs-on: ${{ matrix.os }}
+
     steps:
-    - uses: actions/checkout@v2
-    - name: building and testing
-      run: |
-        cmake_options="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" cmake_test_options="-E "".*OpenGL.*" ./cmakew -t . #exclude opengl tests since it does not initialize properly
+      - uses: actions/checkout@v4
+
+      - name: Setup Linux packages
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install mesa-common-dev libasound2-dev xorg-dev libogg-dev libvorbis-dev libopenal-dev
+
+      - name: Setup macOS packages
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install libogg libvorbis openal-soft
+
+      - name: Setup Windows packages
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          vcpkg install libogg:x64-windows libvorbis:x64-windows openal-soft:x64-windows
+          "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Setup Ccache
+        if: runner.os != 'Windows'
+        uses: hendrikmuhs/ccache-action@v1.2
+
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE="${{ env.CMAKE_TOOLCHAIN_FILE }}"
+
+      - name: Configure CMake (Non-Windows)
+        if: runner.os != 'Windows'
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }}
+
+      - name: Test
+        working-directory: build
+        run: ctest --build-config ${{ matrix.build_type }} --output-on-failure
