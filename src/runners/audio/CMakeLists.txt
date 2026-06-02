@@ -15,7 +15,8 @@ FetchContent_Declare(
     Ogg
     GIT_REPOSITORY https://github.com/xiph/ogg.git
     GIT_TAG ${OGG_VERSION}
-    GIT_SHALLOW TRUE)
+    GIT_SHALLOW TRUE
+    FIND_PACKAGE_ARGS NAMES Ogg)
 FetchContent_MakeAvailable(Ogg)
 target_link_libraries(${LIBRARY_NAME} INTERFACE Ogg::ogg)
 

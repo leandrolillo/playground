@@ -4,13 +4,13 @@ on:
   push:
     branches: [ main, master]
   pull_request:
-    branches: [ main, master]
+    branches: [ main, master, breakout]
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: building and testing
       run: |
         cmake_options="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" cmake_test_options="-E "".*OpenGL.*" ./cmakew -t . #exclude opengl tests since it does not initialize properly
