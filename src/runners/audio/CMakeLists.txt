@@ -13,7 +13,7 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 #ogg
 FetchContent_Declare(
     Ogg
-    GIT_REPOSITORY https://github.com/xiph/ogg.git
+    GIT_REPOSITORY https://github.com/leandrolillo/ogg.git
     GIT_TAG ${OGG_VERSION}
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(Ogg)
