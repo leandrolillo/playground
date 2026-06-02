@@ -52,6 +52,7 @@ private:
 public:
 
   using VideoRunner::VideoRunner;
+  using VideoRunner::enable;
 
   virtual unsigned char getInterests() const override {
     return RESIZE | KEY_DOWN;

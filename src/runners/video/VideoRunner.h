@@ -105,6 +105,13 @@ public:
 	virtual void setClearColor(real r, real g, real b, real a) const = 0;
 	virtual void enable(VideoAttribute attribute, VideoAttribute param1 = VideoAttribute::NONE, VideoAttribute param2 = VideoAttribute::NONE) {};
 	virtual void disable(VideoAttribute attribute) {};
+	virtual void enable(VideoAttribute attribute, bool enabled) {
+	  if (enabled) {
+	    enable(attribute);
+	  } else {
+	    disable(attribute);
+	  }
+	}
 	virtual void setOption(VideoAttribute attribute, real value) { };
 	virtual real getRealOption(VideoAttribute attribute) const { return (real)0; };
 	virtual int getIntegerOption(VideoAttribute attribute) const { return 0; };
