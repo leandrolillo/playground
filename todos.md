@@ -1,15 +1,18 @@
 # Tech debts
-Runner class hierarchy: 
-- audio runner interface used for service locator. Fmod and maybe openal implementations
-- video runner interface used for service locator. Opengl base class?. Implementations would be sdl, win32, cocoa, etc (only window and events).
-  video runners:
-    opengl:
-      sdl
-      win32
-      cocoa
-    direct3d
-      sdl
-      win32
+
+- CMake fetchContent dependencies (in particular to our own repositories) should use tags otherwise previous commits no longer compile since branches have changed. This makes troubleshooting issues by comparing with previous code states more difficult.
+
+- Runner class hierarchy: 
+  - audio runner interface used for service locator. Fmod and maybe openal implementations
+  - video runner interface used for service locator. Opengl base class?. Implementations would be sdl, win32, cocoa, etc (only window and events).
+    video runners:
+      opengl:
+        sdl
+        win32
+        cocoa
+      direct3d
+        sdl
+        win32
 
 - Move openGLRunner and openALRunner to their own libraries (only leave audio and video runner interfaces in playground)?
 
