@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "ResourceAdapter.h"
 
 //TODO: Maybe this should be expanded for handling logic here instead of in resource manager - for example checking request has mimetype and matches the output of the adapter, there's a uri, etc.

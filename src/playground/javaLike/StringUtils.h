@@ -6,6 +6,8 @@
  */
 
 #pragma once
+#include <algorithm>
+#include <cctype>
 #include <sstream>
 #include <vector>
 #include "JavaLike.h"

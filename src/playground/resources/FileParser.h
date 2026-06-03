@@ -128,7 +128,7 @@ public:
 
         this->setDefaultSpecialCharacters();
 
-        position = -1;
+        position = fpos_t();
         line = 1;
         column = 1;
         lineBackup = line;

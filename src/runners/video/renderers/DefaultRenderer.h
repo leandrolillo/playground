@@ -60,6 +60,7 @@ protected:
 class DefaultRenderer: public Renderer {
 private:
   Logger *logger = LoggerFactory::getLogger("DefaultRenderer");
+  bool _enableBlending=true;
 
   const TextureResource *currentTexture = null;
   const MaterialResource *currentMaterial = null;
@@ -78,6 +79,14 @@ private:
 public:
   DefaultRenderer(VideoRunner &videoRunner) : Renderer(videoRunner) {
     this->setMaterial(null);
+  }
+
+  void disableBlending() {
+    this->_enableBlending = false;
+  }
+
+  void enableBlending() {
+    this->_enableBlending = true;
   }
 
   void setMaterial(const MaterialResource *material) {
@@ -193,7 +202,12 @@ private:
 protected:
   virtual void doRender(const Camera &camera) override {
     video.enable(VideoAttribute::DEPTH_TEST);
-    video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+
+    if(this->_enableBlending) {
+      video.enable(VideoAttribute::BLEND, VideoAttribute::SRC_ALPHA, VideoAttribute::ONE_MINUS_SRC_ALPHA);
+    } else {
+      video.disable(VideoAttribute::BLEND);
+    }
     video.enable(VideoAttribute::CULL_FACE, VideoAttribute::BACK);
 
     video.sendVector("viewPosition", camera.getPosition());
