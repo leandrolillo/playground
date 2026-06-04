@@ -2,6 +2,7 @@
 #include "ResourceManagerMock.h"
 
 #include "AudioRunner.h"
+#include "OpenALRunner.h"
 
 #include "OggResourceAdapter.h"
 #include "WavResourceAdapter.h"
@@ -81,7 +82,7 @@ TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner
 
   Playground playground("resources");
   ResourceManager &resourceManager = playground.getResourceManager();
-  AudioRunner &runner = playground.addRunner<AudioRunner>();
+  OpenALRunner &runner = playground.addRunner<OpenALRunner>();
   runner.initialize();
 
   SECTION("AudioBufferResourceAdapter (No resource manager) test") { //requires initialized audio runner
