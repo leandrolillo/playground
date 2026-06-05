@@ -8,6 +8,7 @@ add_subdirectory(javaLike)
 add_subdirectory(core)
 add_subdirectory(log)
 add_subdirectory(parser)
+add_subdirectory(runners)
 
 target_link_libraries(${LIBRARY_NAME} INTERFACE math)
 

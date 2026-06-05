@@ -1,19 +1,11 @@
-/*
- * Source.h
- *
- *  Created on: 01/01/2013
- *      Author: Lean
- */
-
-#ifndef SOURCE_H_
-#define SOURCE_H_
+#pragma once
 
 #include <Math3d.h>
-#include "Resource.h"
 
-class Source: public Resource {
+class AudioSource {
 	private:
-		vector position; //TODO: Review if this state should be in a resource or should be an external audioRunner concept. From resource manager point of view we only care about the source id for initialization and destruction.
+    unsigned long id;
+		vector position;
 		vector velocity;
 		bool loop;
 		float gain;
@@ -21,12 +13,29 @@ class Source: public Resource {
 		float rolloff;
 
 	public:
-		Source(unsigned int id) :
-				Resource(id, MimeTypes::AUDIOSOURCE) {
-			velocity = position = vector(0, 0, 0);
-			loop = false;
-			gain = pitch = rolloff = 1.0f;
+		AudioSource(unsigned int id) :
+		  id(id),
+		  velocity(0, 0, 0),
+		  position(0, 0, 0),
+		  loop(false),
+		  gain(1.0f),
+		  pitch(1.0f),
+		  rolloff(1.0f) {
 		}
+
+    AudioSource(unsigned int id, const vector &position, const vector &velocity, const bool &loop) :
+      id(id),
+      velocity(velocity),
+      position(position),
+      loop(loop),
+      gain(1.0f),
+      pitch(1.0f),
+      rolloff(1.0f) {
+    }
+
+	  unsigned long getId() const {
+	    return id;
+	  }
 
 		float getGain() const {
 			return gain;
@@ -75,10 +84,4 @@ class Source: public Resource {
 		void setVelocity(const vector& velocity) {
 			this->velocity = velocity;
 		}
-
-		bool supportsCaching() override { //Do not cache since we can have multiple sources from same audio file uri
-		  return false;
-		}
 };
-
-#endif /* SOURCE_H_ */

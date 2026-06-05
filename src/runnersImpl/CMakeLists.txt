@@ -1,0 +1,2 @@
+add_subdirectory(openGL)
+add_subdirectory(openAL)
