@@ -82,7 +82,7 @@ class OpenALRunner: public AudioRunner {
       }
 
       this->sources.push_back(std::make_unique<AudioSource>(sourceId, position, velocity, loop));
-      this->updateSource(*this->sources.back().get());
+      this->updateSource(*this->sources.back().get(), *buffer);
 
       return this->sources.back().get();
     }
