@@ -27,11 +27,11 @@
 #include "TerrainResourceAdapter.h"
 
 #ifndef GL_MAJOR_VERSION
-	#define GL_MAJOR_VERSION 0x821B
+  #define GL_MAJOR_VERSION 0x821B
 #endif
 
 #ifndef GL_MINOR_VERSION
-	#define GL_MINOR_VERSION 0x821C
+  #define GL_MINOR_VERSION 0x821C
 #endif
 
 bool playgroundEventFilter(void *context, SDL_Event *event);
@@ -123,9 +123,13 @@ public:
     this->majorVersion = (unsigned int) majorVersion;
     this->minorVersion = (unsigned int) minorVersion;
 
-    logger->info("OpenGL [%d].[%d] initialized\nVersion: [%s]\nGLSL Version: [%s]\nGLEW Version [%s]\nVendor: [%s]\nRenderer: [%s]",
-        this->majorVersion, this->minorVersion, glGetString(GL_VERSION), glGetString(GL_SHADING_LANGUAGE_VERSION), "0", //glewGetString(GLEW_VERSION),
-        glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+    logger->info("\nOpenGL [%d].[%d] initialized\n\tVersion: [%s]\n\tGLSL Version: [%s]\n\tGLEW Version [%s]\n\tVendor: [%s]\n\tRenderer: [%s]",
+        this->majorVersion, this->minorVersion,
+        glGetString(GL_VERSION),
+        glGetString(GL_SHADING_LANGUAGE_VERSION),
+        "0", //glewGetString(GLEW_VERSION),
+        glGetString(GL_VENDOR),
+        glGetString(GL_RENDERER));
 
     /**
      * OpenGL defaults so that something is rendered with minimum configuration.
@@ -291,38 +295,38 @@ public:
         currentShaderProgram = program;
 
 #ifdef VERBOSE
-					int maxLength = 0;
-					int numberOfParams = 0;
-					glGetProgramiv(program->getId(), GL_ACTIVE_ATTRIBUTES, &numberOfParams);
-					glGetProgramiv(program->getId(), GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
-					char *nameBuffer = new char[maxLength + 1];
+          int maxLength = 0;
+          int numberOfParams = 0;
+          glGetProgramiv(program->getId(), GL_ACTIVE_ATTRIBUTES, &numberOfParams);
+          glGetProgramiv(program->getId(), GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
+          char *nameBuffer = new char[maxLength + 1];
 
-					logger->debug("Program [%s] has [%d] attributes:", program->toString().c_str(), numberOfParams);
-					for(int index = 0; index < numberOfParams; index++) {
-						GLsizei actualLength = 0;
-						GLenum type;
-						GLint size;
-						glGetActiveAttrib(program->getId(), index, maxLength, &actualLength, &size, &type, nameBuffer);
+          logger->debug("Program [%s] has [%d] attributes:", program->toString().c_str(), numberOfParams);
+          for(int index = 0; index < numberOfParams; index++) {
+            GLsizei actualLength = 0;
+            GLenum type;
+            GLint size;
+            glGetActiveAttrib(program->getId(), index, maxLength, &actualLength, &size, &type, nameBuffer);
 
 
-						logger->debug("		Attribute: [%s] at location [%d] of type [%d] and size [%d]", nameBuffer, glGetAttribLocation(program->getId(), nameBuffer), type, size);
-					}
-					delete [] nameBuffer;
+            logger->debug("   Attribute: [%s] at location [%d] of type [%d] and size [%d]", nameBuffer, glGetAttribLocation(program->getId(), nameBuffer), type, size);
+          }
+          delete [] nameBuffer;
 
-					glGetProgramiv(program->getId(), GL_ACTIVE_UNIFORMS, &numberOfParams);
-					glGetProgramiv(program->getId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLength);
-					nameBuffer = new char[maxLength + 1];
+          glGetProgramiv(program->getId(), GL_ACTIVE_UNIFORMS, &numberOfParams);
+          glGetProgramiv(program->getId(), GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLength);
+          nameBuffer = new char[maxLength + 1];
 
-					logger->debug("Program [%s] has [%d] uniforms:", program->toString().c_str(), numberOfParams);
-					for(int index = 0; index < numberOfParams; index++) {
-						GLsizei actualLength = 0;
-						GLenum type;
-						GLint size;
-						glGetActiveUniform(program->getId(), index, maxLength, &actualLength, &size, &type, nameBuffer);
+          logger->debug("Program [%s] has [%d] uniforms:", program->toString().c_str(), numberOfParams);
+          for(int index = 0; index < numberOfParams; index++) {
+            GLsizei actualLength = 0;
+            GLenum type;
+            GLint size;
+            glGetActiveUniform(program->getId(), index, maxLength, &actualLength, &size, &type, nameBuffer);
 
-						logger->debug("		Uniform: [%s] of type [%d] and size [%d]", nameBuffer, type, size);
-					}
-					delete [] nameBuffer;
+            logger->debug("   Uniform: [%s] of type [%d] and size [%d]", nameBuffer, type, size);
+          }
+          delete [] nameBuffer;
 #endif
       }
     } else {

@@ -4,7 +4,7 @@
 
 class AudioSource {
 	private:
-    unsigned long id;
+    unsigned int id;
 		vector position;
 		vector velocity;
 		bool loop;
