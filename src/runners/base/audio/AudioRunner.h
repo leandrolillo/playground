@@ -81,8 +81,8 @@ class AudioRunner: public PlaygroundRunner {
     /**
      * playback methods
      */
-    virtual void playSource(AudioSource &source) = 0;
-    virtual void stopSource(AudioSource &source) = 0;
-    virtual void pauseSource(AudioSource &source) = 0;
+    virtual void playSource(unsigned int sourceId) = 0;
+    virtual void stopSource(unsigned int sourceId) = 0;
+    virtual void pauseSource(unsigned int sourceId) = 0;
 
 	};

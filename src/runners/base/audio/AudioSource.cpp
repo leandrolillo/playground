@@ -62,3 +62,18 @@ float AudioSource::getRolloffFactor() const {
 void AudioSource::setRolloffFactor(float rolloffFactor) {
   owner.setSourceRolloffFactor(this->id, rolloffFactor);
 }
+
+
+/*
+ * Playback methods
+ */
+void AudioSource::play() {
+  this->owner.playSource(this->id);
+
+}
+void AudioSource::stop() {
+  this->owner.stopSource(this->id);
+}
+void AudioSource::pause() {
+  this->owner.pauseSource(this->id);
+}

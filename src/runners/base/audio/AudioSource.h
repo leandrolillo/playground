@@ -5,6 +5,7 @@
 
 class AudioRunner;
 
+//TODO: copy and move methods
 class AudioSource {
 	private:
     AudioRunner &owner;
@@ -48,4 +49,11 @@ class AudioSource {
 
 		float getRolloffFactor() const;
 		void setRolloffFactor(float rolloffFactor);
+
+		/*
+		 * Playback methods
+		 */
+    void play();
+    void stop();
+    void pause();
 };
