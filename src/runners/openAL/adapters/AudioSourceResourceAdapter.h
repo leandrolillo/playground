@@ -10,9 +10,9 @@
 #include "al.h"
 #include <set>
 
+#include "../../base/audio/AudioSource.h"
+#include "../../base/audio/resources/AudioBufferResource.h"
 #include "ResourceAdapter.h"
-#include "BufferResource.h"
-#include "SourceResource.h"
 
 class SourceResourceAdapter: public ResourceAdapter {
 public:
@@ -38,7 +38,7 @@ protected:
     logger->debug("loading audio/source from [%s]", request.getFilePath().c_str());
 
     ResourceLoadRequest bufferRequest(request);
-    BufferResource *buffer = (BufferResource*) getResourceManager().load(
+    AudioBufferResource *buffer = (AudioBufferResource*) getResourceManager().load(
         bufferRequest.acceptMimeType(MimeTypes::AUDIOBUFFER).withAdditionalLabels(std::set<String> {
             ResourceManager::ResourceManager::EphemeralLabel })
             );
@@ -60,7 +60,7 @@ protected:
       return response;
     }
 
-    response.push_back(new Source(sourceId));
+    response.push_back(new AudioSource(sourceId));
 
     return response;
   }

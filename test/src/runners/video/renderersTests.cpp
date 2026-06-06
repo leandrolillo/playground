@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../../../src/runners/video/renderers/TextRenderer.h"
 #include "mathMatchers.h"
 
 #include "VideoRunnerMock.h"
@@ -11,6 +10,7 @@
 #include "GridRenderer.h"
 #include "SkyboxRenderer.h"
 #include "SpriteRenderer.h"
+#include "TextRenderer.h"
 #include "TextRenderer.h"
 #include "Camera.h"
 

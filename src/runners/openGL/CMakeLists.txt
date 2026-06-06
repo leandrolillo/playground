@@ -20,7 +20,11 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG ${SDL_VERSION}
     GIT_SHALLOW TRUE
-    OVERRIDE_FIND_PACKAGE)    
+    OVERRIDE_FIND_PACKAGE
+    SOURCE_DIR "${THIRD_PARTY_DEPS_DIR}/sdl-src"
+    BINARY_DIR    "${THIRD_PARTY_DEPS_DIR}/sdl-build"
+    SUBBUILD_DIR  "${THIRD_PARTY_DEPS_DIR}/sdl-subbuild"
+    )
     
 set(BUILD_SHARED_LIBS FALSE)
 set(SDL_AUDIO            OFF)

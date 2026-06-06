@@ -12,8 +12,8 @@
 #include <vorbis/vorbisfile.h>
 #include <stdlib.h>
 
-#include "ResourceAdapter.h"
 #include "AudioResource.h"
+#include "ResourceAdapter.h"
 
 class OggResourceAdapter : public ResourceAdapter {
 	public:

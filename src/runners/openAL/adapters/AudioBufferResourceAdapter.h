@@ -8,15 +8,16 @@
 #pragma once
 
 #include <al.h>
-#include "BufferResource.h"
 #include <set>
 
+#include "../../base/audio/resources/AudioBufferResource.h"
+#include "../../base/audio/resources/AudioResource.h"
 #include "ResourceAdapter.h"
-#include "AudioResource.h"
+#include "ResourceManager.h"
 
-class BufferResourceAdapter: public ResourceAdapter {
+class AudioBufferResourceAdapter: public ResourceAdapter {
 public:
-  BufferResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
+  AudioBufferResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
     logger = LoggerFactory::getLogger("audio/BufferResourceAdapter");
     this->produces(MimeTypes::AUDIOBUFFER);
   }
@@ -70,7 +71,7 @@ public:
               request.getFilePath().c_str(), error);
           alDeleteBuffers(1, &ALbuffer);
         } else {
-          response.push_back(new BufferResource(ALbuffer));
+          response.push_back(new AudioBufferResource(ALbuffer));
         }
       }
     }
