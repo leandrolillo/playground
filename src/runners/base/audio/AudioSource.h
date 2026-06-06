@@ -1,87 +1,51 @@
 #pragma once
 
 #include <Math3d.h>
+#include "AudioBufferResource.h"
+
+class AudioRunner;
 
 class AudioSource {
 	private:
+    AudioRunner &owner;
     unsigned int id;
-		vector position;
-		vector velocity;
-		bool loop;
-		float gain;
-		float pitch;
-		float rolloff;
 
 	public:
-		AudioSource(unsigned int id) :
-		  id(id),
-		  velocity(0, 0, 0),
-		  position(0, 0, 0),
-		  loop(false),
-		  gain(1.0f),
-		  pitch(1.0f),
-		  rolloff(1.0f) {
-		}
+		AudioSource(AudioRunner &owner);
 
-    AudioSource(unsigned int id, const vector &position, const vector &velocity, const bool &loop) :
-      id(id),
-      velocity(velocity),
-      position(position),
-      loop(loop),
-      gain(1.0f),
-      pitch(1.0f),
-      rolloff(1.0f) {
+    AudioSource(AudioRunner &owner, AudioBufferResource &buffer, const vector &position, const vector &velocity, const bool &looping) : AudioSource(owner) {
+      setBuffer(buffer);
+      setPosition(position);
+      setVelocity(velocity);
+      setLooping(looping);
+      setGain(1.0f);
+      setPitch(1.0f);
+      setRolloffFactor(1.0f);
     }
+
+    ~AudioSource();
 
 	  unsigned long getId() const {
 	    return id;
 	  }
 
-		float getGain() const {
-			return gain;
-		}
+	  void setBuffer(AudioBufferResource &buffer);
 
-		void setGain(float gain) {
-			this->gain = gain;
-		}
+	  const vector& getPosition() const;
+    void setPosition(const vector& position);
 
-		unsigned char getLoop() const {
-			return loop;
-		}
+    const vector& getVelocity() const;
+    void setVelocity(const vector& velocity);
 
-		void setLoop(bool loop) {
-			this->loop = loop;
-		}
+	  float getGain() const;
+		void setGain(float gain);
 
-		float getPitch() const {
-			return pitch;
-		}
+		unsigned char getLooping() const;
+		void setLooping(bool looping);
 
-		void setPitch(float pitch) {
-			this->pitch = pitch;
-		}
+		float getPitch() const;
+		void setPitch(float pitch);
 
-		const vector& getPosition() const {
-			return position;
-		}
-
-		void setPosition(const vector& position) {
-			this->position = position;
-		}
-
-		float getRolloff() const {
-			return rolloff;
-		}
-
-		void setRolloff(float rolloff) {
-			this->rolloff = rolloff;
-		}
-
-		const vector& getVelocity() const {
-			return velocity;
-		}
-
-		void setVelocity(const vector& velocity) {
-			this->velocity = velocity;
-		}
+		float getRolloffFactor() const;
+		void setRolloffFactor(float rolloffFactor);
 };

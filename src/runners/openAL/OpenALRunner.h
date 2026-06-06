@@ -15,12 +15,11 @@
 #include "AudioBufferResourceAdapter.h"
 
 class OpenALRunner: public AudioRunner {
+  friend class AudioSource;
   private:
-    Logger *logger = LoggerFactory::getLogger("audio/AudioRunner");
+    Logger *logger = LoggerFactory::getLogger("audio/OpenALRunner");
     ALCdevice *device = null;
     ALCcontext *context = null;
-
-    std::vector<std::unique_ptr<AudioSource>>sources;
   public:
     using AudioRunner::AudioRunner; //inherit constructors
 
@@ -62,82 +61,6 @@ class OpenALRunner: public AudioRunner {
       return true;
     }
 
-    AudioSource *createSource(String fileName, const vector &position = vector(0, 0, 0), const vector &velocity = vector(0, 0, 0), bool loop = true) override
-    {
-      ALenum error = 0;
-
-      logger->debug("loading audio/source from [%s]", fileName.c_str());
-
-      AudioBufferResource *buffer = (AudioBufferResource*) getResourceManager().load(fileName, MimeTypes::AUDIOBUFFER);
-      if (buffer == null) {
-        logger->error("Error creating source: could not load buffer for [%s]", fileName.c_str());
-        return null;
-      }
-
-      ALuint sourceId;
-      alGenSources(1, &sourceId);
-      if ((error = alGetError()) != AL_NO_ERROR) {
-        logger->error("Error creating source for [%s]: %d", fileName.c_str(), error);
-        return null;
-      }
-
-      this->sources.push_back(std::make_unique<AudioSource>(sourceId, position, velocity, loop));
-      this->updateSource(*this->sources.back().get(), *buffer);
-
-      return this->sources.back().get();
-    }
-
-    void updateSource(AudioSource &source, AudioBufferResource &audio) {
-      ALenum error = 0;
-
-      alSourcei(source.getId(), AL_BUFFER, (ALuint) audio.getId());
-      if ((error = alGetError()) != AL_NO_ERROR) {
-        logger->error("Error setting properties for source [%s]: %d", audio.getUri().c_str(), error);
-      }
-      updateSource(source);
-    }
-
-    void updateSource(AudioSource &source) override
-    {
-        alSourcefv(source.getId(), AL_POSITION, (real *)source.getPosition());
-        alSourcefv(source.getId(), AL_VELOCITY, (real *)source.getVelocity());
-        alSourcef (source.getId(), AL_PITCH, source.getPitch());
-        alSourcef (source.getId(), AL_GAIN, source.getGain());
-        alSourcef (source.getId(), AL_ROLLOFF_FACTOR, source.getRolloff());
-        alSourcei (source.getId(), AL_LOOPING, source.getLoop());
-    }
-
-    void playSource(AudioSource &source) override
-    {
-        alSourcePlay(source.getId());
-    }
-
-    void stopSource(AudioSource &source) override
-    {
-        alSourceStop(source.getId());
-    }
-
-    void pauseSource(AudioSource &source) override
-    {
-        alSourcePause(source.getId());
-    }
-
-
-    bool updateListener(vector position, vector velocity = vector(0, 0, 0), vector to = vector(0, 0, 1), vector up = vector(0, 1, 0)) override
-    {
-      float orientation[] = {to.x, to.y, to.z, up.x, up.y, up.z};
-      alListenerfv(AL_POSITION, position);
-      alListenerfv(AL_VELOCITY, velocity);
-      alListenerfv(AL_ORIENTATION, orientation);
-
-      if(alGetError() != AL_NO_ERROR) {
-        logger->error("Error updating Listener");
-        return(false);
-      }
-      return(true);
-
-    }
-
     virtual String toString() const override {
       return "AudioRunner(id:" + std::to_string(this->getId()) + ")";
     }
@@ -145,12 +68,6 @@ class OpenALRunner: public AudioRunner {
 
     virtual ~OpenALRunner()
     {
-      for(auto &source : sources) {
-        unsigned int sourceId = source->getId();
-        alDeleteSources(1, &sourceId);
-
-      }
-
       alcMakeContextCurrent(NULL);
       if(context != null) {
         alcDestroyContext(context);
@@ -163,4 +80,162 @@ class OpenALRunner: public AudioRunner {
       }
     }
 
+  protected:
+
+    /**
+     * source wrapper methods
+     */
+    unsigned int createSource() override {
+      unsigned int sourceId = 0;
+      alGenSources(1, &sourceId);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+        return 0;
+      }
+
+      return sourceId;
+    }
+
+    void deleteSource(unsigned int sourceId) override {
+      alDeleteSources(1, &sourceId);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+
+    void setSourceBuffer(unsigned int sourceId, unsigned int audioBufferId) override {
+      alSourcei(sourceId, AL_BUFFER, audioBufferId);
+    }
+    int getSourceBuffer(unsigned int sourceId) override {
+      int result = 0;
+      alGetSourcei(sourceId, AL_BUFFER, &result);
+      return result;
+
+    }
+
+    void setSourcePosition(unsigned int sourceId, const vector &position) override {
+      alSourcefv(sourceId, AL_POSITION, (real *)position);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    vector getSourcePosition(unsigned int sourceId) override {
+      vector result;
+      alGetSourcefv(sourceId, AL_POSITION, (real *)result);
+      return result;
+
+    }
+
+    void setSourceVelocity(unsigned int sourceId, const vector &velocity) override {
+      alSourcefv(sourceId, AL_VELOCITY, (real *)velocity);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    vector getSourceVelocity(unsigned int sourceId) override {
+      vector result;
+      alGetSourcefv(sourceId, AL_VELOCITY, (real *)result);
+      return result;
+
+    }
+
+    void setSourcePitch(unsigned int sourceId, real pitch) override {
+      alSourcef(sourceId, AL_PITCH, pitch);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    real getSourcePitch(unsigned int sourceId) override {
+      real result = 0;
+      alGetSourcef(sourceId, AL_PITCH, &result);
+      return result;
+    }
+
+    void setSourceGain(unsigned int sourceId, real gain) override {
+      alSourcef(sourceId, AL_GAIN, gain);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    real getSourceGain(unsigned int sourceId) override {
+      real result = 0;
+      alGetSourcef(sourceId, AL_GAIN, &result);
+      return result;
+
+    }
+
+    void setSourceRolloffFactor(unsigned int sourceId, real rolloffFactor) override {
+      alSourcef(sourceId, AL_ROLLOFF_FACTOR, rolloffFactor);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    real getSourceRolloffFactor(unsigned int sourceId) override {
+      real result = 0;
+      alGetSourcef(sourceId, AL_ROLLOFF_FACTOR, &result);
+      return result;
+
+    }
+
+    void setSourceLooping(unsigned int sourceId, bool looping) override {
+      alSourcei(sourceId, AL_LOOPING, looping);
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+      }
+    }
+    bool getSourceLooping(unsigned int sourceId) override {
+      int result = 0;
+      alGetSourcei(sourceId, AL_LOOPING, &result);
+      return (bool)result;
+    }
+
+
+    /**
+     * playback methods
+     */
+    void playSource(AudioSource &source) override
+    {
+        alSourcePlay(source.getId());
+        if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+          logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+        }
+
+    }
+
+    void stopSource(AudioSource &source) override
+    {
+        alSourceStop(source.getId());
+        if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+          logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+        }
+
+    }
+
+    void pauseSource(AudioSource &source) override
+    {
+        alSourcePause(source.getId());
+        if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+          logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+        }
+    }
+
+
+    /**
+     * listener methods
+     */
+    bool updateListener(const vector &position, const vector velocity = vector(0, 0, 0), vector to = vector(0, 0, 1), vector up = vector(0, 1, 0)) override
+    {
+      float orientation[] = {to.x, to.y, to.z, up.x, up.y, up.z};
+      alListenerfv(AL_POSITION, position);
+      alListenerfv(AL_VELOCITY, velocity);
+      alListenerfv(AL_ORIENTATION, orientation);
+
+      if (ALenum error = alGetError() ; error != AL_NO_ERROR) {
+        logger->error("Error at [%s]: [%d]", __PRETTY_FUNCTION__, error);
+        return false;
+      }
+
+      return(true);
+
+    }
   };
