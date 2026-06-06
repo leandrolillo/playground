@@ -1,10 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
-#include "ResourceManagerMock.h"
-
-#include "AudioRunner.h"
 
 #include "OggResourceAdapter.h"
 #include "WavResourceAdapter.h"
+#include "AudioRunner.h"
+#include "ResourceManagerMock.h"
+
 #include "Logger.h"
 
 

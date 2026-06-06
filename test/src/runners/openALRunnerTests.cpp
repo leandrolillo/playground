@@ -1,12 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "OggResourceAdapter.h"
+#include "WavResourceAdapter.h"
 #include "AudioBufferResourceAdapter.h"
 #include "ResourceManagerMock.h"
 
 #include "OpenALRunner.h"
 
-#include "OggResourceAdapter.h"
-#include "WavResourceAdapter.h"
 #include "Logger.h"
 
 TEST_CASE("OpenAL ResourceAdapter tests") { //TODO: Move to openALRunner

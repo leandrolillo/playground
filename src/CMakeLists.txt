@@ -7,4 +7,4 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(math)
 
 add_subdirectory(playground)
-add_subdirectory(runnersImpl)
+add_subdirectory(runners)
