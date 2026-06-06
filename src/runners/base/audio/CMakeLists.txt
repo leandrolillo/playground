@@ -16,7 +16,11 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/xiph/ogg.git
     GIT_TAG ${OGG_VERSION}
     GIT_SHALLOW TRUE
-    FIND_PACKAGE_ARGS NAMES Ogg)
+    FIND_PACKAGE_ARGS NAMES Ogg
+    SOURCE_DIR "${THIRD_PARTY_DEPS_DIR}/ogg-src"
+    BINARY_DIR    "${THIRD_PARTY_DEPS_DIR}/ogg-build"
+    SUBBUILD_DIR  "${THIRD_PARTY_DEPS_DIR}/ogg-subbuild"
+    )
 FetchContent_MakeAvailable(Ogg)
 target_link_libraries(${LIBRARY_NAME} PUBLIC Ogg::ogg)
 
@@ -25,6 +29,10 @@ FetchContent_Declare(
     Vorbis
     GIT_REPOSITORY https://github.com/xiph/vorbis.git
     GIT_TAG ${VORBIS_VERSION}
-    GIT_SHALLOW TRUE)
+    GIT_SHALLOW TRUE
+    SOURCE_DIR "${THIRD_PARTY_DEPS_DIR}/vorbis-src"
+    BINARY_DIR    "${THIRD_PARTY_DEPS_DIR}/vorbis-build"
+    SUBBUILD_DIR  "${THIRD_PARTY_DEPS_DIR}/vorbis-subbuild"
+    )
 FetchContent_MakeAvailable(Vorbis)
 target_link_libraries(${LIBRARY_NAME} PUBLIC vorbis vorbisfile)

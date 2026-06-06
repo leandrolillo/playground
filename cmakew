@@ -88,7 +88,9 @@ thisScriptFolder=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && 
 ## clean if required
 pushd ${inputs_parameters_path} > /dev/null
 if [[ "${inputs_parameters_clean}" == "true" ]]; then
-  rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
+  #rm -rf ${inputs_parameters_path}/${inputs_parameters_working_folder}
+  #echo "Running >> find ${inputs_parameters_path}/${inputs_parameters_working_folder} -mindepth 1 -maxdepth 1 -name '_third_party_deps' -prune -o -exec rm -rf {} +"
+  find ${inputs_parameters_path}/${inputs_parameters_working_folder} -mindepth 1 -maxdepth 1 -name '_third_party_deps' -prune -o -exec rm -rf {} +
 fi
 
 options=$([[ "${inputs_parameters_debug}" == "true" ]] && echo "-DCMAKE_BUILD_TYPE=Debug " || echo "")
