@@ -1,0 +1,80 @@
+#pragma once
+
+#include "Resource.h"
+#include "HeightMapResource.h"
+#include "TextureResource.h"
+#include "VertexArrayResource.h"
+
+class TerrainResource: public Resource {
+	TextureResource *r = null;
+	TextureResource *g = null;
+	TextureResource *b = null;
+	TextureResource *a = null;
+
+	TextureResource *map = null;
+
+	HeightMapResource *heightmap = null;
+
+	VertexArrayResource *model = null;
+
+public:
+	TerrainResource() : Resource(0, MimeTypes::TERRAIN) {
+	  logger = LoggerFactory::getLogger("video/TerrainResource");
+	}
+
+	const TextureResource* getA() const {
+		return a;
+	}
+
+	void setA(TextureResource *a) {
+		this->a = a;
+	}
+
+	const TextureResource* getB() const {
+		return b;
+	}
+
+	void setB(TextureResource *b) {
+		this->b = b;
+	}
+
+	const TextureResource* getG() const {
+		return g;
+	}
+
+	void setG(TextureResource *g) {
+		this->g = g;
+	}
+
+	const TextureResource* getMap() const {
+		return map;
+	}
+
+	void setMap(TextureResource *map) {
+		this->map = map;
+	}
+
+	const TextureResource* getR() const {
+		return r;
+	}
+
+	void setR(TextureResource *r) {
+		this->r = r;
+	}
+
+	VertexArrayResource* getModel() const {
+		return model;
+	}
+
+	void setModel(VertexArrayResource *model) {
+		this->model = model;
+	}
+
+	const HeightMapResource * getHeightMap() const {
+	    return heightmap;
+	}
+
+	void setHeightmap(HeightMapResource *heightmap) {
+	    this->heightmap = heightmap;
+	}
+};

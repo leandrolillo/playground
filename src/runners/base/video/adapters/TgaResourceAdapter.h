@@ -1,0 +1,91 @@
+/*
+ * TgaResourceAdapter.h
+ *
+ *  Created on: 19/02/2013
+ *      Author: Lean
+ */
+
+#pragma once
+
+#include <stdio.h>
+
+#include "ResourceAdapter.h"
+#include "ImageResource.h"
+
+class TgaResourceAdapter: public ResourceAdapter {
+private:
+  short le_short(unsigned char *bytes) const {
+    return bytes[0] | ((char) bytes[1] << 8);
+  }
+public:
+  TgaResourceAdapter(ResourceManager &resourceManager) : ResourceAdapter(resourceManager) {
+    logger = LoggerFactory::getLogger("video/TgaResourceAdapter");
+    this->accepts(MimeTypes::TGA);
+    this->produces(MimeTypes::IMAGE);
+  }
+
+protected:
+  virtual std::vector<Resource*> doLoad(ResourceLoadRequest &request) const override {
+    std::vector<Resource*> response;
+    ImageResource *resource = new ImageResource();
+
+    struct tgaHeader {
+      char id_length;
+      char color_map_type;
+      char data_type_code;
+      unsigned char color_map_origin[2];
+      unsigned char color_map_length[2];
+      char color_map_depth;
+      unsigned char x_origin[2];
+      unsigned char y_origin[2];
+      unsigned char width[2];
+      unsigned char height[2];
+      char bits_per_pixel;
+      char image_descriptor;
+    } header;
+
+    if (request.getFileParser().read(&header, sizeof(header), 1) != 1) {
+      logger->error("%s has incomplete tga header\n",
+          request.getFilePath().c_str());
+      return response;
+    }
+    if (header.data_type_code != 2) {
+      logger->error("[%s] compressed tga not supported\n",
+          request.getFilePath().c_str());
+      return response;
+    }
+    if (header.bits_per_pixel != 24) {
+      logger->error("%s is not a 24-bit uncompressed RGB tga file\n",
+          request.getFilePath().c_str());
+      return response;
+    }
+
+    for (int i = 0; i < header.id_length; ++i)
+      if (request.getFileParser().takeByte() == EOF) {
+        logger->error("%s has incomplete id string\n",
+            request.getFilePath().c_str());
+        return response;
+      }
+
+    unsigned int color_map_size = le_short(header.color_map_length)
+        * (header.color_map_depth / 8);
+    for (unsigned int i = 0; i < color_map_size; ++i)
+      if (request.getFileParser().takeByte() == EOF) {
+        logger->error("%s has incomplete color map\n",
+            request.getFilePath().c_str());
+        return response;
+      }
+
+    resource->resize(le_short(header.width), le_short(header.height), header.bits_per_pixel >> 3);
+    if (request.getFileParser().read(resource->getData(), 1, resource->getBufferSize()) != resource->getBufferSize()) {
+      logger->error("%s has incomplete image\n",
+          request.getFilePath().c_str());
+      dispose(resource);
+      return response;
+    }
+
+    response.push_back(resource);
+
+    return response;
+  }
+};

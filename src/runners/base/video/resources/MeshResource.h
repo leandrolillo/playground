@@ -1,0 +1,65 @@
+/*
+ * MeshResource.h
+ *
+ *  Created on: Oct 3, 2022
+ *      Author: leandro
+ */
+
+#pragma once
+
+#include "Resource.h"
+#include "MaterialResource.h"
+#include "TextureResource.h"
+#include "VertexArrayResource.h"
+
+class MeshResource : public Resource
+{
+	VertexArrayResource *vertexArray = null;
+	MaterialResource *material = null;
+	TextureResource *texture = null;
+	TextureResource *specularMap = null;
+	TextureResource *normalMap = null;
+public:
+	MeshResource() : Resource(0, MimeTypes::MESH) {
+	}
+
+	const MaterialResource* getMaterial() const {
+		return material;
+	}
+
+	void setMaterial(MaterialResource *material) {
+		this->material = material;
+	}
+
+	TextureResource* getTexture() const {
+		return texture;
+	}
+
+	void setTexture(TextureResource *texture) {
+		this->texture = texture;
+	}
+
+	VertexArrayResource* getVertexArray() const {
+		return vertexArray;
+	}
+
+	void setVertexArray(VertexArrayResource *vertexArray) {
+		this->vertexArray = vertexArray;
+	}
+
+	TextureResource *getNormalMap() const {
+		return normalMap;
+	}
+
+	void setNormalMap(TextureResource *normalMap = null) {
+		this->normalMap = normalMap;
+	}
+
+	TextureResource * getSpecularMap() const {
+		return specularMap;
+	}
+
+	void setSpecularMap(TextureResource *specularMap = null) {
+		this->specularMap = specularMap;
+	}
+};
