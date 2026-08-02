@@ -21,13 +21,12 @@ class OpenALRunner: public AudioRunner {
   ALCdevice *device = null;
   ALCcontext *context = null;
   public:
-  using AudioRunner::AudioRunner; //inherit constructors
-
-  virtual bool initialize() override {
-    AudioRunner::initialize();
+  OpenALRunner(Playground &container) : AudioRunner(container) {
     //this->getResourceManager().addAdapter<SourceResourceAdapter>();
     this->getResourceManager().addAdapter<AudioBufferResourceAdapter>();
+  }
 
+  virtual bool initialize() override {
     device = alcOpenDevice(null);
     if (device == null) {
       logger->error("Error opening alcDevice");

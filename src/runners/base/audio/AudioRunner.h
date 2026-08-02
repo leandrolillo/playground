@@ -19,16 +19,13 @@ class AudioRunner: public PlaygroundRunner {
 	protected:
 		Logger *logger = LoggerFactory::getLogger("audio/AudioRunner");
 	public:
-		using PlaygroundRunner::PlaygroundRunner; //inherit constructors
+		AudioRunner(Playground &container) : PlaygroundRunner(container) {
+			this->getResourceManager().addAdapter<OggResourceAdapter>();
+			this->getResourceManager().addAdapter<WavResourceAdapter>();
+		}
 
 		virtual unsigned char getId() const override {
 			return ID;
-		}
-
-		virtual bool initialize() override {
-			this->getResourceManager().addAdapter<OggResourceAdapter>();
-			this->getResourceManager().addAdapter<WavResourceAdapter>();
-			return true;
 		}
 
 		/**
