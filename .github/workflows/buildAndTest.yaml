@@ -11,8 +11,19 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - name: building and testing
+    - name: build
+      run: |
+        #-DCMAKE_POLICY_VERSION_MINIMUM=3.5 to workaround xiph ogg / vorbis cmake version issues in github workflows
+        cmake_options="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" ./cmakew . 
+    - name: test
       run: |
         #exclude opengl tests since it does not initialize properly
         #-DCMAKE_POLICY_VERSION_MINIMUM=3.5 to workaround xiph ogg / vorbis cmake version issues in github workflows
         cmake_options="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" cmake_test_options="-E "".*OpenGL.*" ./cmakew -t . 
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v1
+      if: always() # Run even if tests fail
+      with:
+        name: CTest Results
+        path: build/ctest-report.xml
+        reporter: java-junit # Works for any JUnit-formatted XML
