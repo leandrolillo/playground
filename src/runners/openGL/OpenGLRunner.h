@@ -214,37 +214,37 @@ public:
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   }
 
-  virtual void onKeyDown(unsigned int key, unsigned int keyModifier) override {
-    logger->debug("Key down: %d", key);
-    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->debug("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
-    logger->debug("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
-    logger->debug("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
-    logger->debug("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
-
-    switch (key) {
-    case SDLK_ESCAPE:
-      this->getContainer().stop();
-      break;
-    case SDLK_F4:
-      if (keyModifier & SDL_KMOD_GUI) {
-        this->getContainer().stop();
-      }
-      break;
-    case SDLK_Q:
-      if (keyModifier & SDL_KMOD_ALT) {
-        this->getContainer().stop();
-      }
-      break;
-
-    case SDLK_RETURN:
-      if (keyModifier & SDL_KMOD_GUI) {
-        this->setFullscreen(!this->getFullscreen());
-      }
-      break;
-    }
-  }
+//  virtual void onKeyDown(unsigned int key, unsigned int keyModifier) override {
+//    logger->debug("Key down: %d", key);
+//    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+//    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+//    logger->debug("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
+//    logger->debug("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
+//    logger->debug("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
+//    logger->debug("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
+//
+//    switch (key) {
+//    case SDLK_ESCAPE:
+//      this->getContainer().stop();
+//      break;
+//    case SDLK_F4:
+//      if (keyModifier & SDL_KMOD_GUI) {
+//        this->getContainer().stop();
+//      }
+//      break;
+//    case SDLK_Q:
+//      if (keyModifier & SDL_KMOD_ALT) {
+//        this->getContainer().stop();
+//      }
+//      break;
+//
+//    case SDLK_RETURN:
+//      if (keyModifier & SDL_KMOD_GUI) {
+//        this->setFullscreen(!this->getFullscreen());
+//      }
+//      break;
+//    }
+//  }
 
   bool setFullscreen(bool fullScreen) override {
     SDL_SetWindowFullscreen(this->window, VideoRunner::setFullscreen(fullScreen));
