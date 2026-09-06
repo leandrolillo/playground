@@ -45,6 +45,12 @@ class AudioRunner: public PlaygroundRunner {
 		 * listener methods
 		 */
 		virtual bool updateListener(const vector &position, vector velocity = vector(0, 0, 0), vector to = vector(0, 0, 1), vector up = vector(0, 1, 0)) = 0;
+		virtual AudioSource &playBackgroundMusic(AudioBufferResource &buffer) {
+		}
+
+		virtual bool stopBackgroundMusic() {
+
+		}
 
 		virtual String toString() const override {
 			return "AudioRunner(id:" + std::to_string(this->getId()) + ")";

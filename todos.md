@@ -3,7 +3,7 @@
 - CMake fetchContent dependencies (in particular to our own repositories) should use tags otherwise previous commits no longer compile since branches have changed. This makes troubleshooting issues by comparing with previous code states more difficult.
 
 - Runner class hierarchy: 
-  - audio runner interface used for service locator. Fmod and maybe openal implementations
+  - audio runner interface used for service locator. Fmod and maybe openal implementations. Use openALSoft library 
   - video runner interface used for service locator. Opengl base class?. Implementations would be sdl, win32, cocoa, etc (only window and events).
     video runners:
       opengl:
@@ -39,6 +39,7 @@
 
 - Refactor Parsers: support xml, yaml and json - should work the same just by switching the implementation class. Use streams.
   - Support skipping unknown properties
+  - Support Streaming (background music / videos / any large piece of data)
 
 - review RAII and 5 of 5 principle (move semantics / perfect forwarding) in resources/playground classes.
 	specially in file parser / text parser and resources.
