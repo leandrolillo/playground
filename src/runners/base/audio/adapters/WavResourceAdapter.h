@@ -67,9 +67,9 @@ protected:
       std::vector<char> data;
     }*dataChunk = null;
 
-    while (request.getFileParser().read(&chunkHeader, sizeof(ChunkHeader), 1)
-        == 1) {
-      if (asString(chunkHeader.id) == "RIFF") {
+    while (request.getFileParser().read(&chunkHeader, sizeof(ChunkHeader), 1) == 1) {
+      String chunkHeaderIdString = asString(chunkHeader.id);
+      if(chunkHeaderIdString == "RIFF") {
         logger->verbose("Reading riff chunk");
         riffChunk = new RiffChunk;
         if (request.getFileParser().read(riffChunk, sizeof(RiffChunk), 1) != 1) { // riff chunk length is the file size, so read based on struct size instead.
@@ -77,7 +77,7 @@ protected:
           delete riffChunk;
           riffChunk = null;
         }
-      } else if (asString(chunkHeader.id) == "fmt ") { //watch out this includes a space in the end
+      } else if (chunkHeaderIdString == "fmt ") { //watch out this includes a space in the end
         logger->verbose("Reading format chunk");
         if (sizeof(FormatChunk) >= chunkHeader.length) {
           formatChunk = new FormatChunk;
@@ -90,24 +90,16 @@ protected:
           logger->error("Unsupported format chunk size: expected %u, found %u",
               sizeof(FormatChunk), chunkHeader.length);
         }
-      } else if (asString(chunkHeader.id) == "data") {
+      } else if (chunkHeaderIdString == "data") {
         logger->verbose("Reading data chunk");
         dataChunk = new DataChunk;
-        /**
-         * This case is slightly different, instead of reading directly into a chunk struct, we read the raw data and store it in the
-         * chunk as a vector.
-         */
-        char buffer[chunkHeader.length];
+        dataChunk->data.resize(chunkHeader.length);
 
-        if (request.getFileParser().read(buffer, sizeof(char),
-                chunkHeader.length) != chunkHeader.length) {
+        if (request.getFileParser().read(dataChunk->data.data(), sizeof(char), chunkHeader.length) != chunkHeader.length) {
           logger->error("Could not read data chunk");
           delete dataChunk;
           dataChunk = null;
         }
-
-        dataChunk->data.insert(dataChunk->data.end(), buffer,
-            buffer + chunkHeader.length);
       } else { // skip chunk
         logger->verbose("Skipping unsupported chunk: [%s] of size [%u]",
             asString(chunkHeader.id).c_str(), chunkHeader.length);

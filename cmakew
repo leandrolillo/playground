@@ -109,7 +109,7 @@ cmake --build .
 
 ## test
 if [[ "${inputs_parameters_test}" == "true" ]]; then
-  ctest ${cmake_test_options} --output-on-failure
+  ctest ${cmake_test_options} --output-on-failure --output-junit ctest-report.xml
 fi
 
 popd > /dev/null

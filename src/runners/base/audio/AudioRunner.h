@@ -15,20 +15,18 @@
 class AudioRunner: public PlaygroundRunner {
   friend class AudioSource;
 	public:
-		static const unsigned char ID;
+		static const unsigned char ID {3};
 	protected:
 		Logger *logger = LoggerFactory::getLogger("audio/AudioRunner");
+		std::unique_ptr<AudioSource> background;
 	public:
-		using PlaygroundRunner::PlaygroundRunner; //inherit constructors
+		AudioRunner(Playground &container) : PlaygroundRunner(container) {
+			this->getResourceManager().addAdapter<OggResourceAdapter>();
+			this->getResourceManager().addAdapter<WavResourceAdapter>();
+		}
 
 		virtual unsigned char getId() const override {
 			return ID;
-		}
-
-		virtual bool initialize() override {
-			this->getResourceManager().addAdapter<OggResourceAdapter>();
-			this->getResourceManager().addAdapter<WavResourceAdapter>();
-			return true;
 		}
 
 		/**
@@ -44,10 +42,26 @@ class AudioRunner: public PlaygroundRunner {
       return std::make_unique<AudioSource>(*this, *buffer, position, velocity, looping);
 		}
 
+    virtual std::unique_ptr<AudioSource> createSource(AudioBufferResource &buffer, const vector &position = vector(0, 0, 0), const vector &velocity = vector(0, 0, 0), bool looping = true) {
+      return std::make_unique<AudioSource>(*this, buffer, position, velocity, looping);
+    }
+
 		/**
 		 * listener methods
 		 */
 		virtual bool updateListener(const vector &position, vector velocity = vector(0, 0, 0), vector to = vector(0, 0, 1), vector up = vector(0, 1, 0)) = 0;
+
+		virtual AudioSource *playBackgroundMusic(const String &fileName) {
+      if (auto buffer = (AudioBufferResource*) getResourceManager().load(fileName, MimeTypes::AUDIOBUFFER); buffer == null) {
+        logger->error("Error creating source: could not load buffer for [%s]", fileName.c_str());
+        return background.get();
+      } else {
+        return playBackgroundMusic(*buffer);
+      }
+		}
+
+		virtual AudioSource *playBackgroundMusic(AudioBufferResource &buffer);
+		virtual void stopBackgroundMusic();
 
 		virtual String toString() const override {
 			return "AudioRunner(id:" + std::to_string(this->getId()) + ")";

@@ -1,6 +1,6 @@
 #library (videoRunner contains video abstract base class to be inherited by opengl/direct3d in combination with platform implementations)
 set(LIBRARY_NAME videoRunner)
-add_library(${LIBRARY_NAME} STATIC VideoRunner.cpp)
+add_library(${LIBRARY_NAME} INTERFACE)
 
 #sources
 add_subdirectory(adapters)
@@ -8,23 +8,23 @@ add_subdirectory(camera)
 add_subdirectory(renderers)
 add_subdirectory(resources)
 
-target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(${LIBRARY_NAME} PUBLIC playground)
+target_include_directories(${LIBRARY_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 
 #Dependencies: 
 # LibJpeg
 find_package(JPEG REQUIRED)
-target_include_directories(${LIBRARY_NAME} PUBLIC ${JPEG_INCLUDE_DIR})
-target_link_libraries(${LIBRARY_NAME} PUBLIC ${JPEG_LIBRARY})
+target_include_directories(${LIBRARY_NAME} INTERFACE ${JPEG_INCLUDE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${JPEG_LIBRARY})
 
 # LibPng
 find_package(PNG REQUIRED)
-target_include_directories(${LIBRARY_NAME} PUBLIC ${PNG_INCLUDE_DIR})
-target_link_libraries(${LIBRARY_NAME} PUBLIC ${PNG_LIBRARY})
+target_include_directories(${LIBRARY_NAME} INTERFACE ${PNG_INCLUDE_DIR})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${PNG_LIBRARY})
 
 #Freetype
 find_package(Freetype REQUIRED)
-target_link_libraries(${LIBRARY_NAME} PUBLIC Freetype::Freetype)
+target_link_libraries(${LIBRARY_NAME} INTERFACE Freetype::Freetype)
 
 #Geometry
 FetchContent_Declare(
@@ -34,4 +34,4 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(geometry)
 
-target_link_libraries(${LIBRARY_NAME} PUBLIC geometry)
+target_link_libraries(${LIBRARY_NAME} INTERFACE geometry)

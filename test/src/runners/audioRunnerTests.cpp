@@ -17,7 +17,7 @@
 //  }
 //};
 
-TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
+TEST_CASE("AudioRunner ResourceAdapters Tests")
 {
   LoggerFactory::doNotLogToFile();
   LoggerFactory::setDefaultLogLevel(LogLevel::DEBUG);
@@ -48,7 +48,7 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
     CHECK(MimeTypes::AUDIO == resource->getMimeType());
   }
 
-  SECTION("AudioResourceAdapter (No resource manager) test")
+  SECTION("WavResourceAdapter (No resource manager) test")
   {
     ResourceAdapter &resourceAdapter = resourceManager.addAdapter<WavResourceAdapter>();
     ResourceLoadRequest request = resourceManager.newRequest("audio/audio.wav");
@@ -60,9 +60,19 @@ TEST_CASE("AudioRunner ResourceAdapters Tests (No resourceManager.load())")
     REQUIRE(resource != null);
     CHECK(!resource->getData().empty());
     CHECK(MimeTypes::AUDIO == resource->getMimeType());
+
+    request = resourceManager.newRequest("audio/awesomeness.wav");
+    response = resourceAdapter.load(request);
+
+    REQUIRE(response.size() == 1);
+
+    resource = (AudioResource *)response.back();
+    REQUIRE(resource != null);
+    CHECK(!resource->getData().empty());
+    CHECK(MimeTypes::AUDIO == resource->getMimeType());
   }
 
-  SECTION("AudioResourceAdapter with ResourceManager test")
+  SECTION("WavResourceAdapter with ResourceManager test")
   {
     ResourceAdapter &resourceAdapter = resourceManager.addAdapter<WavResourceAdapter>();
 

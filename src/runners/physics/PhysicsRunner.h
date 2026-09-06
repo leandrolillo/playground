@@ -16,7 +16,7 @@ class PhysicsRunner: public PlaygroundRunner {
 	 */
 	unsigned long frames = 0;
 public:
-	static const unsigned char ID;
+	static const unsigned char ID {4};
 public:
 	PhysicsRunner(Playground &container) : PlaygroundRunner(container), stopWatch(container.getStopWatch()) {
 	}
@@ -87,5 +87,3 @@ public:
 	}
 
 };
-
-const unsigned char PhysicsRunner::ID = 4;

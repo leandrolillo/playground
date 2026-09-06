@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <stdexcept>
 #include <Math3d.h>
 #include "AudioRunner.h"
 #include "al.h"
@@ -21,26 +22,20 @@ class OpenALRunner: public AudioRunner {
   ALCdevice *device = null;
   ALCcontext *context = null;
   public:
-  using AudioRunner::AudioRunner; //inherit constructors
-
-  virtual bool initialize() override {
-    AudioRunner::initialize();
+  OpenALRunner(Playground &container) : AudioRunner(container) {
     //this->getResourceManager().addAdapter<SourceResourceAdapter>();
     this->getResourceManager().addAdapter<AudioBufferResourceAdapter>();
 
     device = alcOpenDevice(null);
     if (device == null) {
-      logger->error("Error opening alcDevice");
-      return false;
+      throw std::runtime_error("Error opening alcDevice");
     }
 
     logger->debug("OpenAL device opened");
 
     context = alcCreateContext(device, null);
-    if (context == null)
-    {
-      logger->error("Error creating context");
-      return false;
+    if (context == null) {
+      throw std::runtime_error("Error creating OpenAL context");
     }
 
     logger->debug("OpenAL context created");
@@ -57,8 +52,6 @@ class OpenALRunner: public AudioRunner {
         alGetString(AL_EXTENSIONS));
 
     updateListener(vector(0, 0, 0));
-
-    return true;
   }
 
   virtual String toString() const override {

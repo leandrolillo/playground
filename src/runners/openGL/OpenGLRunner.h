@@ -8,6 +8,7 @@
 #pragma once
 
 #include <unistd.h>
+#include <stdexcept>
 
 #define GL_SILENCE_DEPRECATION //hide opengl deprecated on osx warnings
 #include <OpenGL/OpenGL.h>
@@ -51,7 +52,64 @@ private:
 
 public:
 
-  using VideoRunner::VideoRunner;
+  OpenGLRunner(Playground &container) : VideoRunner(container) {
+    this->getResourceManager().addAdapter<TextureResourceAdapter>();
+    this->getResourceManager().addAdapter<CubeMapResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexArrayResourceAdapter>();
+    this->getResourceManager().addAdapter<MeshResourceAdapter>();
+    this->getResourceManager().addAdapter<VertexShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<FragmentShaderResourceAdapter>();
+    this->getResourceManager().addAdapter<ShaderProgramResourceAdapter>();
+    this->getResourceManager().addAdapter<TerrainResourceAdapter>();
+
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+      throw std::runtime_error(String("SDL_Init Error: ") + (SDL_GetError() == null ? "" : SDL_GetError()));
+    }
+
+    logger->debug("SDL initialized");
+
+    SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
+
+    this->window = SDL_CreateWindow("SDL2/OpenGL Demo", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    logger->debug("SDL Window created");
+
+    SDL_AddEventWatch(playgroundEventFilter, this);
+    logger->debug("SDL event watch registered");
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    if ((glcontext = SDL_GL_CreateContext(window)) == null) {
+      throw std::runtime_error(String("SDL_GL_CreateContext Error: ") + (SDL_GetError() == null ? "" : SDL_GetError()));
+    }
+
+    int majorVersion;
+    int minorVersion;
+
+    glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+    glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+    this->majorVersion = (unsigned int) majorVersion;
+    this->minorVersion = (unsigned int) minorVersion;
+
+    logger->info("\nOpenGL [%d].[%d] initialized\n\tVersion: [%s]\n\tGLSL Version: [%s]\n\tGLEW Version [%s]\n\tVendor: [%s]\n\tRenderer: [%s]",
+        this->majorVersion, this->minorVersion,
+        glGetString(GL_VERSION),
+        glGetString(GL_SHADING_LANGUAGE_VERSION),
+        "0", //glewGetString(GLEW_VERSION),
+        glGetString(GL_VENDOR),
+        glGetString(GL_RENDERER));
+
+    defaultTexture = new TextureResource(this->generateDefaultTexture());
+    defaultTexture->setUri("OpenGLRunner::defaultTextureResource");
+    this->getContainer().getResourceManager().addResource(defaultTexture);
+
+    if (!SDL_Init(SDL_INIT_GAMEPAD)) {
+      throw std::runtime_error(String("SDL_Init gamepad Error: ") + (SDL_GetError() == null ? "" : SDL_GetError()));
+    }
+  }
 
   virtual unsigned char getInterests() const override {
     return RESIZE | KEY_DOWN;
@@ -72,78 +130,6 @@ public:
     }
     SDL_Quit();
     logger->info("SDL shutdown");
-  }
-
-  virtual bool initialize() override {
-    //logger->setLogLevel(LogLevel::DEBUG);
-    VideoRunner::initialize();
-    this->getResourceManager().addAdapter<TextureResourceAdapter>();
-    this->getResourceManager().addAdapter<CubeMapResourceAdapter>();
-    this->getResourceManager().addAdapter<VertexArrayResourceAdapter>();
-    this->getResourceManager().addAdapter<MeshResourceAdapter>();
-    this->getResourceManager().addAdapter<VertexShaderResourceAdapter>();
-    this->getResourceManager().addAdapter<FragmentShaderResourceAdapter>();
-    this->getResourceManager().addAdapter<ShaderProgramResourceAdapter>();
-    this->getResourceManager().addAdapter<TerrainResourceAdapter>();
-
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-      logger->error("SDL_Init Error: %s", SDL_GetError() == null ? "" : SDL_GetError());
-      return false;
-    }
-
-    logger->debug("SDL initialized");
-
-    SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
-
-    this->window = SDL_CreateWindow("SDL2/OpenGL Demo", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    logger->debug("SDL Window created");
-
-//        SDL_PumpEvents();
-//        SDL_SetRelativeMouseMode(true);
-    SDL_AddEventWatch(playgroundEventFilter, this);
-
-    logger->debug("SDL event watch registered");
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    if ((glcontext = SDL_GL_CreateContext(window)) == null) {
-      logger->error("SDL_GL_CreateContext Error: %s", SDL_GetError());
-      return false;
-    }
-
-    int majorVersion;
-    int minorVersion;
-
-    glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
-    glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-    this->majorVersion = (unsigned int) majorVersion;
-    this->minorVersion = (unsigned int) minorVersion;
-
-    logger->info("\nOpenGL [%d].[%d] initialized\n\tVersion: [%s]\n\tGLSL Version: [%s]\n\tGLEW Version [%s]\n\tVendor: [%s]\n\tRenderer: [%s]",
-        this->majorVersion, this->minorVersion,
-        glGetString(GL_VERSION),
-        glGetString(GL_SHADING_LANGUAGE_VERSION),
-        "0", //glewGetString(GLEW_VERSION),
-        glGetString(GL_VENDOR),
-        glGetString(GL_RENDERER));
-
-    /**
-     * OpenGL defaults so that something is rendered with minimum configuration.
-     */
-    defaultTexture = new TextureResource(this->generateDefaultTexture());
-    defaultTexture->setUri("OpenGLRunner::defaultTextureResource");
-    this->getContainer().getResourceManager().addResource(defaultTexture);
-
-    if (!SDL_Init(SDL_INIT_GAMEPAD)) {
-      logger->error("SDL_Init Error: %s", SDL_GetError());
-      return false;
-    }
-
-    return true;
   }
 
   virtual bool afterInitialize() override {
@@ -228,37 +214,37 @@ public:
     glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   }
 
-  virtual void onKeyDown(unsigned int key, unsigned int keyModifier) override {
-    logger->debug("Key down: %d", key);
-    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
-    logger->debug("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
-    logger->debug("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
-    logger->debug("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
-    logger->debug("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
-
-    switch (key) {
-    case SDLK_ESCAPE:
-      this->getContainer().stop();
-      break;
-    case SDLK_F4:
-      if (keyModifier & SDL_KMOD_GUI) {
-        this->getContainer().stop();
-      }
-      break;
-    case SDLK_Q:
-      if (keyModifier & SDL_KMOD_ALT) {
-        this->getContainer().stop();
-      }
-      break;
-
-    case SDLK_RETURN:
-      if (keyModifier & SDL_KMOD_GUI) {
-        this->setFullscreen(!this->getFullscreen());
-      }
-      break;
-    }
-  }
+//  virtual void onKeyDown(unsigned int key, unsigned int keyModifier) override {
+//    logger->debug("Key down: %d", key);
+//    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+//    logger->debug("KMOD_ALT: %d", keyModifier & SDL_KMOD_ALT);
+//    logger->debug("KMOD_CTRL: %d", keyModifier & SDL_KMOD_CTRL);
+//    logger->debug("KMOD_SHIFT: %d", keyModifier & SDL_KMOD_SHIFT);
+//    logger->debug("KMOD_GUI: %d", keyModifier & SDL_KMOD_GUI);
+//    logger->debug("KMOD_MODE: %d", keyModifier & SDL_KMOD_MODE);
+//
+//    switch (key) {
+//    case SDLK_ESCAPE:
+//      this->getContainer().stop();
+//      break;
+//    case SDLK_F4:
+//      if (keyModifier & SDL_KMOD_GUI) {
+//        this->getContainer().stop();
+//      }
+//      break;
+//    case SDLK_Q:
+//      if (keyModifier & SDL_KMOD_ALT) {
+//        this->getContainer().stop();
+//      }
+//      break;
+//
+//    case SDLK_RETURN:
+//      if (keyModifier & SDL_KMOD_GUI) {
+//        this->setFullscreen(!this->getFullscreen());
+//      }
+//      break;
+//    }
+//  }
 
   bool setFullscreen(bool fullScreen) override {
     SDL_SetWindowFullscreen(this->window, VideoRunner::setFullscreen(fullScreen));
