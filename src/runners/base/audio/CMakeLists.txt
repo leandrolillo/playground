@@ -1,6 +1,6 @@
 #Library
 set(LIBRARY_NAME audioRunner)
-add_library(${LIBRARY_NAME} STATIC AudioRunner.cpp)
+add_library(${LIBRARY_NAME} STATIC AudioSource.cpp)
 
 #sources
 add_subdirectory(resources)
