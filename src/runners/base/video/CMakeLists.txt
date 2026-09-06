@@ -15,16 +15,16 @@ target_link_libraries(${LIBRARY_NAME} INTERFACE playground)
 # LibJpeg
 find_package(JPEG REQUIRED)
 target_include_directories(${LIBRARY_NAME} INTERFACE ${JPEG_INCLUDE_DIR})
-target_link_libraries(${LIBRARY_NAME} PUBLIC ${JPEG_LIBRARY})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${JPEG_LIBRARY})
 
 # LibPng
 find_package(PNG REQUIRED)
 target_include_directories(${LIBRARY_NAME} INTERFACE ${PNG_INCLUDE_DIR})
-target_link_libraries(${LIBRARY_NAME} PUBLIC ${PNG_LIBRARY})
+target_link_libraries(${LIBRARY_NAME} INTERFACE ${PNG_LIBRARY})
 
 #Freetype
 find_package(Freetype REQUIRED)
-target_link_libraries(${LIBRARY_NAME} PUBLIC Freetype::Freetype)
+target_link_libraries(${LIBRARY_NAME} INTERFACE Freetype::Freetype)
 
 #Geometry
 FetchContent_Declare(
