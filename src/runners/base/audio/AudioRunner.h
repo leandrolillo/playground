@@ -15,7 +15,7 @@
 class AudioRunner: public PlaygroundRunner {
   friend class AudioSource;
 	public:
-		static const unsigned char ID;
+		static const unsigned char ID {3};
 	protected:
 		Logger *logger = LoggerFactory::getLogger("audio/AudioRunner");
 	public:

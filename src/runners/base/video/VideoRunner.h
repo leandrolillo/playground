@@ -27,7 +27,7 @@
 
 class VideoRunner : public PlaygroundRunner {
 public:
-	static const unsigned char ID;
+	static const unsigned char ID {0};
 protected:
 	bool fullScreen = false;
 	unsigned int height = 0;
