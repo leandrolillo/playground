@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <set>
 #include <Math3d.h>
 #include "OggResourceAdapter.h"
 #include "WavResourceAdapter.h"
@@ -19,6 +20,8 @@ class AudioRunner: public PlaygroundRunner {
 	protected:
 		Logger *logger = LoggerFactory::getLogger("audio/AudioRunner");
 		std::unique_ptr<AudioSource> background;
+	private:
+		std::set<AudioSource *> sources;
 	public:
 		AudioRunner(Playground &container) : PlaygroundRunner(container) {
 			this->getResourceManager().addAdapter<OggResourceAdapter>();
@@ -54,7 +57,7 @@ class AudioRunner: public PlaygroundRunner {
 		virtual AudioSource *playBackgroundMusic(const String &fileName) {
       if (auto buffer = (AudioBufferResource*) getResourceManager().load(fileName, MimeTypes::AUDIOBUFFER); buffer == null) {
         logger->error("Error creating source: could not load buffer for [%s]", fileName.c_str());
-        return background.get();
+        return null;
       } else {
         return playBackgroundMusic(*buffer);
       }
@@ -62,15 +65,14 @@ class AudioRunner: public PlaygroundRunner {
 
 		virtual AudioSource *playBackgroundMusic(AudioBufferResource &buffer);
 		virtual void stopBackgroundMusic();
+		void shutdown() override;
 
 		virtual String toString() const override {
 			return "AudioRunner(id:" + std::to_string(this->getId()) + ")";
 		}
 
 
-		virtual ~AudioRunner()
-		{
-		}
+		~AudioRunner() override;
 	protected:
     /**
      * source wrapper methods

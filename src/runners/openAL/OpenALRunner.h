@@ -22,8 +22,9 @@ class OpenALRunner: public AudioRunner {
   ALCdevice *device = null;
   ALCcontext *context = null;
   public:
+  using AudioRunner::createSource;
+
   OpenALRunner(Playground &container) : AudioRunner(container) {
-    //this->getResourceManager().addAdapter<SourceResourceAdapter>();
     this->getResourceManager().addAdapter<AudioBufferResourceAdapter>();
 
     device = alcOpenDevice(null);
@@ -60,6 +61,7 @@ class OpenALRunner: public AudioRunner {
 
   virtual ~OpenALRunner()
   {
+    shutdown();
     alcMakeContextCurrent(NULL);
     if (context != null) {
       alcDestroyContext(context);

@@ -5,14 +5,22 @@
 
 class AudioRunner;
 
-//TODO: copy and move methods
 class AudioSource {
+  friend class AudioRunner;
 	private:
-    AudioRunner &owner;
-    unsigned int id;
+    AudioRunner *owner;
+    unsigned int id = 0;
+
+    AudioRunner &getOwner() const;
+    void release();
 
 	public:
 		AudioSource(AudioRunner &owner);
+
+    AudioSource(const AudioSource &) = delete;
+    AudioSource &operator=(const AudioSource &) = delete;
+    AudioSource(AudioSource &&) = delete;
+    AudioSource &operator=(AudioSource &&) = delete;
 
     AudioSource(AudioRunner &owner, AudioBufferResource &buffer, const vector &position, const vector &velocity, const bool &looping) : AudioSource(owner) {
       setBuffer(buffer);
@@ -32,10 +40,10 @@ class AudioSource {
 
 	  void setBuffer(AudioBufferResource &buffer);
 
-	  const vector& getPosition() const;
+	  vector getPosition() const;
     void setPosition(const vector& position);
 
-    const vector& getVelocity() const;
+    vector getVelocity() const;
     void setVelocity(const vector& velocity);
 
 	  float getGain() const;

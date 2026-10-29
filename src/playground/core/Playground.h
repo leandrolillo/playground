@@ -67,6 +67,9 @@ public:
   virtual void afterLoop() {
   }
 
+  virtual void shutdown() {
+  }
+
   Playground &getContainer() const {
     return this->container;
   }
@@ -306,6 +309,10 @@ public:
   }
 
   virtual ~Playground() {
+    // Release runner-owned instances before the resource manager frees their assets.
+    for (auto runner = runners.rbegin(); runner != runners.rend(); ++runner) {
+      (*runner)->shutdown();
+    }
   }
 
 protected:

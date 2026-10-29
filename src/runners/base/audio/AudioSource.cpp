@@ -1,66 +1,92 @@
 #include "AudioSource.h"
 #include "AudioRunner.h"
+#include <stdexcept>
 
 AudioSource::AudioSource(AudioRunner &owner) :
-  owner(owner) {
+  owner(&owner) {
   this->id = owner.createSource();
+  if (id == 0) {
+    throw std::runtime_error("Could not create audio source");
+  }
+  try {
+    owner.sources.insert(this);
+  } catch (...) {
+    owner.deleteSource(id);
+    throw;
+  }
 }
 
 
 AudioSource::~AudioSource() {
-  this->owner.deleteSource(this->getId());
+  release();
+}
+
+AudioRunner &AudioSource::getOwner() const {
+  if (owner == nullptr) {
+    throw std::logic_error("Audio source has been released");
+  }
+  return *owner;
+}
+
+void AudioSource::release() {
+  if (owner != nullptr) {
+    owner->deleteSource(id);
+    owner->sources.erase(this);
+    owner = nullptr;
+    id = 0;
+  }
 }
 
 void AudioSource::setBuffer(AudioBufferResource &buffer) {
-  this->owner.setSourceBuffer(this->getId(), buffer.getId());
+  getOwner().setSourceBuffer(this->getId(), buffer.getId());
 }
 
-const vector& AudioSource::getPosition() const {
-  return this->owner.getSourcePosition(this->id);
+vector AudioSource::getPosition() const {
+  return getOwner().getSourcePosition(this->id);
 }
 
 void AudioSource::setPosition(const vector& position) {
-  this->owner.setSourcePosition(this->id, position);
+  getOwner().setSourcePosition(this->id, position);
 }
 
-const vector& AudioSource::getVelocity() const {
-  return this->owner.getSourceVelocity(this->id);
+vector AudioSource::getVelocity() const {
+  return getOwner().getSourceVelocity(this->id);
 }
 
 void AudioSource::setVelocity(const vector& velocity) {
-  this->owner.setSourceVelocity(this->id, velocity);
+  getOwner().setSourceVelocity(this->id, velocity);
 }
 
 float AudioSource::getGain() const {
-  return this->owner.getSourceGain(this->id);
+  return getOwner().getSourceGain(this->id);
 }
 
 void AudioSource::setGain(float gain) {
-  this->owner.setSourceGain(this->id, gain);
+  getOwner().setSourceGain(this->id, gain);
 }
 
 unsigned char AudioSource::getLooping() const {
-  return this->owner.getSourceLooping(this->id);
+  return getOwner().getSourceLooping(this->id);
 }
 
 void AudioSource::setLooping(bool looping) {
-  this->owner.setSourceLooping(this->id, looping);
+  getOwner().setSourceLooping(this->id, looping);
 }
 
 float AudioSource::getPitch() const {
-  return this->owner.getSourcePitch(this->id);
+  return getOwner().getSourcePitch(this->id);
 }
 
 void AudioSource::setPitch(float pitch) {
-  this->owner.setSourcePitch(this->id, pitch);
+  getOwner().setSourcePitch(this->id, pitch);
 }
 
 float AudioSource::getRolloffFactor() const {
-  return this->owner.getSourceRolloffFactor(this->id);
+  return getOwner().getSourceRolloffFactor(this->id);
 }
 
 void AudioSource::setRolloffFactor(float rolloffFactor) {
-  owner.setSourceRolloffFactor(this->id, rolloffFactor);
+  getOwner().setSourceRolloffFactor(this->id, rolloffFactor);
 }
 
 
@@ -68,12 +94,12 @@ void AudioSource::setRolloffFactor(float rolloffFactor) {
  * Playback methods
  */
 void AudioSource::play() {
-  this->owner.playSource(this->id);
+  getOwner().playSource(this->id);
 
 }
 void AudioSource::stop() {
-  this->owner.stopSource(this->id);
+  getOwner().stopSource(this->id);
 }
 void AudioSource::pause() {
-  this->owner.pauseSource(this->id);
+  getOwner().pauseSource(this->id);
 }

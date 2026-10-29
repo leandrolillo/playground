@@ -31,7 +31,6 @@ public:
   inline static const String OGG = "audio/ogg";
   inline static const String AUDIO = "audio/audio";
   inline static const String AUDIOBUFFER = "audio/buffer";
-  inline static const String AUDIOSOURCE = "audio/source";
 
   inline static const String WAVEFRONT_OBJ = "model/obj";
   inline static const String WAVEFRONT_MATERIAL = "model/mtl";

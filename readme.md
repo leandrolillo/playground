@@ -39,6 +39,22 @@ Building:
 'make' for generating executable file in target directory
 
 
+----------------
+Audio ownership:
+----------------
+
+Audio buffers are cached resources; audio sources are playback instances. Use
+`AudioRunner::createSource()` to obtain a new `std::unique_ptr<AudioSource>` for
+each playback, even when reusing the same file or buffer. Keep the buffer loaded
+while its sources are in use. Sources cannot be copied or moved; move their
+owning `unique_ptr` instead. Background music is owned by the audio runner.
+
+Playground shutdown releases sources before cached resources and keeps the audio
+context alive until both have been disposed. A caller-owned source wrapper retained
+past its runner's shutdown has ID zero and rejects further playback/property
+operations. Audio backends must call `shutdown()` before destroying their native
+context.
+
 
 ---------------------------
 Debuging with lldb in osx - developers group
